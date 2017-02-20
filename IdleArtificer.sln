@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{59473783-3BAB-6151-5007-DD1881E2587E}") = "IdleArtificer", "Assembly-CSharp.csproj", "{9197D039-6051-3767-D402-5BA51FB10D6E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9197D039-6051-3767-D402-5BA51FB10D6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9197D039-6051-3767-D402-5BA51FB10D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9197D039-6051-3767-D402-5BA51FB10D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9197D039-6051-3767-D402-5BA51FB10D6E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
