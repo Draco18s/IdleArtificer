@@ -26,7 +26,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
-			theQuest.addTime(-60);
+			theQuest.addTime(-30);
 			switch(result-1) { //undo the fiddling
 				case EnumResult.CRIT_FAIL: //no crit-fail
 				case EnumResult.FAIL: //spend time digging graves; raise strength

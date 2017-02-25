@@ -41,8 +41,13 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.repeatTask();
 					break;
 				case EnumResult.MIXED:
-					questBonus += 1;
-					theQuest.repeatTask();
+					if(theQuest.testLuck(25) == 0) {
+						theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Scenario.SIRENS, questBonus-1));
+					}
+					else {
+						questBonus += 1;
+						theQuest.repeatTask();
+					}
 					break;
 				case EnumResult.SUCCESS:
 					theQuest.raiseStrength(1);

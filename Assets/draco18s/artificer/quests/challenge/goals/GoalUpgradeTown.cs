@@ -1,4 +1,5 @@
-﻿using Assets.draco18s.artificer.init;
+﻿using Assets.draco18s.artificer.game;
+using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.quests.requirement;
 using System;
@@ -8,13 +9,13 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
 	class GoalUpgradeTown : ObstacleType, IQuestGoal {
-		public GoalUpgradeTown() : base("building infrastructure", new RequireWrapper(RequirementType.WOOD), new RequireWrapper(RequirementType.IRON, RequirementType.LEATHER)) {
+		public GoalUpgradeTown() : base("building infrastructure", new RequireWrapper(RequirementType.TOOLS, RequirementType.WOOD), new RequireWrapper(RequirementType.IRON, RequirementType.LEATHER)) {
 
 		}
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
 			EnumResult result = EnumResult.MIXED - fails;
 
-			int mod = questBonus + (partials > 0 ? 3 : 0);
+			int mod = questBonus + (partials * 3);
 			if(theQuest.testStrength(mod)) {
 				result += 1;
 			}
@@ -28,8 +29,9 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.hastenQuestEnding(240);
-					theQuest.repeatTask();
+					QuestManager.availableQuests.Add(Quest.GenerateNewQuest(ChallengeTypes.Goals.REPAIR_DAMN,theQuest.heroName));
+					/*theQuest.hastenQuestEnding(240);
+					theQuest.repeatTask();*/
 					break;
 				case EnumResult.FAIL:
 					theQuest.hastenQuestEnding(120);

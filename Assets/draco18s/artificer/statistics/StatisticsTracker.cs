@@ -27,6 +27,7 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatAchievement firstQuestCompleted = new StatAchievement("firstQuestCompleted").register();
 		public static readonly StatAchievement twentiethQuestCompleted = new StatAchievement("twentiethQuestCompleted").register();
 		public static readonly StatAchievement allQuestsUnlocked = new StatAchievement("allQuestsUnlocked").register();
+		public static readonly StatAchievement relicFromGenie = new StatAchievement("relicFromGenie").register();
 		#endregion
 		//unlocked all quests
 		//built all buildings - have ever built x

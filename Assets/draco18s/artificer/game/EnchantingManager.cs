@@ -13,6 +13,7 @@ namespace Assets.draco18s.artificer.game {
 	public class EnchantingManager {
 		private static Transform inventoryList1;
 		private static Transform inventoryList2;
+		private static Transform inventoryList3;
 		//private static Industry selectedIndustry;
 		//private static ItemStack selectedStack;
 		private static ItemStack inputStack1;
@@ -40,6 +41,7 @@ namespace Assets.draco18s.artificer.game {
 			outputImg = o1.GetComponent<Image>();
 			inventoryList1 = GuiManager.instance.enchantArea.transform.FindChild("Inventory1").GetChild(0).GetChild(0);
 			inventoryList2 = GuiManager.instance.enchantArea.transform.FindChild("Inventory2").GetChild(0).GetChild(0);
+			inventoryList3 = GuiManager.instance.enchantArea.transform.FindChild("Inventory3").GetChild(0).GetChild(0);
 #pragma warning disable 0219
 			Enchantment e = Enchantments.ALERTNESS;
 #pragma warning restore 0219
@@ -58,6 +60,18 @@ namespace Assets.draco18s.artificer.game {
 			outputStack = null;
 			doOutput();
 			int i = 0;
+
+			for(i = 0; i < inventoryList1.childCount; i++) {
+				Main.Destroy(inventoryList1.GetChild(i).gameObject);
+			}
+			for(i = 0; i < inventoryList3.childCount; i++) {
+				Main.Destroy(inventoryList3.GetChild(i).gameObject);
+			}
+			for(i = 0; i < inventoryList3.childCount; i++) {
+				Main.Destroy(inventoryList3.GetChild(i).gameObject);
+			}
+			i = 0;
+
 			foreach(Industry ind in Main.instance.player.builtItems) {
 				Industry newInd = ind;
 				if(!ind.industryItem.isConsumable && ind.industryItem.canBeGivenToQuests) {
@@ -99,6 +113,7 @@ namespace Assets.draco18s.artificer.game {
 					i++;
 				}
 			}
+			i = 0;
 			int j = 0;
 
 			//TODO: if item is an enchanted thingy, needs to be in the other list, or something.
@@ -124,7 +139,7 @@ namespace Assets.draco18s.artificer.game {
 				else {
 					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize);
 					if(stack.enchants.Count > 0) {
-						go.transform.SetParent(inventoryList1);
+						go.transform.SetParent(inventoryList3);
 						go.transform.localPosition = new Vector3(6, (i * -125) - 5, 0);
 						go.GetComponent<Button>().onClick.AddListener(delegate { /*SelectItem(s);*/addInput1(s); });
 						i++;

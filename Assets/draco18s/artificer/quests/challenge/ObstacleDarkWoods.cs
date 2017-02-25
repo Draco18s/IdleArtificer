@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	class ObstacleDarkWoods : ObstacleType {
-		public ObstacleDarkWoods() : base("traveling through dark woods", new RequireWrapper(RequirementType.LIGHT)) {
+		public ObstacleDarkWoods() : base("traveling in a dark forest", new RequireWrapper(RequirementType.LIGHT)) {
 
 		}
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {

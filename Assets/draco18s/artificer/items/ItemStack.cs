@@ -104,16 +104,17 @@ namespace Assets.draco18s.artificer.items {
 				foreach(RelicInfo ri in relicData) {
 					best = Math.Max(best, ri.notoriety);
 				}
-				val += 10000 * best;
+				val += 10000 * (best+1);
 			}
 			else if(enchants.Count > 0) {
 				int best = 0;
 				foreach(Enchantment en in enchants) {
 					best = Math.Max(best, en.ID);
 				}
-				val += 1000 * best;
+				val += 1000 * (best+1);
 			}
 			val += (27-(item.name[0]-96)) * 30 + (27-(item.name[1]-96));
+			//UnityEngine.Debug.Log(this.getDisplayName() + " = " + val);
 			return val;
 		}
 

@@ -29,6 +29,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.AMBUSH, 0));
+					QuestManager.availableQuests.Add(Quest.GenerateNewQuest(ChallengeTypes.Goals.DEFEND_VILLAGE, theQuest.heroName));
 					break;
 				case EnumResult.FAIL:
 					theQuest.repeatTask();

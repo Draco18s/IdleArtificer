@@ -8,11 +8,11 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
 	class GoalRepairDam : ObstacleType, IQuestGoal {
-		public GoalRepairDam() : base("making repairs", new RequireWrapper(RequirementType.WOOD)) {
+		public GoalRepairDam() : base("making repairs", new RequireWrapper(RequirementType.WOOD), new RequireWrapper(RequirementType.TOOLS)) {
 
 		}
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
-			EnumResult result = EnumResult.FAIL - fails;
+			EnumResult result = EnumResult.MIXED - fails;
 
 			if(theQuest.testStrength(questBonus)) {
 				result += 1;
@@ -20,10 +20,13 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			if(theQuest.testStrength(questBonus)) {
 				result += 1;
 			}
-			if(theQuest.testAgility(questBonus)) {
-				result += 1;
+			else {
+				result -= 1;
+				if(theQuest.testAgility(questBonus)) {
+					result += 1;
+				}
 			}
-
+			
 			return result;
 		}
 

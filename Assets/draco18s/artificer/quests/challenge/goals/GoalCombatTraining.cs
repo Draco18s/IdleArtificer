@@ -1,4 +1,5 @@
-﻿using Assets.draco18s.artificer.init;
+﻿using Assets.draco18s.artificer.game;
+using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.quests.requirement;
 using System;
@@ -50,6 +51,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					ChallengeTypes.Loot.AddCommonResource(theQuest);
+					QuestManager.availableQuests.Add(Quest.GenerateNewQuest(theQuest.heroName));
 					break;
 			}
 		}

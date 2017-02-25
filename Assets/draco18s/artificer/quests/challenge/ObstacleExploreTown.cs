@@ -23,7 +23,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
-			theQuest.addTime(-60);
+			theQuest.addTime(-30);
 			switch(result) { //undo the fiddling
 				case EnumResult.CRIT_FAIL: //leave town
 					theQuest.addTime(60); //undo time addition, above

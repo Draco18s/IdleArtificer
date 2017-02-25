@@ -30,7 +30,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
-			theQuest.addTime(-60);
+			theQuest.addTime(-30);
 			switch(result-1) { //undo the fiddling
 				case EnumResult.CRIT_FAIL: //stats tests passed: have some loot
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Loot.getRandom(theQuest.questRand), 4));

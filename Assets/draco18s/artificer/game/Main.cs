@@ -113,6 +113,7 @@ namespace Assets.draco18s.artificer.game {
 			ob = ChallengeTypes.Scenario.Pirates.MAROONED;
 			ob = ChallengeTypes.Travel.SAIL_SEAS;
 			ob = ChallengeTypes.Unexpected.THIEF;
+			ob = ChallengeTypes.Unexpected.Sub.GENIE;
 			ob = ChallengeTypes.Unexpected.Traps.MAGIC_TRAP_ACID;
 			ob = ChallengeTypes.Unexpected.Monsters.ANIMANT_PLANT;
 #pragma warning restore 0219
@@ -123,7 +124,7 @@ namespace Assets.draco18s.artificer.game {
 				Debug.Log("No save data, generating quests");
 				QuestManager.tickAllQuests(3600);
 			}
-
+			Debug.Log("r:" + (ChallengeTypes.Goals.SCARY_CAVE is IRelicMaker));
 			GuildManager.update();
 		}
 

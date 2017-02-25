@@ -84,7 +84,6 @@ namespace Assets.draco18s.artificer.game {
 			}
 			miscInventory.Add(stack);
 			miscInventory.Sort((x, y) => y.getDisplayIndex().CompareTo(x.getDisplayIndex()));
-			//miscInventory.Reverse();
 		}
 
 		public int GetVendorSize() {

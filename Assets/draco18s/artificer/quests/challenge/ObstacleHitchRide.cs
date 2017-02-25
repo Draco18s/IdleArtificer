@@ -31,7 +31,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			switch(result) {
 				case EnumResult.CRIT_FAIL: //no crit fail
 				case EnumResult.FAIL:
-					theQuest.raiseCharisma(questBonus); //if the hero had a bonus and still failed
+					theQuest.raiseCharisma(questBonus > 0 ? 1 : 0); //if the hero had a bonus and still failed
 					theQuest.addTime(60);
 					break;
 				case EnumResult.MIXED: //nothing bad, nothing good

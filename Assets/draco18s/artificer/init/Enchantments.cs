@@ -8,19 +8,19 @@ using System.Text;
 namespace Assets.draco18s.artificer.init {
 	public class Enchantments {
 		//armor
-		public static Enchantment HEALING = new Enchantment("Healing", Items.ROYAL_JELLY, 50, ItemEquipType.ARMOR | ItemEquipType.RING, RequirementType.HEALING);
-		public static Enchantment FIRE_RESISTANCE = new Enchantment("Fire Resistance", Items.DRAGON_SCALES, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.FIRE_IMMUNE);
-		public static Enchantment COLD_RESISTANCE = new Enchantment("Cold Resistance", Items.ROOSTER_TEETH, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.COLD_IMMUNE);
-		public static Enchantment POISON_RESISTANCE = new Enchantment("Poison Resistance", Items.VENOM, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.POISON_IMMUNE);
-		public static Enchantment ACID_RESISTANCE = new Enchantment("Acid Resistance", Items.DIATOM_EARTH, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.ACID_IMMUNE);
-		public static Enchantment SPELL_RESIST = new Enchantment("Spell Resistance", Items.MUMMY_WRAPPING, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.SPELL_RESIST);
+		public static Enchantment HEALING = new Enchantment("Healing", Items.ROYAL_JELLY, 1, ItemEquipType.ARMOR | ItemEquipType.RING, RequirementType.HEALING);
+		public static Enchantment FIRE_RESISTANCE = new Enchantment("Fire Resistance", Items.DRAGON_SCALES, 1, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.FIRE_IMMUNE);
+		public static Enchantment COLD_RESISTANCE = new Enchantment("Cold Resistance", Items.ROOSTER_TEETH, 1, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.COLD_IMMUNE);
+		public static Enchantment POISON_RESISTANCE = new Enchantment("Poison Resistance", Items.VENOM, 1, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.POISON_IMMUNE);
+		public static Enchantment ACID_RESISTANCE = new Enchantment("Acid Resistance", Items.DIATOM_EARTH, 1, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.ACID_IMMUNE);
+		public static Enchantment SPELL_RESIST = new Enchantment("Spell Resistance", Items.MUMMY_WRAPPING, 1, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.SPELL_RESIST);
 
 		//cloak
 		public static Enchantment ETHEREAL = new Enchantment("Ethereal", Items.BLACK_PEARLS, 200, ItemEquipType.CLOAK, RequirementType.ETHEREALNESS);
 
 		//weapon
 		public static Enchantment BRIGHT = new Enchantment("Bright", Items.STARDUST, 200, ItemEquipType.RING | ItemEquipType.WEAPON, RequirementType.LIGHT);
-		public static Enchantment ENHANCEMENT = new Enchantment("Enhancement", Items.DIAMONDS, 200, ItemEquipType.WEAPON | ItemEquipType.RANGED | ItemEquipType.ARMOR, 0).setStacksTo(5);
+		public static Enchantment ENHANCEMENT = new Enchantment("Enhancement", Items.DIAMONDS, 200, ItemEquipType.WEAPON | ItemEquipType.RANGED | ItemEquipType.ARMOR | ItemEquipType.SHIELD, 0).setStacksTo(5);
 		public static Enchantment DISRUPTION = new Enchantment("Disruption", Items.UNICORN_HAIR, 200, ItemEquipType.WEAPON, RequirementType.DISRUPTION);
 
 		public static Enchantment POISON_DMG = new Enchantment("Poisonous", Items.WOLFSBANE, 200, ItemEquipType.WEAPON | ItemEquipType.RANGED, RequirementType.POISON_DAMAGE);

@@ -16,7 +16,7 @@ namespace Assets.draco18s.artificer.init {
 		public static class Goals {
 			#region easy
 			//wood, leather, armor, weapon, torches--all basic stuff
-			//public static ObstacleType FIND_COWS = new GoalFindCows().setRewardScalar(1).setReqScalar(0.5f);//???
+			public static ObstacleType FIND_COWS = new GoalFindCows().setRewardScalar(1).setReqScalar(0.5f);//mana
 			public static ObstacleType REPAIR_DAMN = new GoalRepairDam().setRewardScalar(1).setReqScalar(1.5f);//wood
 			public static ObstacleType SCARY_CAVE = new GoalExploreCave().setRewardScalar(1).setReqScalar(0.75f);//torches
 			public static ObstacleType PATROLS = new GoalPatrolDuty().setRewardScalar(1);//light + healing
@@ -37,16 +37,18 @@ namespace Assets.draco18s.artificer.init {
 			#region semi-advanced
 			//require several basic or mid-level items
 			public static ObstacleType DEFEND_VILLAGE = new GoalDefendVillage().setRewardScalar(4); //armor*2 + weapon*2
-			public static ObstacleType DUKE = new GoalPetitionTheDuke().setRewardScalar(4);//cha
-			public static ObstacleType SPHINX = new GoalSphynxRiddles().setRewardScalar(4);//int + mana
+			public static ObstacleType DUKE = new GoalPetitionTheDuke().setRewardScalar(4).setReqScalar(2f);//cha
+			public static ObstacleType SPHINX = new GoalSphynxRiddles().setRewardScalar(4).setReqScalar(2f);//int + mana
 			public static ObstacleType INFILTRATE_CASTLE = new GoalInfiltrateCastle().setRewardScalar(4);//stealth + agl
 			public static ObstacleType OBSERVE_ENEMY = new GoalObserveTroopMovements().setRewardScalar(4);//stealth + int
 			#endregion
 
 			#region advanced
 			//require high-level potions
-			public static ObstacleType EXPLORE_TOMB = new GoalExploreTomb().setRewardScalar(8);//danger sense + fire damage
-			public static ObstacleType DRAGON = new GoalKillDragon().setRewardScalar(8);//fire immunity + cold damage
+			public static ObstacleType CLIMB_MOUNTAIN = new GoalReachSummit().setRewardScalar(8);
+			public static ObstacleType SETTLE_TOWN = new GoalSettleTown().setRewardScalar(8).setReqScalar(16);//tons o' resources
+			public static ObstacleType EXPLORE_TOMB = new GoalExploreTomb().setRewardScalar(8).setReqScalar(1.5f);//danger sense + fire damage
+			public static ObstacleType DRAGON = new GoalKillDragon().setRewardScalar(8).setReqScalar(1.5f);//fire immunity + cold damage
 			#endregion
 			#region very advanced
 			//all require some kind of enchantment
@@ -92,8 +94,8 @@ namespace Assets.draco18s.artificer.init {
 				public static ObstacleType MARKET = new ObstacleExploreTown_Market();
 				public static ObstacleType GARDENS = new ObstacleExploreTown_Gardens();
 				public static ObstacleType TEMPLE = new ObstacleExploreTown_Temples();
-
 				public static ObstacleType GRAVEYARD = new ObstacleGraveyard();
+				public static ObstacleType SHOPPING = new ObstacleBuyEquipment("shopping");
 			}
 
 			public static ObstacleType getRandom(Random rand) {
@@ -121,6 +123,7 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType DARK_FOREST = new ObstacleDarkWoods();
 			public static ObstacleType RIVER = new ObstacleRiver();
 			public static ObstacleType SWAMP = new ObstacleSwamp();
+			public static ObstacleType WATER_TRANSPORT = new ObstacleWaterTransport();
 
 			public static ObstacleType getRandom(Random rand) {
 				FieldInfo[] fields = typeof(Travel).GetFields();
@@ -137,6 +140,12 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType QUICKSAND = new ObstacleQuicksand();
 			public static ObstacleType STEAL_STUFF = new ObstcaleStealSupplies();
 			public static ObstacleType PERSUED = new ObstaclePersued();
+			public static ObstacleType HEROIC_DUEL = new ObstacleHeroDuel();
+			public static ObstacleType BEGGAR = new ObstacleBeggar();
+
+			public static class Sub {
+				public static ObstacleType GENIE = new ObstacleGenie();
+			}
 
 			public static class Traps {
 				public static ObstacleType TRAPPED_PASSAGE_FIRE = new ObstacleTrappedPassage(DamageType.FIRE);
@@ -281,6 +290,7 @@ namespace Assets.draco18s.artificer.init {
 			}
 		}
 		public static class Scenario {
+			public static ObstacleType SIRENS = new ObstacleSirens();
 			public static ObstacleType PIRATE_SHIP = new ObstaclePirateShip();
 			public static class Pirates {
 				public static ObstacleType MAROONED = new ObstacleMarooned();

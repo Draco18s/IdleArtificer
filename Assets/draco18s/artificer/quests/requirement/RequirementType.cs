@@ -14,7 +14,7 @@ namespace Assets.draco18s.artificer.quests.requirement {
 		UNHOLY_IMMUNE =			(1L << 5), //qi
 		STEALTH =				(1L << 6), //qi
 		LIGHT =					(1L << 7), //qi
-		WATER_BREATH =			(1L << 8), //q[i]
+		WATER_BREATH =			(1L << 8), //qi
 		FIRE_DAMAGE =			(1L << 9), //qe
 		COLD_DAMAGE =			(1L << 10), //qe
 		POISON_DAMAGE =			(1L << 11), //qie
@@ -26,24 +26,22 @@ namespace Assets.draco18s.artificer.quests.requirement {
 		SPELL_RESIST =			(1L << 17), //qe
 		ETHEREALNESS =			(1L << 18), //q
 		MIRRORED =				(1L << 19), //qe //gaze attacks
-		ARROW_CATCH =			(1L << 20), //may remove: monsters aren't set up for ranged combat
+		ENDURANCE =				(1L << 20), //q[e?][i?]
 		DISRUPTION =			(1L << 21), //qe
 		VORPAL =				(1L << 22), //qe
 		BRILIANT_ENERGY =		(1L << 23), //e //may remove
 		DISPELLING =			(1L << 24),
 		FREE_MOVEMENT =			(1L << 25), //qe
-		PHASE_LOCK =			(1L << 26),
+		PHASE_LOCK =			(1L << 26),     //may remove?
 		DETECTION =				(1L << 27), //qe
 		CLEANSING =				(1L << 28), //may remove
 		COUNTERSPELL =			(1L << 29), //may remove
 		MIND_SHIELD =			(1L << 30), //qe
 		FIRM_RESOLVE =			(1L << 31), //qe
-		//tools?
-		//lock picks?
 		//animals?
 		//steady aim, unerring, etc
 		//endurance, endure elements
-		//winter clothes, desert clothes
+		//winter clothes, desert clothes -- same as above?
 
 
 		//generic-y bollocks
@@ -53,17 +51,18 @@ namespace Assets.draco18s.artificer.quests.requirement {
 		HERB =					(1L << 35), //qi
 		LEATHER =				(1L << 36), //qi
 		IRON =					(1L << 37), //qi
-		WEAPON =				(1L << 38), //qi
-		RANGED =				(1L << 39), //qi
-		ARMOR =					(1L << 40), //qi
-		STRENGTH =				(1L << 41), //qi
-		AGILITY =				(1L << 42), //qi
-		INTELLIGENCE =			(1L << 43), //qi
-		CHARISMA =				(1L << 44), //qi
-		WEAKNESS =				(1L << 45), //qi
-		CLUMSINESS =			(1L << 46), //qi
-		STUPIDITY =				(1L << 47), //qi
-		UGLINESS =				(1L << 48)  //qi
+		TOOLS =					(1L << 38), //qi
+		WEAPON =				(1L << 39), //qi
+		RANGED =				(1L << 40), //qi
+		ARMOR =					(1L << 41), //qi
+		STRENGTH =				(1L << 42), //qi
+		AGILITY =				(1L << 43), //qi
+		INTELLIGENCE =			(1L << 44), //qi
+		CHARISMA =				(1L << 45), //qi
+		WEAKNESS =				(1L << 46), //qi
+		CLUMSINESS =			(1L << 47), //qi
+		STUPIDITY =				(1L << 48), //qi
+		UGLINESS =				(1L << 49)  //qi
 
 			//thieves tools!
 	}

@@ -25,7 +25,12 @@ namespace Assets.draco18s.artificer.quests {
 			FantasyName[] names = fantasyNameGenerator.GetFantasyNames(1);
 			return GenerateNewQuest(ChallengeTypes.Goals.getRandom(rand), names[0].FirstName + " " + names[0].Land);
 		}
-		public static Quest GenerateNewQuest(ObstacleType withGoal, string name) {
+
+		public static Quest GenerateNewQuest(string heroName) {
+			return GenerateNewQuest(ChallengeTypes.Goals.getRandom(rand), heroName);
+		}
+
+		public static Quest GenerateNewQuest(ObstacleType withGoal, string heroName) {
 			//TODO: moar detail
 			List<QuestChallenge> arr = new List<QuestChallenge>();
 
@@ -60,7 +65,7 @@ namespace Assets.draco18s.artificer.quests {
 			i = Items.getRandom(rand, 4, 7);
 			q.rewards[1] = new ItemStack(i, rand.Next(i.maxStackSize - i.minStackSize) + i.minStackSize);
 
-			q.heroName = name;
+			q.heroName = heroName;
 
 			//Name debugging
 			//string debugName = names[0].FirstName + " " + names[0].LastName + " " + names[0].Postfix;
@@ -258,7 +263,7 @@ namespace Assets.draco18s.artificer.quests {
 			if(questTotalTime > 2000 || heroCurHealth <= 0) {
 				//hero dies
 				Debug.Log("FAIL " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
-				Debug.Log("     " + obstacles[questStep-1].type.name);
+				//Debug.Log("     " + obstacles[questStep-1].type.name);
 				return EnumResult.FAIL;
 			}
 
@@ -317,6 +322,11 @@ namespace Assets.draco18s.artificer.quests {
 
 
 			if(questStep >= obstacles.Length) {
+				if(result < EnumResult.MIXED) {
+					//rare ending
+					Debug.Log("FAILURE " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+					return EnumResult.FAIL;
+				}
 				Debug.Log("SUCCESS " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
 				return EnumResult.SUCCESS;
 			}

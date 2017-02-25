@@ -8,11 +8,17 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
 	class GoalBuildHome : ObstacleType, IQuestGoal {
-		public GoalBuildHome() : base("building a house", new RequireWrapper(RequirementType.WOOD), new RequireWrapper(RequirementType.LEATHER)) {
+		public GoalBuildHome() : base("building a house", new RequireWrapper(RequirementType.TOOLS), new RequireWrapper(RequirementType.WOOD), new RequireWrapper(RequirementType.LEATHER)) {
 
 		}
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
 			EnumResult result = EnumResult.MIXED - fails;
+			if(theQuest.doesHeroHave(RequirementType.TOOLS,false)) {
+				result += 2;
+			}
+			else {
+				result++;
+			}
 
 			if(theQuest.testStrength(questBonus)) {
 				result += 1;

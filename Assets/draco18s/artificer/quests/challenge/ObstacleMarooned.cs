@@ -25,6 +25,11 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			else {
 				result -= 1;
 			}
+			if(theQuest.testIntelligence(0)) {
+				result += 1;
+			}
+			if(result > EnumResult.CRIT_SUCCESS) return EnumResult.CRIT_SUCCESS;
+			if(result < EnumResult.CRIT_FAIL) return EnumResult.CRIT_FAIL;
 			return result;
 		}
 
