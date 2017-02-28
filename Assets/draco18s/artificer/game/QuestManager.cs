@@ -29,6 +29,8 @@ namespace Assets.draco18s.artificer.game {
 		private static Industry selectedIndustry;
 		private static ItemStack selectedStack;
 
+		private static Dictionary<Industry, GameObject> questInvenList = new Dictionary<Industry, GameObject>();
+
 		public static void setupUI() {
 			if(questList == null) {
 				questList = GuiManager.instance.questArea.transform.FindChild("Available").GetChild(0).GetChild(0);
@@ -46,7 +48,9 @@ namespace Assets.draco18s.artificer.game {
 					GameObject go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM);
 					go.transform.SetParent(inventoryList);
 					go.transform.localPosition = new Vector3(7, (i * -125) - 5, 0);
-					ind.questInvenListObj = go;
+					Industry newInd = ind;
+					questInvenList.Add(newInd, go);
+					//ind.questInvenListObj = go;
 					go.name = ind.name;
 					Text tx = go.transform.FindChild("Title").GetComponent<Text>();
 					tx.text = Main.ToTitleCase(ind.name);
@@ -72,7 +76,6 @@ namespace Assets.draco18s.artificer.game {
 							ty = ty << 1;
 						}
 					}
-					Industry newInd = ind;
 					go.GetComponent<Button>().onClick.AddListener(delegate { SelectItem(newInd); });
 					i++;
 				}
@@ -118,7 +121,7 @@ namespace Assets.draco18s.artificer.game {
 				btn.GetComponent<Button>().onClick.AddListener(delegate { AddRemoveItemFromQuest(theQuest, slotnum); });
 				if(q.inventory.Count >= r) {
 					if(q.inventory[r - 1].item.industry != null) {
-						q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.guiObj.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
+						q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
 					}
 					else {
 						q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + theQuest.inventory[r - 1].item.name);
@@ -212,7 +215,7 @@ namespace Assets.draco18s.artificer.game {
 									im.sprite = GuiManager.instance.gray_square;
 									if(q.inventory.Count >= r) {
 										if(q.inventory[r - 1].item.industry != null) {
-											im.GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.guiObj.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
+											im.GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
 										}
 										else {
 											im.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.inventory[r - 1].item.name);
@@ -229,7 +232,7 @@ namespace Assets.draco18s.artificer.game {
 				im.sprite = GuiManager.instance.gray_square;
 				if(theQuest.inventory.Count >= r) {
 					if(theQuest.inventory[r - 1].item.industry != null) {
-						im.GetComponent<Image>().sprite = theQuest.inventory[r - 1].item.industry.guiObj.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
+						im.GetComponent<Image>().sprite = theQuest.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
 					}
 					else {
 						im.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + theQuest.inventory[r - 1].item.name);
@@ -290,7 +293,8 @@ namespace Assets.draco18s.artificer.game {
 			int i = 0;
 			foreach(Industry ind in Main.instance.player.builtItems) {
 				long totalForQuest = 0;
-				GameObject go = ind.questInvenListObj;
+				GameObject go;// = ind.questInvenListObj;
+				questInvenList.TryGetValue(ind, out go);
 				if(go != null) {
 					go.transform.localPosition = new Vector3(7, (i * -125) - 7, 0);
 					go.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(ind.name);
@@ -471,10 +475,12 @@ namespace Assets.draco18s.artificer.game {
 							if(st.relicData != null /*&& st != newRelic*/) {
 								//if the player gave it to the hero, then it's ID'd and can go back to the player's general inventory
 								//if it isn't, then it goes to the Unidentified Relics list
-								if(st.isIDedByPlayer)
-									Main.instance.player.addItemToInventory(st);
-								else
-									Main.instance.player.unidentifiedRelics.Add(st);
+								if(st.relicData != null || st.enchants.Count > 0) {
+									if(st.isIDedByPlayer)
+										Main.instance.player.addItemToInventory(st);
+									else
+										Main.instance.player.unidentifiedRelics.Add(st);
+								}
 							}
 						}
 						Main.instance.CompleteQuest(q.getGoal());

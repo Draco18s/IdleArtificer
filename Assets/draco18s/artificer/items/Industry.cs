@@ -40,14 +40,14 @@ namespace Assets.draco18s.artificer.items {
 
 		public int consumeAmount = 0;
 		public int didComplete = 0;
-		[NonSerialized]
+		/*[NonSerialized]
 		public GameObject listObj;
 		[NonSerialized]
 		public GameObject questInvenListObj;
 		[NonSerialized]
-		public GameObject enchantInvenListObj;
+		public GameObject enchantInvenListObj;*/
 		[NonSerialized]
-		public GameObject guiObj;
+		public GameObject craftingGridGO;
 
 		[NonSerialized]
 		protected RequirementType reqProperties;
@@ -266,7 +266,7 @@ namespace Assets.draco18s.artificer.items {
 			info.AddValue("vendors", vendors);
 			info.AddValue("timeRemaining", timeRemaining);
 			info.AddValue("halvesAndDoubles", halvesAndDoubles);
-			Vector3 p = guiObj.transform.GetChild(0).localPosition;
+			Vector3 p = craftingGridGO.transform.GetChild(0).localPosition;
 			info.AddValue("posX", p.x);
 			info.AddValue("posY", p.y);
 		}
@@ -289,8 +289,8 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public void ReadFromCopy(Industry copy) {
-			level = copy.level;
-			quantityStored = copy.quantityStored;
+			level = 0;// copy.level;
+			quantityStored = 0;// copy.quantityStored;
 			if(quantityStored == null) quantityStored = 0;
 			isSellingStores = copy.isSellingStores;
 			isConsumersHalted = copy.isConsumersHalted;
@@ -298,10 +298,10 @@ namespace Assets.draco18s.artificer.items {
 			doAutobuild = copy.doAutobuild;
 			autoBuildLevel = copy.autoBuildLevel;
 			autoBuildMagnitude = copy.autoBuildMagnitude;
-			apprentices = copy.apprentices;
-			vendors = copy.vendors;
-			timeRemaining = copy.timeRemaining;
-			halvesAndDoubles = copy.halvesAndDoubles;
+			apprentices = 0;// copy.apprentices;
+			vendors = 0;// copy.vendors;
+			timeRemaining = 0;// copy.timeRemaining;
+			halvesAndDoubles = 1;// copy.halvesAndDoubles;
 			gridPos = MathHelper.snap(copy.gridPos,24);
 		}
 	}

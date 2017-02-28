@@ -95,6 +95,7 @@
      <Compile Include="Assets\draco18s\artificer\quests\challenge\IMonsterChallenge.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\IRelicMaker.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleAmbush.cs" />
+     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleBadWeather.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleBeggar.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleBuyEquipment.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleChurchyard.cs" />
@@ -114,6 +115,7 @@
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleGraveyard.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleHeroDuel.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleHitchRide.cs" />
+     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleHoard.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleHome.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleLost.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleLostLagoon.cs" />
@@ -154,6 +156,7 @@
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalClearRatInfestation.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCombatTraining.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDefendVillage.cs" />
+     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEvilBard.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreCave.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb_Mummy.cs" />

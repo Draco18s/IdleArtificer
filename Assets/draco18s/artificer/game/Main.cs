@@ -124,7 +124,6 @@ namespace Assets.draco18s.artificer.game {
 				Debug.Log("No save data, generating quests");
 				QuestManager.tickAllQuests(3600);
 			}
-			Debug.Log("r:" + (ChallengeTypes.Goals.SCARY_CAVE is IRelicMaker));
 			GuildManager.update();
 		}
 
@@ -232,6 +231,8 @@ namespace Assets.draco18s.artificer.game {
 			QuestManager.tickAllQuests(deltaTime);
 			QuestManager.updateLists();
 
+			EnchantingManager.update();
+
 			GuildManager.update();
 
 			foreach(Industry i in player.builtItems) {
@@ -270,7 +271,7 @@ namespace Assets.draco18s.artificer.game {
 					} while(i.getTimeRemaining() < 0 && i.getTimeRemaining() > float.MinValue);
 				}
 				//if(i.guiObj != null) {
-					Image img = i.guiObj.transform.GetChild(0).GetChild(0).FindChild("Progress").GetComponent<Image>();
+					Image img = i.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Progress").GetComponent<Image>();
 					img.material.SetFloat("_Cutoff", ((i.getTimeRemaining() >= 0 ? i.getTimeRemaining() : 10) / 10f));
 					img.material.SetColor("_Color", i.productType.color);
 				//}

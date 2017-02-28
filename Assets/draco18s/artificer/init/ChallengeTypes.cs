@@ -52,11 +52,12 @@ namespace Assets.draco18s.artificer.init {
 			#endregion
 			#region very advanced
 			//all require some kind of enchantment
-			public static ObstacleType FREE_SLAVES = new GoalFreeSlaves().setRewardScalar(8);//firm resolve
+			public static ObstacleType FREE_SLAVES = new GoalFreeSlaves().setRewardScalar(12);//firm resolve
 			//public static ObstacleType SKELETON_INFESTATION = new GoalSkeletons().setRewardScalar(8);//disruption
-			public static ObstacleType LITCH = new GoalKillLitch().setRewardScalar(8);//spell resist
-			public static ObstacleType GORGON = new GoalSlayGorgon().setRewardScalar(8);//mirrored
-			public static ObstacleType HYDRA = new GoalBeheadHydra().setRewardScalar(8);//vorpal, free move
+			public static ObstacleType LITCH = new GoalKillLitch().setRewardScalar(12);//spell resist
+			public static ObstacleType GORGON = new GoalSlayGorgon().setRewardScalar(12);//mirrored
+			public static ObstacleType HYDRA = new GoalBeheadHydra().setRewardScalar(12);//vorpal, free move
+			public static ObstacleType EVIL_BARD = new GoalEvilBard().setRewardScalar(12);//negCha pot, mind-shield
 			#endregion
 
 			public static class Sub {
@@ -124,6 +125,7 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType RIVER = new ObstacleRiver();
 			public static ObstacleType SWAMP = new ObstacleSwamp();
 			public static ObstacleType WATER_TRANSPORT = new ObstacleWaterTransport();
+			public static ObstacleType WEATHER = new ObstacleBadWeather();
 
 			public static ObstacleType getRandom(Random rand) {
 				FieldInfo[] fields = typeof(Travel).GetFields();
@@ -207,6 +209,7 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType COMMON_ITEM = new ObstacleResourceCacheSimple();
 			public static ObstacleType RARE_ITEM = new ObstacleResourceCache();
 			public static ObstacleType TRAVELING_MERCHANT = new ObstacleBuyEquipment("traveling merchant");
+			public static ObstacleType HOARD = new ObstacleHoard();
 
 			public static ObstacleType getRandom(Random rand) {
 				return getRandom(rand, false);
@@ -245,21 +248,28 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static void AddCommonResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 0, 8);
+				Item i = Items.getRandom(theQuest.questRand, 0, 9);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
 				Main.instance.player.addItemToInventory(new ItemStack(i, s));
 			}
 
 			public static void AddUncommonResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 8, 18);
+				Item i = Items.getRandom(theQuest.questRand, 9, 19);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
 				Main.instance.player.addItemToInventory(new ItemStack(i, s));
 			}
 
 			public static void AddRareResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 18, 26);
+				Item i = Items.getRandom(theQuest.questRand, 19, 29);
+				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
+				s += checkHerbalism(theQuest, i);
+				Main.instance.player.addItemToInventory(new ItemStack(i, s));
+			}
+
+			public static void AddResource(Quest theQuest, Items.ItemType type) {
+				Item i = Items.getRandomType(theQuest.questRand, type);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
 				Main.instance.player.addItemToInventory(new ItemStack(i, s));

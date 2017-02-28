@@ -211,20 +211,24 @@ namespace Assets.draco18s.artificer.quests {
 			return questRand.Next(v);
 		}
 
-		internal void raiseStrength(int v) {
+		public int raiseStrength(int v) {
 			STR += v;
+			return STR;
 		}
 
-		internal void raiseAgility(int v) {
+		public int raiseAgility(int v) {
 			AGL += v;
+			return AGL;
 		}
 
-		internal void raiseCharisma(int v) {
+		public int raiseCharisma(int v) {
 			CHA += v;
+			return CHA;
 		}
 
-		internal void raiseIntelligence(int v) {
+		public int raiseIntelligence(int v) {
 			INT += v;
+			return INT;
 		}
 
 		public ItemStack getRandomItem() {

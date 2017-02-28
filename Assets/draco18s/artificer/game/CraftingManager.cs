@@ -53,7 +53,7 @@ namespace Assets.draco18s.artificer.game {
 					}
 				}
 
-				item.listObj = it;
+				//item.listObj = it;
 				Button b = it.GetComponent<Button>();
 				b.onClick.AddListener(delegate { BuildIndustry(item); });
 				ItemButtonData dat = it.GetComponent<ItemButtonData>();
@@ -92,14 +92,14 @@ namespace Assets.draco18s.artificer.game {
 					foreach(IndustryInput input in item.inputs) {
 						GameObject obj = input.arrow; //Instantiate(PrefabManager.instance.GRID_GUI_ARROW);
 
-						obj.transform.SetParent(item.guiObj.transform.parent.GetChild(0));
+						obj.transform.SetParent(item.craftingGridGO.transform.parent.GetChild(0));
 
-						obj.transform.localPosition = item.guiObj.transform.GetChild(0).localPosition;
+						obj.transform.localPosition = item.craftingGridGO.transform.GetChild(0).localPosition;
 
-						if(input.item.guiObj != null) {
+						if(input.item.craftingGridGO != null) {
 							obj.SetActive(true);
-							float dx = input.item.guiObj.transform.GetChild(0).localPosition.x - item.guiObj.transform.GetChild(0).localPosition.x;
-							float dy = input.item.guiObj.transform.GetChild(0).localPosition.y - item.guiObj.transform.GetChild(0).localPosition.y;
+							float dx = input.item.craftingGridGO.transform.GetChild(0).localPosition.x - item.craftingGridGO.transform.GetChild(0).localPosition.x;
+							float dy = input.item.craftingGridGO.transform.GetChild(0).localPosition.y - item.craftingGridGO.transform.GetChild(0).localPosition.y;
 
 							float dist = Mathf.Sqrt(dx * dx + dy * dy);
 							((RectTransform)obj.transform.GetChild(0)).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, dist);
@@ -117,11 +117,11 @@ namespace Assets.draco18s.artificer.game {
 					}
 
 					Transform t;
-					t = item.guiObj.transform.GetChild(0).GetChild(0).FindChild("Ico1");
+					t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico1");
 					t.gameObject.SetActive(QuestManager.IsIndustryOnQuest(item));
-					t = item.guiObj.transform.GetChild(0).GetChild(0).FindChild("Ico2");
+					t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");
 					t.gameObject.SetActive(item.getRawVendors() > 0);
-					t = item.guiObj.transform.GetChild(0).GetChild(0).FindChild("Ico3");
+					t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico3");
 					t.gameObject.SetActive(item.apprentices > 0);
 
 				}
@@ -158,12 +158,12 @@ namespace Assets.draco18s.artificer.game {
 					}
 
 					it.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.name);
-					item.guiObj = it;
+					item.craftingGridGO = it;
 					Image img = it.transform.GetChild(0).GetChild(0).FindChild("Progress").GetComponent<Image>();
 					img.material = Main.Instantiate(img.material);
 					SelectObject selObj = it.GetComponentInChildren<SelectObject>();
-					selObj.selectListener(delegate { FacilitySelected(item.guiObj); });
-					selObj.deselectListener(delegate { FacilityUnselected(item.guiObj); });
+					selObj.selectListener(delegate { FacilitySelected(item.craftingGridGO); });
+					selObj.deselectListener(delegate { FacilityUnselected(item.craftingGridGO); });
 					Main.instance.player.itemData.Add(it, item);
 					/*Industry item2;
 					Main.instance.player.itemData.TryGetValue(it, out item2);
@@ -173,10 +173,10 @@ namespace Assets.draco18s.artificer.game {
 						obj.transform.SetParent(it.transform.parent.GetChild(0));
 						obj.transform.localPosition = it.transform.GetChild(0).localPosition;
 						input.arrow = obj;
-						if(input.item.guiObj != null) {
+						if(input.item.craftingGridGO != null) {
 							obj.SetActive(true);
-							float dx = input.item.guiObj.transform.GetChild(0).localPosition.x - it.transform.GetChild(0).localPosition.x;
-							float dy = input.item.guiObj.transform.GetChild(0).localPosition.y - it.transform.GetChild(0).localPosition.y;
+							float dx = input.item.craftingGridGO.transform.GetChild(0).localPosition.x - it.transform.GetChild(0).localPosition.x;
+							float dy = input.item.craftingGridGO.transform.GetChild(0).localPosition.y - it.transform.GetChild(0).localPosition.y;
 
 							float dist = Mathf.Sqrt(dx * dx + dy * dy);
 							((RectTransform)obj.transform.GetChild(0)).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, dist);

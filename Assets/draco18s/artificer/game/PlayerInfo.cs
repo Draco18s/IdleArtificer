@@ -133,8 +133,8 @@ namespace Assets.draco18s.artificer.game {
 				foreach(IndustryInput input in ind.inputs) {
 					Main.Destroy(input.arrow);
 				}
-				Main.Destroy(ind.guiObj);
-				ind.guiObj = null;
+				Main.Destroy(ind.craftingGridGO);
+				ind.craftingGridGO = null;
 			}
 			builtItems = new List<Industry>();
 			//Debug.Log("digits: " + digits);
@@ -341,7 +341,8 @@ namespace Assets.draco18s.artificer.game {
 			for(int o = 0; o < industriesFromDisk.Count; o++) {
 				Industry ind = GameRegistry.GetIndustryByID(industriesFromDisk[o].ID);
 				ind.ReadFromCopy(industriesFromDisk[o].ind);
-				CraftingManager.BuildIndustry(ind, true);
+				if(ind.level > 0)
+					CraftingManager.BuildIndustry(ind, true);
 			}
 			industriesFromDisk.Clear();
 			industriesFromDisk = null;

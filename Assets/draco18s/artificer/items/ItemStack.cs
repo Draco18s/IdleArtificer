@@ -104,7 +104,7 @@ namespace Assets.draco18s.artificer.items {
 				foreach(RelicInfo ri in relicData) {
 					best = Math.Max(best, ri.notoriety);
 				}
-				val += 10000 * (best+1);
+				val += 100000 * (best+1);
 			}
 			else if(enchants.Count > 0) {
 				int best = 0;

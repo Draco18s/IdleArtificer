@@ -38,10 +38,10 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 					theQuest.repeatTask();
 					break;
 				case EnumResult.SUCCESS:
-					ChallengeTypes.Loot.AddUncommonResource(theQuest);
+					ChallengeTypes.Loot.AddResource(theQuest, Items.ItemType.HERB);
 					break;
 				case EnumResult.CRIT_SUCCESS:
-					ChallengeTypes.Loot.AddUncommonResource(theQuest);
+					ChallengeTypes.Loot.AddResource(theQuest, Items.ItemType.HERB);
 					ChallengeTypes.Loot.AddRareResource(theQuest);
 					break;
 			}
