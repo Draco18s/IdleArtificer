@@ -39,7 +39,7 @@ namespace Assets.draco18s.artificer.items {
 				stackSize = 1;
 			}
 			else {
-				stackSize = 20;
+				stackSize = item.getStackSizeForQuest();
 			}
 			numTimesUsedOnQuest = 0;
 		}

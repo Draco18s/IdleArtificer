@@ -827,7 +827,8 @@ namespace Assets.draco18s.util
 				return (rightSide * 1000000) / (int)Math.Round(1000000 / leftSide);
 			}
 			else {
-				BigInteger big = rightSide * ((int)Math.Floor(leftSide));
+				BigInteger big = rightSide * new BigInteger((long)Math.Floor(leftSide));
+				//if(leftSide > 0 && big.IsNegative) big.Negate();
 				double q = (leftSide - Math.Floor(leftSide));
 				BigInteger small = q * rightSide;
 

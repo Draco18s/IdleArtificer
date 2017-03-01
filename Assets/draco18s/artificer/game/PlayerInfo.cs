@@ -252,7 +252,7 @@ namespace Assets.draco18s.artificer.game {
 #pragma warning restore 0168
 			//TODO: uncomment this stuff
 			builtItems = new List<Industry>();
-			money = new BigInteger(1,16);// new BigInteger(info.GetString("money"));
+			money = new BigInteger(1,160);// new BigInteger(info.GetString("money"));
 			moneyFloor = 1;// new BigInteger(info.GetString("moneyFloor"));
 			lifetimeMoney = 20000;// new BigInteger(info.GetString("lifetimeMoney"));
 			renown = 0;// new BigInteger(info.GetString("renown"));

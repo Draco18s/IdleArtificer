@@ -16,6 +16,7 @@ namespace Assets.draco18s.artificer.items {
 
 		protected RequirementType reqProperties;
 		protected AidType aidProperties;
+		protected int questSize = 1;
 
 		public Item(string name) {
 			this.name = name;
@@ -36,6 +37,14 @@ namespace Assets.draco18s.artificer.items {
 		public Item addAidType(AidType type) {
 			aidProperties |= type;
 			return this;
+		}
+		public Item setStackSizeForQuest(int size) {
+			questSize = size;
+			return this;
+		}
+
+		public int getStackSizeForQuest() {
+			return questSize;
 		}
 
 		public bool hasReqType(RequirementType type) {

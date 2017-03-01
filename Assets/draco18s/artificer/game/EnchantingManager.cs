@@ -74,7 +74,7 @@ namespace Assets.draco18s.artificer.game {
 				Main.Destroy(inventoryList3.GetChild(i).gameObject);
 			}
 			i = 0;*/
-
+			
 			foreach(Industry ind in Main.instance.player.builtItems) {
 				Industry newInd = ind;
 				if(!ind.industryItem.isConsumable && ind.industryItem.canBeGivenToQuests) {
@@ -185,7 +185,7 @@ namespace Assets.draco18s.artificer.game {
 			FieldInfo[] allEnchants = typeof(Enchantments).GetFields();
 			foreach(FieldInfo enchField in allEnchants) {
 				Enchantment enchant = (Enchantment)enchField.GetValue(null);
-				if(enchant.ingredient.industry != null) {
+				if(enchant.ingredient.industry != null && enchant.ingredient.industry.level > 0) {
 					int v = (enchant.ingredient.industry.quantityStored > int.MaxValue ? 999999999 : BigInteger.ToInt32(enchant.ingredient.industry.quantityStored));
 					ItemStack stack = new ItemStack(enchant.ingredient.industry, v);
 

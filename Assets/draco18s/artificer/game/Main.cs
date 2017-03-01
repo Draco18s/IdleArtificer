@@ -549,6 +549,10 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static string AsCurrency(BigInteger cost, int maxDigits) {
+			return AsCurrency(cost, 9, false);
+		}
+
+		public static string AsCurrency(BigInteger cost, int maxDigits, bool skipDecimal) {
 			if(maxDigits < 4) maxDigits = 4;
 			string simple = cost.ToString();
 			string output = "";
@@ -571,12 +575,23 @@ namespace Assets.draco18s.artificer.game {
 				if(m == 0) {
 					m = 1;
 				}
-				output += ".";
-				for(int i = d; i < d + m; i++) {
-					output += simple[i];
+				if(!skipDecimal) {
+					output += ".";
+					for(int i = d; i < d + m; i++) {
+						output += simple[i];
+					}
 				}
-
-				output += " E" + (simple.Length - d);
+				if(skipDecimal) {
+					output += "e" + (simple.Length - d);
+					if(output.Length > 6) { //this will fail at values greater than 9e99999
+						int g = output.IndexOf('e');
+						output = output.Substring(0, g-1);
+						output += "e" + (simple.Length - d + 1);
+					}
+				}
+				else {
+					output += " E" + (simple.Length - d);
+				}
 			}
 			else {
 				for(int i = 0; i < simple.Length; i++) {

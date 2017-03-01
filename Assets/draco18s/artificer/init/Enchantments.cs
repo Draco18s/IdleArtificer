@@ -8,7 +8,7 @@ using System.Text;
 namespace Assets.draco18s.artificer.init {
 	public class Enchantments {
 		//armor
-		public static Enchantment HEALING = new Enchantment("Healing", Items.ROYAL_JELLY, 50, ItemEquipType.ARMOR | ItemEquipType.RING, RequirementType.HEALING);
+		public static Enchantment HEALING = new Enchantment("Healing", Items.ROYAL_JELLY, 1, ItemEquipType.ARMOR | ItemEquipType.RING, RequirementType.HEALING);
 		public static Enchantment FIRE_RESISTANCE = new Enchantment("Fire Resistance", Items.DRAGON_SCALES, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.FIRE_IMMUNE);
 		public static Enchantment COLD_RESISTANCE = new Enchantment("Cold Resistance", Items.ROOSTER_TEETH, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.COLD_IMMUNE);
 		public static Enchantment POISON_RESISTANCE = new Enchantment("Poison Resistance", Items.VENOM, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.POISON_IMMUNE);
@@ -55,8 +55,8 @@ namespace Assets.draco18s.artificer.init {
 		public static Enchantment GLOWING = new Enchantment("Glowing", Items.FIRE_OPAL, 200, ItemEquipType.SHIELD, RequirementType.LIGHT);
 
 		//boots
-		public static Enchantment STRONG = new Enchantment("Strong", Industries.POT_STRENGTH.industryItem, 25000, ItemEquipType.HELMET, RequirementType.STRENGTH);
-		public static Enchantment AGILE = new Enchantment("Agile", Industries.POT_AGILITY.industryItem, 25000, ItemEquipType.HELMET, RequirementType.AGILITY);
+		public static Enchantment STRONG = new Enchantment("Strong", Industries.POT_STRENGTH.industryItem, 25000, ItemEquipType.BOOTS, RequirementType.STRENGTH);
+		public static Enchantment AGILE = new Enchantment("Agile", Industries.POT_AGILITY.industryItem, 5, ItemEquipType.ARMOR, RequirementType.AGILITY);
 
 		//red mercury ~ 25-100
 	}

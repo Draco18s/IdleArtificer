@@ -108,10 +108,7 @@ namespace Assets.draco18s.artificer.game {
 			}
 			Button b1 = go.transform.FindChild("Start").GetComponent<Button>();
 			b1.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b1.transform.position + Vector3.right*45, "Start the quest now with the the inventory shown above.\nYou do not have to supply any items, but the quest will likely fail.\nSuccessful quests will generate additional rewards.", 6.5F); }, false);
-			b1.onClick.AddListener(delegate {
-				startQuest(theQuest, go);
-				b1.RemoveAllEvents();
-			});
+			b1.onClick.AddListener(delegate { startQuest(theQuest, go); });
 			Button b2 = go.transform.FindChild("Cancel").GetComponent<Button>();
 			b2.onClick.AddListener(delegate { removeQuest(theQuest, go); newQuestDelayTimer -= 300; });
 			b2.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b2.transform.position + Vector3.right * 45, "Ignore the quest. Reduces the time until the next quest by " + Main.SecondsToTime(300) + ".", 3.5f); }, false);
@@ -339,6 +336,15 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void removeQuest(Quest theQuest, GameObject go) {
+			Button b = theQuest.guiItem.transform.FindChild("Start").GetComponent<Button>();
+			b.RemoveAllEvents();
+			b = theQuest.guiItem.transform.FindChild("Cancel").GetComponent<Button>();
+			b.RemoveAllEvents();
+			b = go.transform.FindChild("RewardLabel").GetChild(0).GetComponent<Button>();
+			b.RemoveAllEvents();
+			b = go.transform.FindChild("ReqHover").GetComponent<Button>();
+			b.RemoveAllEvents();
+
 			availableQuests.Remove(theQuest);
 			Main.Destroy(go);
 			int i = 0;
@@ -352,8 +358,6 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void startQuest(Quest theQuest, GameObject go) {
-			Button b = theQuest.guiItem.transform.FindChild("Start").GetComponent<Button>();
-
 			removeQuest(theQuest, go);
 			activeQuests.Add(theQuest);
 
@@ -363,12 +367,12 @@ namespace Assets.draco18s.artificer.game {
 				}
 				else {
 					Main.instance.player.miscInventory.Remove(stack);
-					if(stack.enchants.Count > 0) {
+					if(stack.enchants.Count > 0 || stack.relicData != null) {
 						ItemStack toPlayer = stack.split(stack.stackSize - 1);
 						Main.instance.player.addItemToInventory(toPlayer);
 					}
 					else {
-						ItemStack toPlayer = stack.split(stack.stackSize - 5);
+						ItemStack toPlayer = stack.split(stack.stackSize - stack.item.getStackSizeForQuest());
 						Main.instance.player.addItemToInventory(toPlayer);
 					}
 				}

@@ -53,9 +53,8 @@ namespace Assets.draco18s.artificer.items {
 		protected RequirementType reqProperties;
 		[NonSerialized]
 		protected AidType aidProperties;
-		protected bool isConsumableItem;
+		protected bool isConsumableItem = false;
 		protected int maxStack = 20;
-		protected int questSize = 20;
 		protected bool isViableRelic = false;
 		protected float valueMulti = 1;
 		protected float vendorSizeMulti = 1;
@@ -70,7 +69,7 @@ namespace Assets.draco18s.artificer.items {
 			inputs = new List<IndustryInput>();
 			GameRegistry.RegisterIndustry(this);
 			industryItem = new Item(this);
-			industryItem.isConsumable = this.isConsumableItem;
+			industryItem.isConsumable = isConsumableItem;
 		}
 
 		public Industry(String name, BigInteger price, BigInteger sell, int outnum, Scalar scale, params IndustryInput[] list) {
@@ -85,7 +84,7 @@ namespace Assets.draco18s.artificer.items {
 			}
 			GameRegistry.RegisterIndustry(this);
 			industryItem = new Item(this);
-			industryItem.isConsumable = this.isConsumableItem;
+			industryItem.isConsumable = isConsumableItem;
 		}
 
 		public virtual BigInteger GetScaledCost() {
@@ -94,7 +93,13 @@ namespace Assets.draco18s.artificer.items {
 
 		public virtual BigInteger GetScaledCost(int n) {
 			BigInteger b = (cost * halvesAndDoubles);
-			return ((Math.Pow(productType.amount, level) * (Math.Pow(productType.amount, n) - 1)) / (productType.amount - 1)) * b;
+			BigInteger q = ((Math.Pow(productType.amount, level) * (Math.Pow(productType.amount, n) - 1)) / (productType.amount - 1)) * b;
+			if(this == Industries.LEATHER) {
+				Debug.Log(cost + " * " + ((Math.Pow(productType.amount, level) * (Math.Pow(productType.amount, n) - 1)) / (productType.amount - 1)));
+				Debug.Log("    = " + q);
+			}
+
+			return q;
 		}
 
 		public virtual BigInteger ProduceOutput() {
@@ -195,7 +200,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public Industry setStackSizeForQuest(int size) {
-			questSize = size;
+			industryItem.setStackSizeForQuest(size);
 			return this;
 		}
 
@@ -221,7 +226,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public int getStackSizeForQuest() {
-			return questSize;
+			return industryItem.getStackSizeForQuest();
 		}
 
 		public bool hasReqType(RequirementType type) {

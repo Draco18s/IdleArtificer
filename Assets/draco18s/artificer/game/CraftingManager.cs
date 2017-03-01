@@ -653,7 +653,7 @@ namespace Assets.draco18s.artificer.game {
 			if(isShiftDown) {
 				BigInteger c = item.GetScaledCost(10);
 				spendCost = c;
-				info.Upgrade.text = "+10 ($" + Main.AsCurrency(c) + ")";
+				info.Upgrade.text = "+10 ($" + Main.AsCurrency(c,6) + ")";
 				if(info.Downgrade.text != "-10") {
 					info.Downgrade.text = "-10";
 					revertBtn = true;
@@ -662,14 +662,14 @@ namespace Assets.draco18s.artificer.game {
 			else if(isCntrlDown) {
 				BigInteger c = item.GetScaledCost(50);
 				spendCost = c;
-				info.Upgrade.text = "+50 ($" + Main.AsCurrency(c) + ")";
+				info.Upgrade.text = "+50 ($" + Main.AsCurrency(c, 6) + ")";
 				if(info.Downgrade.text != "-50") {
 					info.Downgrade.text = "-50";
 					revertBtn = true;
 				}
 			}
 			else {
-				info.Upgrade.text = "+1 ($" + Main.AsCurrency(item.GetScaledCost()) + ")";
+				info.Upgrade.text = "+1 ($" + Main.AsCurrency(item.GetScaledCost(), 6) + ")";
 				if(info.Downgrade.text != "-1") {
 					info.Downgrade.text = "-1";
 					revertBtn = true;
@@ -679,7 +679,7 @@ namespace Assets.draco18s.artificer.game {
 				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
 				info.ConfDowngradeBtn.GetComponentInChildren<Text>().text = "Confirm " + info.Downgrade.text;
 			}
-			info.SetOutputNum("x" + Main.AsCurrency(item.output * item.level));
+			info.SetOutputNum("x" + Main.AsCurrency(item.output * item.level, 3, true));
 			info.Level.text = "Level " + item.level;
 			if(spendCost > Main.instance.player.money) {
 				info.UpgradeBtn.interactable = false;
@@ -694,7 +694,7 @@ namespace Assets.draco18s.artificer.game {
 					IndustryInput input = item.inputs[j - 1];
 					go.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + input.item.name);
 
-					info.SetInputINum(j, true, "x" + Main.AsCurrency(input.quantity * item.level));
+					info.SetInputINum(j, true, "x" + Main.AsCurrency(input.quantity * item.level, 3, true));
 				}
 				else {
 					go.gameObject.SetActive(false);
