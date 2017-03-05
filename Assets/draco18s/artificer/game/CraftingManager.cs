@@ -3,6 +3,7 @@ using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
 using Assets.draco18s.util;
+using Koopakiller.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ using UnityEngine.UI;
 namespace Assets.draco18s.artificer.game {
 	public class CraftingManager {
 		public static List<GameObject> buildButtons;
-		public static GameObject selectedIcon;
+		public static Industry selectedIcon;
 		protected static Text numVendors;
 
 		private static Vector3 lastPos;
@@ -66,34 +67,42 @@ namespace Assets.draco18s.artificer.game {
 
 		private static bool isShiftDown;
 		private static bool isCntrlDown;
+		private static BigInteger cachedMoney = 0;
 
 		public static void Update() {
 			isShiftDown = Input.GetButton("Shift");
 			isCntrlDown = Input.GetButton("Control");
 			if(GuiManager.instance.craftArea.activeSelf) {
-				foreach(GameObject bt in buildButtons) {
-					ItemButtonData dat = bt.GetComponent<ItemButtonData>();
-					BigInteger c = dat.connectedItem.GetScaledCost();
-					bt.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(c);
-					if(c > Main.instance.player.money) {
-						dat.GetComponent<Button>().interactable = false;
-					}
-					else {
-						dat.GetComponent<Button>().interactable = true;
+				Profiler.BeginSample("Check buildable");
+				if(BigInteger.Abs(cachedMoney - Main.instance.player.money) > (BigRational)Main.instance.player.money * 0.05) {
+					cachedMoney = Main.instance.player.money;
+					BigRational c;
+					foreach(GameObject bt in buildButtons) {
+						ItemButtonData dat = bt.GetComponent<ItemButtonData>();
+						c = dat.connectedItem.GetScaledCost();
+						bt.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency((BigInteger)c);
+						if(c > Main.instance.player.money) {
+							dat.GetComponent<Button>().interactable = false;
+						}
+						else {
+							dat.GetComponent<Button>().interactable = true;
+						}
 					}
 				}
+				Profiler.EndSample();
 				if(Input.GetButtonDown("Cancel")) {
 					FacilityUnselected(selectedIcon);
 				}
+				Profiler.BeginSample("Update selectedIcon");
 				if(selectedIcon != null) {
 					UpdateIcon();
 				}
+				Profiler.EndSample();
+				Profiler.BeginSample("Check built items");
 				foreach(Industry item in Main.instance.player.builtItems) {
 					foreach(IndustryInput input in item.inputs) {
 						GameObject obj = input.arrow; //Instantiate(PrefabManager.instance.GRID_GUI_ARROW);
-
 						obj.transform.SetParent(item.craftingGridGO.transform.parent.GetChild(0));
-
 						obj.transform.localPosition = item.craftingGridGO.transform.GetChild(0).localPosition;
 
 						if(input.item.craftingGridGO != null) {
@@ -111,32 +120,37 @@ namespace Assets.draco18s.artificer.game {
 
 							obj.transform.GetChild(0).GetComponent<Image>().color = GetColorForProductivity(item, input);
 						}
-						else {
+						else if(input.item.craftingGridGO == null && obj.activeSelf) {
 							obj.SetActive(false);
 						}
 					}
 
-					Transform t;
-					t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico1");
-					t.gameObject.SetActive(QuestManager.IsIndustryOnQuest(item));
-					t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");
-					t.gameObject.SetActive(item.getRawVendors() > 0);
-					t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico3");
-					t.gameObject.SetActive(item.apprentices > 0);
-
+					if(Mathf.FloorToInt(Time.time * 10) % 20 == 0) {
+						Transform t;
+						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico1");
+						t.gameObject.SetActive(QuestManager.IsIndustryOnQuest(item));
+						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");
+						t.gameObject.SetActive(item.getRawVendors() > 0);
+						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico3");
+						t.gameObject.SetActive(item.apprentices > 0);
+					}
 				}
+				Profiler.EndSample();
+				Profiler.BeginSample("Update money ui");
 				GuiManager.instance.currentMoney.GetComponent<Text>().text = "$" + Main.AsCurrency(Main.instance.player.money, 12);
+				Profiler.EndSample();
+
 			}
 		}
 		public static void BuildIndustry(Industry item) {
-			BuildIndustry(item, false);
+			BuildIndustry(item, false, false);
 		}
 
-		public static void BuildIndustry(Industry item, bool fromSave) {
+		public static void BuildIndustry(Industry item, bool fromSave, bool skip) {
 			//FacilityUnselected(selectedIcon);
-			if(fromSave || Main.instance.player.money >= item.GetScaledCost()) {
-				if(!fromSave) {
-					Main.instance.player.money -= item.GetScaledCost();
+			if(skip || fromSave || Main.instance.player.money >= item.GetScaledCost()) {
+				if(!fromSave && !skip) {
+					Main.instance.player.money -= (BigInteger)item.GetScaledCost();
 					item.level++;
 				}
 				if(!Main.instance.player.builtItems.Contains(item)) {
@@ -153,17 +167,18 @@ namespace Assets.draco18s.artificer.game {
 					y = MathHelper.snap(y, 24);
 					it.transform.GetChild(0).localPosition = new Vector3(0, y, 0);
 
-					if(fromSave) {
+					//if(fromSave || skip) {
 						it.transform.GetChild(0).localPosition = item.getGridPos();
-					}
+					//}
 
 					it.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.name);
 					item.craftingGridGO = it;
 					Image img = it.transform.GetChild(0).GetChild(0).FindChild("Progress").GetComponent<Image>();
 					img.material = Main.Instantiate(img.material);
 					SelectObject selObj = it.GetComponentInChildren<SelectObject>();
-					selObj.selectListener(delegate { FacilitySelected(item.craftingGridGO); });
-					selObj.deselectListener(delegate { FacilityUnselected(item.craftingGridGO); });
+					Industry ind = item;
+					selObj.selectListener(delegate { FacilitySelected(ind); });
+					selObj.deselectListener(delegate { FacilityUnselected(ind); });
 					Main.instance.player.itemData.Add(it, item);
 					/*Industry item2;
 					Main.instance.player.itemData.TryGetValue(it, out item2);
@@ -251,24 +266,147 @@ namespace Assets.draco18s.artificer.game {
 				Main.instance.mouseDownTime += 1;
 			}
 		}
+		public static void SelectInput(int inputNum) {
+			if(selectedIcon != null) {
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				if(inputNum-1 < selectedIcon.inputs.Count) {
+					//FacilityUnselected(selectedIcon);
+					FacilitySelected(selectedIcon.inputs[inputNum-1].item);
+					//Main.instance.mouseDownTime += 1;
+				}
+			}
+		}
+		public static void SelectOutput(int inputNum) {
+			if(selectedIcon != null) {
+				//Industry selIndust;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out selIndust);
+				List<IndustryOutput> consumers = new List<IndustryOutput>();
+				foreach(GameObject go in buildButtons) {
+					ItemButtonData dat = go.GetComponent<ItemButtonData>();
+					if(dat.connectedItem.inputs.Count > 0) {
+						foreach(IndustryInput inp in dat.connectedItem.inputs) {
+							if(inp.item == selectedIcon) {
+								consumers.Add(new IndustryOutput(dat.connectedItem, inp.quantity));
+							}
+						}
+					}
+				}
+				Debug.Log(inputNum + " > " + consumers.Count);
+				Debug.Log(consumers[inputNum].item.name);
+				FacilitySelected(consumers[inputNum].item);
+			}
+		}
 
+		public static void FacilitySelected(Industry go) {
+			if(go.craftingGridGO == null) {
+				lastLevel = -1;
+				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
+				selectedIcon = go;
+				//lastPos = selectedIcon.craftingGridGO.transform.GetChild(0).localPosition;
+				GuiManager.instance.infoPanel.transform.FindChild("Output").gameObject.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + selectedIcon.name);
+			}
+			else {
+				lastLevel = -1;
+				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
+				selectedIcon = go;
+				lastPos = selectedIcon.craftingGridGO.transform.GetChild(0).localPosition;
+				//GuiManager.instance.infoPanel.transform.localPosition = new Vector3(-1465, 55, 0);
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				GuiManager.instance.infoPanel.transform.FindChild("Output").gameObject.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + selectedIcon.name);
+			}
+		}
 
-		public static void FacilitySelected(GameObject go) {
-			GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
-			selectedIcon = go;
-			lastPos = selectedIcon.transform.GetChild(0).localPosition;
-			GuiManager.instance.infoPanel.transform.localPosition = new Vector3(-1465, 55, 0);
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			GuiManager.instance.infoPanel.transform.FindChild("Output").gameObject.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.name);
+		public static void ShowInfo() {
+			if(selectedIcon == null) return;
+
+			Vector3 pos = selectedIcon.craftingGridGO.transform.GetChild(0).localPosition;//new Vector3(selectedIcon.transform.localPosition.x, selectedIcon.transform.localPosition.y + 50, 0);
+			int v = (Screen.height) / 2;
+			pos.y -= v;
+			int h = (Screen.width / 2) - 170;
+			pos.x = Mathf.Clamp(pos.x, 115 - h, h);
+			pos.y = Mathf.Clamp(pos.y, -v + 170, v - 270) + 0.5f;
+
+			GuiManager.instance.infoPanel.transform.localPosition = pos;
+			ShowConsumers();
+		}
+
+		protected static void ShowConsumers() {
+			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
+			//Industry selIndust;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out selIndust);
+			List<IndustryOutput> consumers = new List<IndustryOutput>();
+			foreach(GameObject go in buildButtons) {
+				ItemButtonData dat = go.GetComponent<ItemButtonData>();
+				if(dat.connectedItem.inputs.Count > 0) {
+					foreach(IndustryInput inp in dat.connectedItem.inputs) {
+						if(inp.item == selectedIcon) {
+							consumers.Add(new IndustryOutput(dat.connectedItem,inp.quantity));
+						}
+					}
+				}
+			}
+			int i = 0;
+			int needs = 0;
+			GameObject img;
+			int vMod = (consumers.Count<=6?32:20);
+			if(info.ConsumersDock.childCount >= consumers.Count) {
+				foreach(Transform child in info.ConsumersDock) {
+					if(i + 1 > consumers.Count) {
+						Main.Destroy(child.gameObject);
+					}
+					else {
+						needs += consumers[i].quantity;
+						img = child.GetChild(0).gameObject;
+						img.transform.parent.localPosition = new Vector3((i % 3 * 32), (i / 3 * vMod), 0);
+						img.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + consumers[i].item.name);
+					}
+					i++;
+				}
+			}
+			else {
+				foreach(IndustryOutput inp in consumers) {
+					if(i + 1 > info.ConsumersDock.childCount) {
+						int j = i;
+						GameObject img2 = new GameObject("Consume" + (i + 1) + "_bg");
+						Image img_ = img2.AddComponent<Image>();
+						img2.transform.SetParent(info.ConsumersDock);
+						((RectTransform)img2.transform).sizeDelta = new Vector2(32, 32);
+						((RectTransform)img2.transform).pivot = new Vector2(0, 1);
+						//Image img_ = img2.GetComponent<Image>();
+						img_.sprite = GuiManager.instance.inner_item_bg;
+						img_.type = Image.Type.Sliced;
+						img_.raycastTarget = false;
+
+						img = new GameObject("Consume"+(i+1));
+						img.AddComponent<Image>();
+						img.transform.SetParent(img2.transform);
+						((RectTransform)img.transform).sizeDelta = new Vector2(30, 30);
+						((RectTransform)img.transform).pivot = new Vector2(0, 1);
+						img.transform.localPosition = new Vector3(1, -0.8f, 0);
+						Button btn = img.AddComponent<Button>();
+						btn.onClick.AddListener(delegate {
+							CraftingManager.SelectOutput(j);
+						});
+					}
+					else {
+						img = info.ConsumersDock.GetChild(i).GetChild(0).gameObject;
+					}
+					needs += inp.quantity;
+					img.transform.parent.localPosition = new Vector3((i%3*32),-(i/3*vMod),0);
+					img.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + inp.item.name);
+					i++;
+				}
+			}
 		}
 
 		public static void IncreaseVendors() {
 			if(selectedIcon != null) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				IncreaseVendors(item);
-				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().VendNum.text = "" + item.getRawVendors();
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				IncreaseVendors(selectedIcon);
+				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().VendNum.text = "" + selectedIcon.getRawVendors();
 			}
 			numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
 		}
@@ -284,10 +422,10 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void DecreaseVendors() {
 			if(selectedIcon != null) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				DecreaseVendors(item);
-				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().VendNum.text = "" + item.getRawVendors();
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				DecreaseVendors(selectedIcon);
+				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().VendNum.text = "" + selectedIcon.getRawVendors();
 			}
 			numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
 		}
@@ -302,9 +440,9 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void IncreaseApprentices() {
 			if(selectedIcon != null) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				IncreaseApprentices(item);
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				IncreaseApprentices(selectedIcon);
 			}
 			//numVendors.text = Main.instance.player.currentApprentices + " of " + Main.instance.player.maxApprentices + " vendors in use";
 		}
@@ -318,9 +456,9 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void DecreaseApprentices() {
 			if(selectedIcon != null) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				DecreaseApprentices(item);
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				DecreaseApprentices(selectedIcon);
 			}
 			//numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
 		}
@@ -333,87 +471,86 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void IncreaseAutoBuild() {
 			if(selectedIcon != null) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				item.autoBuildLevel += (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				selectedIcon.autoBuildLevel += (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
 			}
 		}
 
 		public static void DecreaseAutoBuild() {
 			if(selectedIcon != null) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				if(item.autoBuildLevel > 0) {
-					item.autoBuildLevel = Math.Max(item.autoBuildLevel - (isCntrlDown ? 50 : (isShiftDown ? 10 : 1)), 0);
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				if(selectedIcon.autoBuildLevel > 0) {
+					selectedIcon.autoBuildLevel = Math.Max(selectedIcon.autoBuildLevel - (isCntrlDown ? 50 : (isShiftDown ? 10 : 1)), 0);
 				}
 			}
 		}
 
 		public static void IncreaseBuildMagnitude() {
 			if(selectedIcon != null) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				item.autoBuildMagnitude += (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				selectedIcon.autoBuildMagnitude += (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
 			}
 		}
 
 		public static void DecreaseBuildMagnitude() {
 			if(selectedIcon != null) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				if(item.autoBuildMagnitude > 0) {
-					item.autoBuildMagnitude = Math.Max(item.autoBuildMagnitude - (isCntrlDown ? 50 : (isShiftDown ? 10 : 1)), 0);
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				if(selectedIcon.autoBuildMagnitude > 0) {
+					selectedIcon.autoBuildMagnitude = Math.Max(selectedIcon.autoBuildMagnitude - (isCntrlDown ? 50 : (isShiftDown ? 10 : 1)), 0);
 				}
 			}
 		}
 
 		public static void AdvanceTimer() {
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			item.addTimeRaw(Main.instance.GetClickRate());
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			selectedIcon.addTimeRaw(Main.instance.GetClickRate());
 			//item.timeRemaining -= Main.instance.GetClickRate();
 		}
 
 		public static void SellAll() {
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			Main.instance.player.AddMoney(item.GetSellValue() * item.quantityStored);
-			//Main.instance.player.money += item.GetSellValue() * item.quantityStored;
-			item.quantityStored = 0;
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			Main.instance.player.AddMoney(selectedIcon.GetSellValue() * selectedIcon.quantityStored);
+			selectedIcon.quantityStored = 0;
 		}
 
 		public static BigInteger SellAllValue() {
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			return (item.GetSellValue() * item.quantityStored);
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			return (selectedIcon.GetSellValue() * selectedIcon.quantityStored);
 		}
 
 		public static BigInteger GetQuantity() {
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			return item.quantityStored;
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			return selectedIcon.quantityStored;
 		}
 
 		public static string GetName() {
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			return item.name;
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			return selectedIcon.name;
 		}
 		public static BigInteger ValueSoldByVendors() {
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			return ValueSoldByVendors(item);
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			return ValueSoldByVendors(selectedIcon);
 		}
 		public static BigInteger NumberSoldByVendors() {
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			return NumberSoldByVendors(item);
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			return NumberSoldByVendors(selectedIcon);
 		}
 
 		public static BigInteger ValueSoldByVendors(Industry item) {
 			BigInteger num = NumberSoldByVendors(item);
 			num *= item.GetSellValue();
-			num = Main.instance.GetVendorValue() * num;
+			num = (BigInteger)((BigRational)num * Main.instance.GetVendorValue());
 			return num;
 		}
 
@@ -439,23 +576,29 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static void UpgradeCurrent() {
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			BigInteger spendCost = item.GetScaledCost();
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			BigInteger spendCost = 0;
 			int buyNum = 1;
 			if(isShiftDown) {
 				buyNum = 10;
-				BigInteger c = item.GetScaledCost(buyNum);
+				BigInteger c = (BigInteger)selectedIcon.GetScaledCost(buyNum);
 				spendCost = c;
 			}
 			else if(isCntrlDown) {
 				buyNum = 50;
-				BigInteger c = item.GetScaledCost(buyNum);
+				BigInteger c = (BigInteger)selectedIcon.GetScaledCost(buyNum);
 				spendCost = c;
+			}
+			else {
+				spendCost = (BigInteger)selectedIcon.GetScaledCost();
 			}
 			if(Main.instance.player.money >= spendCost) {
 				Main.instance.player.money -= spendCost;
-				item.level+=buyNum;
+				if(selectedIcon.level == 0) {
+					BuildIndustry(selectedIcon, false, true);
+				}
+				selectedIcon.level+=buyNum;
 			}
 			GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
 		}
@@ -467,60 +610,53 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void Do_DowngradeCurrent() {
 			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
 			//BigInteger spendCost = item.GetScaledCost();
 			int buyNum = 1;
 			if(isShiftDown) {
 				buyNum = 10;
-				//BigInteger c = item.GetScaledCost(buyNum);
-				//spendCost = c;
 			}
 			else if(isCntrlDown) {
 				buyNum = 50;
-				//BigInteger c = item.GetScaledCost(buyNum);
-				//spendCost = c;
 			}
-			//if(Main.instance.player.money >= spendCost) {
-				//Main.instance.player.money -= spendCost;
-				item.level -= buyNum;
-				info.DowngradeBtn.gameObject.SetActive(true);
-			//}
+			selectedIcon.level -= buyNum;
+			info.DowngradeBtn.gameObject.SetActive(true);
 		}
 
 		public static void ToggleAllowConsume() {
 			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
 			if(info.ConsumeToggle.IsInteractable()) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				item.isConsumersHalted = info.ConsumeToggle.isOn;
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				selectedIcon.isConsumersHalted = info.ConsumeToggle.isOn;
 			}
 		}
 
 		public static void ToggleAllowProduction() {
 			Toggle t = GuiManager.instance.infoPanel.GetComponent<InfoPanel>().ProduceToggle;
 			if(t.IsInteractable()) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				item.isProductionHalted = t.isOn;
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				selectedIcon.isProductionHalted = t.isOn;
 			}
 		}
 
 		public static void ToggleSellStores() {
 			Toggle t = GuiManager.instance.infoPanel.GetComponent<InfoPanel>().SellToggle;
 			if(t.IsInteractable()) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				item.isSellingStores = t.isOn;
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				selectedIcon.isSellingStores = t.isOn;
 			}
 		}
 
 		public static void ToggleAutoBuild() {
 			Toggle t = GuiManager.instance.infoPanel.GetComponent<InfoPanel>().BuildToggle;
 			if(t.IsInteractable()) {
-				Industry item;
-				Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				item.doAutobuild = t.isOn;
+				//Industry item;
+				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+				selectedIcon.doAutobuild = t.isOn;
 			}
 		}
 
@@ -528,159 +664,209 @@ namespace Assets.draco18s.artificer.game {
 			FacilityUnselected(null);
 		}
 
-		public static void FacilityUnselected(GameObject go) {
+		public static void FacilityUnselected(Industry go) {
 			GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
 			selectedIcon = null;
 			GuiManager.instance.infoPanel.transform.localPosition = new Vector3(-1465, 55, 0);
+			lastLevel = -1;
 		}
+		private static int lastLevel = 0;
+		private static int lastNum = 0;
 
 		public static void UpdateIcon() {
-			//Vector3 offset;
 			Vector3 newpos;
-			if((lastPos - selectedIcon.transform.GetChild(0).localPosition).sqrMagnitude > 0) {
-				newpos = selectedIcon.transform.GetChild(0).localPosition;
+			if(selectedIcon.craftingGridGO != null && (lastPos - selectedIcon.craftingGridGO.transform.GetChild(0).localPosition).sqrMagnitude > 0) {
+				newpos = selectedIcon.craftingGridGO.transform.GetChild(0).localPosition;
 				//int maxy = Mathf.RoundToInt((Screen.height-50) * ((RectTransform)selectedIcon.transform.parent).anchorMax.y);
 				//int minx = Mathf.RoundToInt(((RectTransform)selectedIcon.transform.parent).offsetMin.x);
 				int maxy = Screen.height - 100;
 				int minx = Screen.width / 2 - 32;
 				newpos.y = Mathf.Clamp(newpos.y, 32, maxy-32);
-				newpos.x = Mathf.Clamp(newpos.x, -1*(minx-128), minx);
+				newpos.x = Mathf.Clamp(newpos.x, -1*(minx - 128), minx);
 				newpos = MathHelper.snap(newpos, 24);
-				selectedIcon.transform.GetChild(0).localPosition = newpos;
+				selectedIcon.craftingGridGO.transform.GetChild(0).localPosition = newpos;
 				Main.instance.mouseDownTime += 1;
 				lastPos = newpos;
 			}
-			Industry item;
-			Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
+			//Industry item;
+			//Main.instance.player.itemData.TryGetValue(item, out selectedIcon);
 			Material mat = GuiManager.instance.infoPanel.transform.FindChild("Progress").GetComponent<Image>().material;
-			mat.SetFloat("_Cutoff", ((item.getTimeRemaining() >= 0 ? item.getTimeRemaining() : 10) / 10f));
-			mat.SetColor("_Color", item.productType.color);
-			int ch = ((item.output * item.level) - item.consumeAmount);
-			if(item.isProductionHalted) ch = -item.consumeAmount;
+			mat.SetFloat("_Cutoff", ((selectedIcon.getTimeRemaining() >= 0 ? selectedIcon.getTimeRemaining() : 10) / 10f));
+			mat.SetColor("_Color", selectedIcon.productType.color);
+			int ch = ((selectedIcon.output * selectedIcon.level) - selectedIcon.consumeAmount);
+			if(selectedIcon.isProductionHalted) ch = -selectedIcon.consumeAmount;
 			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
-			if(item.isSellingStores && item.getRawVendors() > 0) {
-				int q = item.getVendors() * Main.instance.GetVendorSize();
-				if(item.isProductionHalted) q = 0;
+			if(selectedIcon.isSellingStores && selectedIcon.getRawVendors() > 0) {
+				int q = selectedIcon.getVendors() * Main.instance.GetVendorSize();
+				if(selectedIcon.isProductionHalted) q = 0;
 				//q = Math.Min(q, item.quantityStored);
-				if(item.quantityStored+ch < q) {
-					q = BigInteger.ToInt32(item.quantityStored)+ch;
+				if(selectedIcon.quantityStored+ch < q) {
+					q = BigInteger.ToInt32(selectedIcon.quantityStored)+ch;
 				}
 				ch = ch - q;
 				if(ch == 0) {
-					info.StorageTxt.text = "Change:\n0 / cycle\n" + Main.AsCurrency(item.quantityStored);
+					info.StorageTxt.text = "Change:\n0 / cycle\n" + Main.AsCurrency(selectedIcon.quantityStored);
 				}
 				else {
 					if(ch >= 0) {
-						info.StorageTxt.text = "Change:\n" + ch + " / cycle\n" + Main.AsCurrency(item.quantityStored);
+						info.StorageTxt.text = "Change:\n" + Main.AsCurrency(ch,6) + " / cycle\n" + Main.AsCurrency(selectedIcon.quantityStored);
 					}
 					else {
-						info.StorageTxt.text = "Change:\n" + ch + "(0)" + " / cycle\n" + Main.AsCurrency(item.quantityStored);
+						info.StorageTxt.text = "Change:\n" + Main.AsCurrency(ch, 6) + "(0)" + " / cycle\n" + Main.AsCurrency(selectedIcon.quantityStored);
 					}
 				}
 			}
 			else {
-				int q = item.getVendors() * Main.instance.GetVendorSize();
+				int q = selectedIcon.getVendors() * Main.instance.GetVendorSize();
 				if(ch >= 0 && q >= 0) {
 					ch = Mathf.Max(ch - q, 0);
 				}
 				else {
 					//ch = ch - q; //Mathf.Max(ch - q, 0);
 				}
-				info.StorageTxt.text = "Change:\n" + ch + " / cycle\n" + Main.AsCurrency(item.quantityStored);
+				info.StorageTxt.text = "Change:\n" + Main.AsCurrency(ch, 6) + " / cycle\n" + Main.AsCurrency(selectedIcon.quantityStored);
 			}
-
 			if(!Input.GetMouseButton(0) && Main.instance.mouseDownTime > 0 && Main.instance.mouseDownTime < 0.3f) {
-				Vector3 pos = selectedIcon.transform.GetChild(0).localPosition;//new Vector3(selectedIcon.transform.localPosition.x, selectedIcon.transform.localPosition.y + 50, 0);
+				if(selectedIcon.craftingGridGO != null) {
+					Vector3 pos = selectedIcon.craftingGridGO.transform.GetChild(0).localPosition;//new Vector3(selectedIcon.transform.localPosition.x, selectedIcon.transform.localPosition.y + 50, 0);
 
-				List<RaycastResult> results = RaycastMouse();
-				bool insideSelected = false;
-				foreach(RaycastResult res in results) {
-					GameObject go = res.gameObject;
-					while(go.transform.parent != null) {
-						if(go == selectedIcon || go == GuiManager.instance.infoPanel) {
-							insideSelected = true;
+					List<RaycastResult> results = RaycastMouse();
+					bool insideSelected = false;
+					foreach(RaycastResult res in results) {
+						GameObject go = res.gameObject;
+						while(go.transform.parent != null) {
+							if(go == selectedIcon.craftingGridGO || go == GuiManager.instance.infoPanel) {
+								insideSelected = true;
+							}
+							go = go.transform.parent.gameObject;
 						}
-						go = go.transform.parent.gameObject;
 					}
-				}
-				if(!insideSelected) {
-					FacilityUnselected(selectedIcon);
-					return;
-				}
+					if(!insideSelected) {
+						FacilityUnselected(selectedIcon);
+						return;
+					}
 
-				//pos.y -= 120;
-				int v = (Screen.height) / 2;
-				pos.y -= v;
-				int h = (Screen.width / 2) - 170;
-				pos.x = Mathf.Clamp(pos.x, 115 - h, h);
-				pos.y = Mathf.Clamp(pos.y, -v+170, v-270) + 0.5f;
-				
-				GuiManager.instance.infoPanel.transform.localPosition = pos;
-				info.Title.text = Main.ToTitleCase(item.name);
-				info.PricePer.text = "$" + Main.AsCurrency(item.GetSellValue());
+					//pos.y -= 120;
+					int v = (Screen.height) / 2;
+					pos.y -= v;
+					int h = (Screen.width / 2) - 170;
+					pos.x = Mathf.Clamp(pos.x, 115 - h, h);
+					pos.y = Mathf.Clamp(pos.y, -v + 170, v - 270) + 0.5f;
+
+					GuiManager.instance.infoPanel.transform.localPosition = pos;
+				}
+				info.Title.text = Main.ToTitleCase(selectedIcon.name);
+				info.PricePer.text = "$" + Main.AsCurrency(selectedIcon.GetSellValue());
 				info.SellToggle.interactable = false;
 				info.ConsumeToggle.interactable = false;
-				info.SellToggle.isOn = item.isSellingStores;
-				info.ConsumeToggle.isOn = item.isConsumersHalted;
-				info.ProduceToggle.isOn = item.isProductionHalted;
+				info.SellToggle.isOn = selectedIcon.isSellingStores;
+				info.ConsumeToggle.isOn = selectedIcon.isConsumersHalted;
+				info.ProduceToggle.isOn = selectedIcon.isProductionHalted;
 				info.SellToggle.interactable = true;
 				info.ConsumeToggle.interactable = true;
-				info.VendNum.text = "" + item.getRawVendors();
-				info.BuildToggle.isOn = item.doAutobuild;
-				info.BuildNum.text = "" + item.autoBuildLevel;
-				info.MagnitudeNum.text = "10 E" + item.autoBuildMagnitude;
+				info.VendNum.text = "" + selectedIcon.getRawVendors();
+				info.BuildToggle.isOn = selectedIcon.doAutobuild;
+				info.BuildNum.text = "" + selectedIcon.autoBuildLevel;
+				info.MagnitudeNum.text = "10 E" + selectedIcon.autoBuildMagnitude;
 				BigInteger num = 0;
-				if(item.isSellingStores) {
-					BigInteger m = item.output * item.level + item.quantityStored - item.consumeAmount;
-					if(m > item.getVendors() * Main.instance.GetVendorSize()) {
-						num = item.getVendors() * Main.instance.GetVendorSize();
+				if(selectedIcon.isSellingStores) {
+					BigInteger m = selectedIcon.output * selectedIcon.level + selectedIcon.quantityStored - selectedIcon.consumeAmount;
+					if(m > selectedIcon.getVendors() * Main.instance.GetVendorSize()) {
+						num = selectedIcon.getVendors() * Main.instance.GetVendorSize();
 					}
 					else {
 						num = m;
 					}
 				}
 				else {
-					if(item.output * item.level < item.getVendors() * Main.instance.GetVendorSize())
-						num = item.output * item.level;
+					if(selectedIcon.output * selectedIcon.level < selectedIcon.getVendors() * Main.instance.GetVendorSize())
+						num = selectedIcon.output * selectedIcon.level;
 					else
-						num = item.getVendors() * Main.instance.GetVendorSize();
+						num = selectedIcon.getVendors() * Main.instance.GetVendorSize();
 				}
 				info.VendText.text = "Sold by Vendors: " + num;
-				info.ApprText.text = item.apprentices + " Apprentices";
+				info.ApprText.text = selectedIcon.apprentices + " Apprentices";
+				ShowConsumers();
 			}
-			BigInteger spendCost = item.GetScaledCost();
+			BigInteger spendCost = 0;// item.GetScaledCost();
 			bool revertBtn = false;
+			Profiler.BeginSample("Calc costs");
+			if(lastLevel != selectedIcon.level) {
+				/*lastLevel = item.level;
+				lastCostTen = (BigInteger)item.GetScaledCost(10);
+				lastCostFifty = (BigInteger)item.GetScaledCost(50);
+				lastCostOne = (BigInteger)item.GetScaledCost();*/
+			}
+			int n = 0;
 			if(isShiftDown) {
-				BigInteger c = item.GetScaledCost(10);
+				n = 10;
+				spendCost = (BigInteger)selectedIcon.GetScaledCost(10);
+				/*spendCost = lastCostTen;
+				Profiler.BeginSample("Shift");
+				BigInteger c = (BigInteger)item.GetScaledCost(10);
 				spendCost = c;
 				info.Upgrade.text = "+10 ($" + Main.AsCurrency(c,6) + ")";
 				if(info.Downgrade.text != "-10") {
 					info.Downgrade.text = "-10";
 					revertBtn = true;
 				}
+				Profiler.EndSample();*/
 			}
 			else if(isCntrlDown) {
-				BigInteger c = item.GetScaledCost(50);
+				n = 50;
+				spendCost = (BigInteger)selectedIcon.GetScaledCost(50);
+				/*spendCost = lastCostFifty;
+				Profiler.BeginSample("Control");
+				BigInteger c = (BigInteger)item.GetScaledCost(50);
 				spendCost = c;
 				info.Upgrade.text = "+50 ($" + Main.AsCurrency(c, 6) + ")";
 				if(info.Downgrade.text != "-50") {
 					info.Downgrade.text = "-50";
 					revertBtn = true;
 				}
+				Profiler.EndSample();*/
 			}
 			else {
-				info.Upgrade.text = "+1 ($" + Main.AsCurrency(item.GetScaledCost(), 6) + ")";
+				n = 1;
+				spendCost = (BigInteger)selectedIcon.GetScaledCost(1);
+				/*spendCost = lastCostOne;
+				Profiler.BeginSample("One");
 				if(info.Downgrade.text != "-1") {
 					info.Downgrade.text = "-1";
 					revertBtn = true;
 				}
+				Profiler.EndSample();*/
+			}
+			Profiler.EndSample();
+			if(lastNum != n || lastLevel != selectedIcon.level) {
+				//Debug.Log(Main.AsCurrency((BigInteger)item.GetScaledCost(1), 6));
+				//Debug.Log(Main.AsCurrency((BigInteger)item.GetScaledCost(), 6));
+				//Debug.Log(spendCost);
+				info.Upgrade.text = "+" + n + " ($" + Main.AsCurrency(spendCost, 6) + ")";
+				info.Downgrade.text = "-" + n;
+				lastNum = n;
+				lastLevel = selectedIcon.level;
 			}
 			if(revertBtn) {
 				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
 				info.ConfDowngradeBtn.GetComponentInChildren<Text>().text = "Confirm " + info.Downgrade.text;
 			}
-			info.SetOutputNum("x" + Main.AsCurrency(item.output * item.level, 3, true));
-			info.Level.text = "Level " + item.level;
+			info.SetOutputNum("x" + Main.AsCurrency(selectedIcon.output * selectedIcon.level, 3, true));
+			info.Level.text = "Level " + selectedIcon.level;
+
+			foreach(GameObject bt in buildButtons) {
+				ItemButtonData dat = bt.GetComponent<ItemButtonData>();
+				if(dat.connectedItem == selectedIcon) {
+					if(spendCost > Main.instance.player.money) {
+						dat.GetComponent<Button>().interactable = false;
+					}
+					else {
+						dat.GetComponent<Button>().interactable = true;
+					}
+					goto skipRest;
+				}
+			}
+			skipRest:
 			if(spendCost > Main.instance.player.money) {
 				info.UpgradeBtn.interactable = false;
 			}
@@ -689,12 +875,12 @@ namespace Assets.draco18s.artificer.game {
 			}
 			for(int j = 1; j <= 3; j++) {
 				Transform go = GuiManager.instance.infoPanel.transform.FindChild("Input" + j);
-				if(item.inputs.Count >= j) {
+				if(selectedIcon.inputs.Count >= j) {
 					go.gameObject.SetActive(true);
-					IndustryInput input = item.inputs[j - 1];
+					IndustryInput input = selectedIcon.inputs[j - 1];
 					go.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + input.item.name);
 
-					info.SetInputINum(j, true, "x" + Main.AsCurrency(input.quantity * item.level, 3, true));
+					info.SetInputINum(j, true, "x" + Main.AsCurrency(input.quantity * selectedIcon.level, 3, true));
 				}
 				else {
 					go.gameObject.SetActive(false);

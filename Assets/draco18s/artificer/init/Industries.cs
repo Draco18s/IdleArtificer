@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.quests.requirement;
 using Assets.draco18s.util;
+using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.init {
 	public class Industries {
@@ -56,7 +57,7 @@ namespace Assets.draco18s.artificer.init {
 		public static readonly Industry KELPWEED =			new Industry("kelpweed",			 new BigInteger(15,18),   2500000000, 5, Scalar._0_RAW).setDisallowedForQuests();
 		public static readonly Industry STONEROOT =			new Industry("stoneroot",			 new BigInteger(15,18),   2500000000, 5, Scalar._0_RAW).setDisallowedForQuests();
 		public static readonly Industry SAGE_GRASS =		new Industry("sage_grass",			 new BigInteger(15,18),   2500000000, 5, Scalar._0_RAW).setDisallowedForQuests();
-		public static readonly Industry PHOENIX_FEATHERS =	new Industry("phoenix_feathers",	 new BigInteger(15,18),   2500000000, 5, Scalar._0_RAW).setDisallowedForQuests();
+		public static readonly Industry PHOENIX_FEATHERS =	new Industry("phoenix_feather",		 new BigInteger(15,18),   2500000000, 5, Scalar._0_RAW).setDisallowedForQuests();
 		public static readonly Industry POT_WATER_BREATH =	new Industry("water_breath_potion",	 new BigInteger(50,18),   25000000000, 1, Scalar._3_COMPLEX, new IndustryInput(FANCY_BOTTLES, 1), new IndustryInput(KELPWEED, 1)).setConsumable(true).setMaxStackSize(5).addReqType(RequirementType.WATER_BREATH).setStackSizeForQuest(2);
 		public static readonly Industry POT_BARKSKIN =		new Industry("barkskin_potion",		 new BigInteger(50,18),   25000000000, 1, Scalar._3_COMPLEX, new IndustryInput(FANCY_BOTTLES, 1), new IndustryInput(STONEROOT, 1)).setConsumable(true).setMaxStackSize(5).addReqType(RequirementType.ARMOR).setStackSizeForQuest(2);
 		public static readonly Industry POT_ALERTNESS =		new Industry("alertness_potion",	 new BigInteger(50,18),   25000000000, 1, Scalar._3_COMPLEX, new IndustryInput(FANCY_BOTTLES, 1), new IndustryInput(SAGE_GRASS, 1)).setConsumable(true).setMaxStackSize(5).addReqType(RequirementType.HOLY_DAMAGE).setStackSizeForQuest(2);

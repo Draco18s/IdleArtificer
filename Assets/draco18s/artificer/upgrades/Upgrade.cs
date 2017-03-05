@@ -6,6 +6,7 @@ using System.Text;
 using Assets.draco18s.util;
 using Assets.draco18s.artificer.game;
 using UnityEngine;
+using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.upgrades {
 	public class Upgrade {

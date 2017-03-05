@@ -9,6 +9,8 @@ using Assets.draco18s.artificer.quests.challenge.goals;
 using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.game;
 using Assets.draco18s.artificer.statistics;
+using Assets.draco18s.artificer.ui;
+using Assets.draco18s.util;
 
 namespace Assets.draco18s.artificer.init {
 	public static class ChallengeTypes {
@@ -251,28 +253,32 @@ namespace Assets.draco18s.artificer.init {
 				Item i = Items.getRandom(theQuest.questRand, 0, 9);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
-				Main.instance.player.addItemToInventory(new ItemStack(i, s));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + i.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
 			public static void AddUncommonResource(Quest theQuest) {
 				Item i = Items.getRandom(theQuest.questRand, 9, 19);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
-				Main.instance.player.addItemToInventory(new ItemStack(i, s));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + i.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
 			public static void AddRareResource(Quest theQuest) {
 				Item i = Items.getRandom(theQuest.questRand, 19, 29);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
-				Main.instance.player.addItemToInventory(new ItemStack(i, s));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + i.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
 			public static void AddResource(Quest theQuest, Items.ItemType type) {
 				Item i = Items.getRandomType(theQuest.questRand, type);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
-				Main.instance.player.addItemToInventory(new ItemStack(i, s));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + i.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
 			private static int checkHerbalism(Quest theQuest, Item item) {
@@ -291,12 +297,19 @@ namespace Assets.draco18s.artificer.init {
 
 			public static void AddRelic(Quest theQuest) {
 				ItemStack stack = QuestManager.getRandomTreasure(theQuest);
-				if(stack != null)
+				if(stack != null) {
+					//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found an unidentified relic.", SpriteLoader.getSpriteForResource("items/relic"));
 					theQuest.addItemToInventory(stack);
+				}
 				else {
 					AddRareResource(theQuest);
 					AddRareResource(theQuest);
 				}
+			}
+
+			public static void AddStack(Quest theQuest, ItemStack stack) {
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + stack.item.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + stack.item.name));
+				Main.instance.player.addItemToInventory(stack, notify);
 			}
 		}
 		public static class Scenario {

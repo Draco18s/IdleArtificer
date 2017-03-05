@@ -4,7 +4,9 @@ using Assets.draco18s.artificer.quests;
 using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.artificer.quests.challenge.goals;
 using Assets.draco18s.artificer.statistics;
+using Assets.draco18s.artificer.ui;
 using Assets.draco18s.util;
+using Koopakiller.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +60,11 @@ namespace Assets.draco18s.artificer.game {
 			StatisticsTracker.moneyMagnitude.setValue(money.ToString().Length - 1);
 		}
 
+		public void addItemToInventory(ItemStack stack, NotificationItem notify) {
+			addItemToInventory(stack);
+			GuiManager.ShowNotification(notify);
+		}
+
 		public void addItemToInventory(ItemStack stack) {
 			if(stack == null) return;
 			if(stack.relicData == null) {
@@ -102,6 +109,13 @@ namespace Assets.draco18s.artificer.game {
 			vendorSellEffectiveness += amt;
 		}
 
+		public BigRational GetSellMultiplierFull() {
+			if(renown > 0) {
+				return 1 + (((BigRational)renown + (totalQuestsCompleted - questsCompleted)) / 50);
+			}
+			return 1;
+		}
+		[Obsolete]
 		public BigInteger GetSellMultiplier() {
 			if(renown > 0)
 				return 1 + ((renown + (totalQuestsCompleted - questsCompleted)) / 50);
@@ -112,7 +126,7 @@ namespace Assets.draco18s.artificer.game {
 		public BigInteger GetStartingCash() {
 			return 20;
 		}
-
+		[Obsolete]
 		public float GetSellMultiplierMicro() {
 			BigInteger temp = ((renown + (totalQuestsCompleted - questsCompleted)) / 50);
 			temp *= 50;
@@ -138,7 +152,7 @@ namespace Assets.draco18s.artificer.game {
 			}
 			builtItems = new List<Industry>();
 			//Debug.Log("digits: " + digits);
-			double digitsCur = BigInteger.logBigInteger(money / moneyFloor);
+			double digitsCur = BigInteger.Log10(money / moneyFloor);
 			BigInteger spentRenown = totalRenown - renown;
 			Debug.Log("before:      " + lifetimeMoney);
 			totalRenown = BigInteger.CubeRoot(lifetimeMoney);
@@ -252,9 +266,9 @@ namespace Assets.draco18s.artificer.game {
 #pragma warning restore 0168
 			//TODO: uncomment this stuff
 			builtItems = new List<Industry>();
-			money = new BigInteger(1,160);// new BigInteger(info.GetString("money"));
+			money = 20000000;// new BigInteger(info.GetString("money"));
 			moneyFloor = 1;// new BigInteger(info.GetString("moneyFloor"));
-			lifetimeMoney = 20000;// new BigInteger(info.GetString("lifetimeMoney"));
+			lifetimeMoney = money;// new BigInteger(info.GetString("lifetimeMoney"));
 			renown = 0;// new BigInteger(info.GetString("renown"));
 			totalRenown = 0;// new BigInteger(info.GetString("totalRenown"));
 
@@ -342,7 +356,7 @@ namespace Assets.draco18s.artificer.game {
 				Industry ind = GameRegistry.GetIndustryByID(industriesFromDisk[o].ID);
 				ind.ReadFromCopy(industriesFromDisk[o].ind);
 				if(ind.level > 0)
-					CraftingManager.BuildIndustry(ind, true);
+					CraftingManager.BuildIndustry(ind, true, false);
 			}
 			industriesFromDisk.Clear();
 			industriesFromDisk = null;

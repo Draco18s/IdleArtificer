@@ -11,4 +11,13 @@ namespace Assets.draco18s.artificer.items {
 			quantity = count;
 		}
 	}
+
+	public class IndustryOutput {
+		public readonly Industry item;
+		public readonly int quantity;
+		public IndustryOutput(Industry i, int count) {
+			item = i;
+			quantity = count;
+		}
+	}
 }

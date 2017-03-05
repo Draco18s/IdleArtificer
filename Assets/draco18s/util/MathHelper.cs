@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using Koopakiller.Numerics;
 
 namespace Assets.draco18s.util {
 	public static class MathHelper {

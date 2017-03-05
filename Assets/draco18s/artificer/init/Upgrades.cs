@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.init {
 	public static class Upgrades {

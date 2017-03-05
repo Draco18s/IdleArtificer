@@ -5,6 +5,7 @@ using System.Text;
 using Assets.draco18s.util;
 using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.game;
+using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.upgrades {
 	public class UpgradeHalveDouble : Upgrade {

@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+//! Created by Tom Lambert alias Koopakiller
+//! Project started: 2011
+//! License: Microsoft Reciprocal License (Ms-RL)
+//! Project site: https://numerics.codeplex.com/license
+-->
+<messages>
+  <message lang="de" code="ArgOutRang_ParamMustSmaller">
+    Der Wert von {0} muss kleiner sein als {1}.
+  </message>
+  <message lang="de" code="ArgOutRang_ParamMustGreater">
+    Der Wert von {0} muss größer sein als {1}.
+  </message>
+  <message lang="de" code="ArgOutRang_ParamMustSmallerEqual">
+    Der Wert von {0} muss kleiner oder gleich {1} sein.
+  </message>
+  <message lang="de" code="ArgOutRang_ParamMustGreaterEqual">
+    Der Wert von {0} muss größer oder gleich {1} sein.
+  </message>
+  <message lang="de" code="ArgOutRang_ArrayMinSize">
+    Die Anzahl der Elemente im Array {0} beträgt mindestens {1}.
+  </message>
+  <message lang="de" code="ArgOutRang_ArraySize">
+    Die Anzahl der Elemente im Array {0} muss {1} betragen.
+  </message>
+  <message lang="de" code="ArgOutRang_PrimeSetUpAutoExtendTrue">
+    Der angegebene Index war zu Groß. Um die Liste Automatisch zu erweitern, setzen Sie die Eigenschaft 'AutoExtend' auf True.
+  </message>
+  <message lang="de" code="ArgOutRang_ArrayMinSize2DMatrixEmpty">
+    Die größe des Arrays muss mindestens 1 * 1 sein. Für eine leere Matrix nutzen Sie Matrix.Empty.
+  </message>
+  <message lang="de" code="ArgOutRang_ParamMustInRange">
+    Der Wert von {0} muss im Bereich von einschließlich {1} bis einschließlich {2} liegen.
+  </message>
+  <message lang="de" code="ArgOutRang_ParamMustInRangeWithoutRight">
+    Der Wert von {0} muss im Bereich von einschließlich {1} bis ausschließlich {2} liegen.
+  </message>
+  <message lang="de" code="ArgNull_Param">
+    Der Wert von {0} darf nicht null sein.
+  </message>
+  <message lang="de" code="ArgNull_ParamEmpty">
+    Der Wert von {0} darf nicht null oder leer sein.
+  </message>
+  <message lang="de" code="ArgNull_ArrayNull">
+    Das Array {0} darf nicht null sein.
+  </message>
+  <message lang="de" code="ArgOutRang_OnlyContainsCharsInRange">
+    Der Wert von {0} darf nur Werte im Bereich von {1} bis {2} von {3} enthalten.
+  </message>
+  <message lang="de" code="ArgDbl_CantContainsDuplicates">
+    In {0} dürfen keine Duplikate enthalten sein.
+  </message>
+  <message lang="de" code="Arg_CompleyOnlyAllowRad">
+    Bei komplexen Zahlen werden Angaben nur in Radiant aktzeptiert.
+  </message>
+  <message lang="de" code="Arg_ValIsntMatrix">
+    {0} ist keine Matrix.
+  </message>
+  <message lang="de" code="Arg_CantContainsCharsFrom">
+    {0} kann keine Zeichen aus {1} enthalten.
+  </message>
+  <message lang="de" code="ArgNull_ParamCantNull">
+    Der Parameter {0} darf nicht null sein.
+  </message>
+  <message lang="de" code="Arg_XMustBeANumber">
+    {0} ist keine Matrix.
+  </message>
+  <message lang="de" code="Arg_DeterminantCantZero">
+    Für diese Operation kann die Determinante der Matrix nicht 0 sein.
+  </message>
+  <message lang="de" code="Arg_MatrixSameSize">
+    Die Dimensionen der Matrizen {0} und {1} sind nicht gleich.
+  </message>
+  <message lang="de" code="Arg_XMustEqualWithY">
+    {0} muss den gleichen Wert besitzen wie {1}.
+  </message>
+  <message lang="de" code="Arg_XCantEqualWithY">
+    Die Werte von {0} und {1} dürfen nicht gleich sein.
+  </message>
+  <message lang="de" code="Arith_InvalidChar">
+    Es wurde ein illegales Zeichen in {0} gefunden.
+  </message>
+  <message lang="de" code="DivByZero_ValCantX">
+    Es wurde versucht durch 0 zu teilen. {0} kann nicht 0 sein.
+  </message>
+  <message lang="de" code="Arith_Pow00">
+    Die Potenz der Basis 0 mit und dem Exponenten 0 ist gilt hier als nicht definiert.
+  </message>
+  <message lang="de" code="Arith_SCMContainsZero">
+    Das kleinste gemeinsame Vielache kann nicht von einer Menge bestimmt werden, die eine 0 enthält.
+  </message>
+  <message lang="de" code="Arith_GCDConatinsOnlyZero">
+    Der größte gemeinsame Teiler von 0 kann jede natürliche Zahl außer 0 sein.
+  </message>
+  <message lang="de" code="Arg_MyNumber">
+    Die CalculationExpression-Klassen können nicht mit selbst geschriebenen Typen arbeiten.
+  </message>
+  <message lang="de" code="Arg_InvalidOpWithMatrix">
+    Die angegebene Operation ({0}) ist mit Matrizen nicht verfügbar.
+  </message>
+  <message lang="de" code="ArgDiff_VectorDimensionsCantDifferent">
+    Die Dimensionen der Vektoren müssen gleich sein.
+  </message>
+  <message lang="de" code="ArgOutRang_Must2D3DPoint">
+    Die Punkte müssen 2- oder 3-Dimensional sein. Nutzen Sie entsprechend die Typen Point2D oder Point3D für die generische deklaration.
+  </message>
+  <message lang="de" code="Arg_CantSame">
+    Der Wert von {0} kann nicht der selbe sein wie {1}.
+  </message>
+  <message lang="de" code="ArgOutRang_WrongEnumValue">
+    Der angegeben Enumerationswert wird nicht unterstützt.
+  </message>
+  <message lang="de" code="ArgDiff_VectorMatrixProductParams">
+    Die Dimension des Spaltenvektors muss der Anzahl der Zeilen in der Matrix übereinstimmen.
+  </message>
+  <message lang="de" code="ArgDiff_Dimension">
+    Die Parameter {0} und {1} müssen den selben Dimension angehöhren.
+  </message>
+  <message lang="de" code="IndexOutRange">
+    Der Index lag außerhab des erwarteten Bereichs.
+  </message>
+  <message lang="de" code="VarNull_DontExists">
+    Der Variablen {0} wurde kein Wert zugewiesen.
+  </message>
+  <message lang="de" code="ArgDbl_Set">
+    In einer Menge kann kein Element doppelt vorkommen.
+  </message>
+  <message lang="de" code="ArgOutRang_InvalidSpecialValue">
+    Die Operation ist mit dem angegebenen Spezialwert nicht möglich.
+  </message>
+  <message lang="de" code="ArgOutRang_InvalidSpecialValueCast">
+    Die angegebene Umwandlung ist aufgrund des Wertes nicht möglich.
+  </message>
+  <message lang="de" code="Arith_System">
+    Auf Grund einer Modifikation der Bibliothek ist ein Fehler aufgetreten.
+  </message>
+</messages>

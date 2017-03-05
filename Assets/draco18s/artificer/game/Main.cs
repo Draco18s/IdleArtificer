@@ -5,6 +5,7 @@ using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.artificer.quests.hero;
 using Assets.draco18s.artificer.ui;
 using Assets.draco18s.util;
+using Koopakiller.Numerics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace Assets.draco18s.artificer.game {
 		public float timeTotal;
 		//private StreamWriter csv_st;
 		//private string lastPurchase = "";
-		private int lastTime = -1;
+		//private int lastTime = -1;
 		public bool close_file = false;
 
 		void Start() {
@@ -44,7 +45,7 @@ namespace Assets.draco18s.artificer.game {
 			csv_st.WriteLine("TotalTime,TimeToNextBuilding,Income/Sec,CashOnHand,LastPurchase");*/
 			instance = this;
 			Application.runInBackground = true;
-			player = new PlayerInfo(new BigInteger("100000"));
+			player = new PlayerInfo(new BigInteger(100000));
 			//money = new BigInteger(10000);
 			GuiManager.instance.mainCanvas.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.FacilityUnselected(); });
 			/* TODO: Load data from save */
@@ -52,7 +53,7 @@ namespace Assets.draco18s.artificer.game {
 			EnchantingManager.OneTimeSetup();
 			CraftingManager.setupUI();
 			QuestManager.setupUI();
-			GuildManager.setupUI();
+			GuildManager.OneTimeSetup();
 			Configuration.loadCurrentDirectory();
 
 			InfoPanel panel = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
@@ -69,6 +70,9 @@ namespace Assets.draco18s.artificer.game {
 			btn.AddHover(delegate (Vector3 p) { GuiManager.ShowTooltip(GuiManager.instance.infoPanel.transform.FindChild("SellAll").transform.position+Vector3.right * 45, "Sell all " + AsCurrency(CraftingManager.GetQuantity()) + " " + CraftingManager.GetName() + " for $" + AsCurrency(CraftingManager.SellAllValue())); });
 
 			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
+			info.transform.FindChild("Input1").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(1); });
+			info.transform.FindChild("Input2").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(2); });
+			info.transform.FindChild("Input3").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(3); });
 			info.UpgradeBtn.onClick.AddListener(delegate { CraftingManager.UpgradeCurrent(); });
 			info.DowngradeBtn.onClick.AddListener(delegate { CraftingManager.DowngradeCurrent(); });
 			info.ConfDowngradeBtn.onClick.AddListener(delegate { CraftingManager.Do_DowngradeCurrent(); });
@@ -228,13 +232,17 @@ namespace Assets.draco18s.artificer.game {
 				autoClickTime -= 1;
 			}
 
+			Profiler.BeginSample("Quest Manager");
 			QuestManager.tickAllQuests(deltaTime);
 			QuestManager.updateLists();
-
+			Profiler.EndSample();
+			Profiler.BeginSample("Enchant Manager");
 			EnchantingManager.update();
-
+			Profiler.EndSample();
+			Profiler.BeginSample("Guild Manager");
 			GuildManager.update();
-
+			Profiler.EndSample();
+			Profiler.BeginSample("Tick Built Items");
 			foreach(Industry i in player.builtItems) {
 				if(i.getTimeRemaining() > float.MinValue && !i.isProductionHalted) {
 					i.addTime(-deltaTime);
@@ -276,6 +284,8 @@ namespace Assets.draco18s.artificer.game {
 					img.material.SetColor("_Color", i.productType.color);
 				//}
 			}
+			Profiler.EndSample();
+			Profiler.BeginSample("Sell Items");
 			foreach(Industry i in player.builtItems) {
 				if(i.didComplete > 0) {
 					do {
@@ -289,19 +299,25 @@ namespace Assets.draco18s.artificer.game {
 						amt = MathHelper.Max(MathHelper.Min(amt, i.quantityStored), 0);
 						i.quantityStored -= amt;
 						quant -= i.quantityStored;
-						AddMoney(GetVendorValue() * (quant * i.GetSellValue()));
+						BigRational val = ((BigRational)quant * GetVendorValue());
+						val *= i.GetSellValue();
+						AddMoney((BigInteger)val);
+						//AddMoney(GetVendorValue() * (quant * i.GetSellValue()));
 						i.didComplete--;
 					} while(i.didComplete > 0);
 				}
 			}
+			Profiler.EndSample();
+			Profiler.BeginSample("Crafting Update");
 			CraftingManager.Update();
-
+			Profiler.EndSample();
 			if(Input.GetMouseButton(0)) {
 				mouseDownTime += Time.deltaTime;
 			}
 			else {
 				mouseDownTime = 0;
 			}
+			Profiler.BeginSample("Autobuild");
 			if(debugAutoBuild) {
 				autoBuildTimer+=Time.deltaTime;
 				if(autoBuildTimer > 5) {
@@ -326,6 +342,7 @@ namespace Assets.draco18s.artificer.game {
 				Material mat = GuiManager.instance.autoBuildBar.GetComponent<Image>().material;
 				mat.SetFloat("_Cutoff", 1);
 			}
+			Profiler.EndSample();
 			if(Mathf.FloorToInt(Time.time * 10) % 20 == 0) {
 				foreach(Industry item in player.builtItems) {
 					item.consumeAmount = 0;
@@ -349,13 +366,13 @@ namespace Assets.draco18s.artificer.game {
 			FieldInfo[] fields = typeof(Industries).GetFields();
 			BigInteger currIncome = 0;
 			foreach(Industry indu in player.builtItems) {
-				currIncome += indu.GetScaledCost() * indu.output;
+				currIncome += (BigInteger)indu.GetScaledCost() * indu.output;
 			}
 			//Debug.Log("start: "  + DateTime.Now.Millisecond);
 			foreach(FieldInfo field in fields) {
 				Industry ind = (Industry)field.GetValue(null);
 				//player.itemData.TryGetValue(indBtn, out ind);
-				BigInteger seconds = currIncome > 0 ? (ind.GetScaledCost() - player.money) / currIncome : -1000000;
+				BigInteger seconds = currIncome > 0 ? ((BigInteger)ind.GetScaledCost() - player.money) / currIncome : -1000000;
 				if(seconds < 15 && ind.doAutobuild && ind.autoBuildLevel > ind.level && ind.autoBuildMagnitude <= (player.money.ToString().Length - 1)) {
 					BigInteger inputCosts = 0;
 					int bonus = (ind.GetScaledCost() <= player.money ? 3 : (seconds <= 5 ? 3 : 1));
@@ -377,7 +394,7 @@ namespace Assets.draco18s.artificer.game {
 						compares.Add(new CostBenefitRatio(1, ((ind.GetBaseSellValue() * ind.output) - inputCosts) * bonus, ind));
 					}
 					else {
-						compares.Add(new CostBenefitRatio(penalty * ind.GetScaledCost(), ((ind.GetBaseSellValue() * ind.output) - inputCosts) * bonus, ind));
+						compares.Add(new CostBenefitRatio((BigInteger)(penalty * (BigRational)ind.GetScaledCost()), ((ind.GetBaseSellValue() * ind.output) - inputCosts) * bonus, ind));
 					}
 				}
 			}
@@ -409,8 +426,8 @@ namespace Assets.draco18s.artificer.game {
 				//lastPurchase += indust.name + " ";
 				ret = true;
 			}
-			float dtt = dt;
-			/*do {
+			/*float dtt = dt;
+			do {
 				timeSinceLastPurchase += dtt>1?1:dtt;
 				timeTotal += dtt > 1 ? 1 : dtt;
 				int cur = (Mathf.FloorToInt(timeTotal));
@@ -478,10 +495,14 @@ namespace Assets.draco18s.artificer.game {
 			return player.GetVendorValue();
 		}
 
+		public BigRational GetSellMultiplierFull() {
+			return player.GetSellMultiplierFull();
+		}
+		[Obsolete]
 		public BigInteger GetSellMultiplier() {
 			return player.GetSellMultiplier();
 		}
-
+		[Obsolete]
 		public float GetSellMultiplierMicro() {
 			return player.GetSellMultiplierMicro();
 		}
@@ -515,7 +536,7 @@ namespace Assets.draco18s.artificer.game {
 				QuestManager.setupUI();
 			}
 			if(newTab == GuiManager.instance.guildTab) {
-				
+				GuildManager.setupUI();
 			}
 			GuiManager.instance.infoPanel.transform.localPosition = new Vector3(-1465, 55, 0);
 			CraftingManager.FacilityUnselected(null);

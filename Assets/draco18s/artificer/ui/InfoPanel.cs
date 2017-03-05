@@ -31,6 +31,7 @@ public class InfoPanel : MonoBehaviour {
 	public Button UpgradeBtn;
 	public Button DowngradeBtn;
 	public Button ConfDowngradeBtn;
+	public Transform ConsumersDock;
 
 	public void SetOutputNum(string t) {
 		OutNum.text = OutNumb.text = t;

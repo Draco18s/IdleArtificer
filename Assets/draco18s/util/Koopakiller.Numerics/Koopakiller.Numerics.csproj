@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5C6D95B9-42E7-4F51-BDF2-B81F42369D17}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Koopakiller.Numerics</RootNamespace>
+    <AssemblyName>Koopakiller.Numerics</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile131</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\Debug\Koopakiller.Numerics.XML</DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Koopakiller.Numerics.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AngleUnits.cs" />
+    <Compile Include="ArgumentDifferentException.cs" />
+    <Compile Include="ArgumentDoubleException.cs" />
+    <Compile Include="BigRational.cs" />
+    <Compile Include="BigInteger.cs" />
+    <Compile Include="Calculator.cs" />
+    <Compile Include="ComparerMethod.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="CStepEventArgs.cs" />
+    <Compile Include="CTrigonometry.cs" />
+    <Compile Include="DomainFunctionLimits.cs" />
+    <Compile Include="DomainSet.cs" />
+    <Compile Include="DomainSets.cs" />
+    <Compile Include="GetHashCodeMethod.cs" />
+    <Compile Include="HarmonicSeries.cs" />
+    <Compile Include="IDrawable.cs" />
+    <Compile Include="IInteger.cs" />
+    <Compile Include="IMathComparison.cs" />
+    <Compile Include="IMathEqualComparison.cs" />
+    <Compile Include="IntervalTypes.cs" />
+    <Compile Include="INumber.cs" />
+    <Compile Include="IPoint.cs" />
+    <Compile Include="ISet.cs" />
+    <Compile Include="LambdaEqualityComparer.cs" />
+    <Compile Include="Point3D.cs" />
+    <Compile Include="PointInRangeMatchOptions.cs" />
+    <Compile Include="Resources\ResourceManager.cs" />
+    <Compile Include="Interval.cs" />
+    <Compile Include="ListSet.cs" />
+    <Compile Include="SpecialValues.cs" />
+    <Compile Include="VariableNullException.cs" />
+    <Compile Include="Vector.cs" />
+    <Compile Include="_Extensions.cs" />
+    <Compile Include="FunctionException.cs" />
+    <Compile Include="IBigNumber.cs" />
+    <Compile Include="IConstant.cs" />
+    <Compile Include="JosephusProblem.cs" />
+    <Compile Include="Matrix.cs" />
+    <Compile Include="MersennePrime.cs" />
+    <Compile Include="Complex.cs" />
+    <Compile Include="NumberSystem.cs" />
+    <Compile Include="Point2D.cs" />
+    <Compile Include="Polygon2D.cs" />
+    <Compile Include="Prime.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Triangle.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Messages.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Koopakiller.Numerics.snk" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

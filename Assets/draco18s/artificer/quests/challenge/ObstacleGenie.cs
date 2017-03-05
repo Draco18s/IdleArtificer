@@ -76,7 +76,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 							}
 							maxed = count >= ench.maxConcurrent;
 						}
-						if(newRelic.relicData == null || newRelic.relicData.Count < newRelic.enchants.Count) {
+						if(maxed || newRelic.relicData == null || newRelic.relicData.Count < newRelic.enchants.Count) {
 							Debug.Log("This item is maxed out already. Weird.");
 							goto baditem;
 						}

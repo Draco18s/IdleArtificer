@@ -11,6 +11,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Runtime.Serialization;
+using Koopakiller.Numerics;
+using Assets.draco18s.artificer.items;
 
 namespace Assets.draco18s.artificer.game {
 	class GuildManager {
@@ -25,12 +27,16 @@ namespace Assets.draco18s.artificer.game {
 		private static Text buyAppTxt;
 		private static Text vendeffTxt;
 		private static Text appeffTxt;
-		private static Transform listGui;
+		private static Transform cashList;
+		private static Transform renownList;
+		private static Transform relicList;
 		private static List<Upgrade> cashUpgradeList = new List<Upgrade>();
 		private static bool hasListChanged = false;
 		public static readonly string RENOWN_SYMBOL = "ℛ";
 		private static BigInteger lastMoney = 0;
-		public static void setupUI() {
+		private static Dictionary<ItemStack, GameObject> relicsList = new Dictionary<ItemStack, GameObject>();
+
+		public static void OneTimeSetup() {
 			moneyDisp = GuiManager.instance.guildHeader.transform.FindChild("MoneyArea").GetChild(0).GetComponent<Text>();
 			renownDisp = GuiManager.instance.guildHeader.transform.FindChild("GuildRenownArea").GetChild(0).GetComponent<Text>();
 			Transform t = GuiManager.instance.guildHeader.transform.FindChild("RenownOnReset");
@@ -44,8 +50,8 @@ namespace Assets.draco18s.artificer.game {
 
 				GuiManager.ShowTooltip(p, "Renown from cash on hand: " + Main.AsCurrency(renown) + RENOWN_SYMBOL + "\nRenown from completed quests: " + Main.AsCurrency(Main.instance.player.questsCompleted) + RENOWN_SYMBOL, 5f);
 			});
-			listGui = GuiManager.instance.guildArea.transform.FindChild("CashUpgrades");
-
+			cashList = GuiManager.instance.guildArea.transform.FindChild("CashUpgrades").GetChild(0).GetChild(0);
+			relicList = GuiManager.instance.guildArea.transform.FindChild("RelicsList").GetChild(0).GetChild(0);
 			buyVendTxt = GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
 			buyAppTxt = GuiManager.instance.buyApprenticesArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
 
@@ -67,7 +73,7 @@ namespace Assets.draco18s.artificer.game {
 					item.upgradListGui = it;
 					cashUpgradeList.Add(item);
 					it.name = item.displayName;
-					it.transform.SetParent(listGui.GetChild(0).GetChild(0));
+					it.transform.SetParent(cashList);
 					it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
 					it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
@@ -85,9 +91,68 @@ namespace Assets.draco18s.artificer.game {
 					i++;
 				}
 			}
-			((RectTransform)listGui.GetChild(0).GetChild(0)).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
-			listGui.GetChild(0).GetChild(0).localPosition = Vector3.zero;
+			((RectTransform)cashList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
+			cashList.localPosition = Vector3.zero;
 			lastMoney = Main.instance.player.money;
+		}
+		public static void setupUI() {
+			int i = 0;
+			foreach(ItemStack stack in Main.instance.player.miscInventory) {
+				if(stack.relicData != null) {
+					//Debug.Log("i: " + i);
+					//Debug.Log(stack.item.name);
+					GameObject go;
+					relicsList.TryGetValue(stack, out go);
+					if(go == null) {
+						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM);
+						go.transform.SetParent(relicList);
+						relicsList.Add(stack, go);
+					}
+					go.transform.localPosition = new Vector3((i % 4) * 98 + 5, ((i / 4) * -125) - 5, 0);
+					//Debug.Log(go.transform.parent.name + ":" + go.transform.localPosition);
+					Text tx = go.transform.FindChild("Title").GetComponent<Text>();
+					tx.text = Main.ToTitleCase(stack.getDisplayName());
+					go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
+					go.transform.FindChild("Quantity").GetComponent<Text>().text = "";
+					ItemStack s = stack;
+					Button btn = go.GetComponent<Button>();
+					btn.AddHover(delegate (Vector3 p) {
+						string str = "";
+						foreach(RelicInfo ri in s.relicData) {
+							str += ri.questDescription + " (" + ri.notoriety + ")\n";
+						}
+						if(s.enchants.Count > 0) {
+							str += "Enchanted:\n";
+							foreach(Enchantment en in s.enchants) {
+								str += en.name + "\n";
+							}
+						}
+						GuiManager.ShowTooltip(btn.transform.position, str);
+					});
+					int req_num = 1;
+					long ty = (long)stack.getAllReqs();
+					bool abort = false;
+					for(int r = 1; r <= 5; r++) {
+						if(ty == 0) abort = true;
+						while((ty & 1) == 0 && ty > 0) {
+							req_num++;
+							ty = ty >> 1;
+							if(ty == 0) abort = true;
+						}
+						if(abort) {
+							go.transform.FindChild("Req" + r).gameObject.SetActive(false);
+						}
+						else {
+							go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
+							ty = ty >> 1;
+							ty = ty << 1;
+						}
+					}
+					i++;
+				}
+			}
+			((RectTransform)relicList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ((i/4) * 100 + 10));
+			relicList.localPosition = Vector3.zero;
 		}
 
 		public static void update() {
@@ -113,8 +178,8 @@ namespace Assets.draco18s.artificer.game {
 			vendeffTxt.text = Mathf.RoundToInt(Main.instance.player.GetVendorValue() * 100) + "%";
 			appeffTxt.text = Main.instance.GetClickRate() + "sec / sec";
 			BigInteger mon = Main.instance.player.money;
-			BigInteger diff = (lastMoney - mon).Abs();
-			if(!hasListChanged && diff >= (0.005 * mon)) {
+			BigInteger diff = BigInteger.Abs((lastMoney - mon));
+			if(!hasListChanged && diff >= (0.005 * (BigRational)mon)) {
 				int j;
 				bool b;
 				for(j = 0, b = true; j < cashUpgradeList.Count && b; j++) {
@@ -141,7 +206,7 @@ namespace Assets.draco18s.artificer.game {
 							item.upgradListGui = it;
 						}
 						item.upgradListGui.name = item.displayName;
-						item.upgradListGui.transform.SetParent(listGui.GetChild(0).GetChild(0));
+						item.upgradListGui.transform.SetParent(cashList);
 						item.upgradListGui.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
 						if(item.cost > Main.instance.player.money) {
@@ -161,8 +226,8 @@ namespace Assets.draco18s.artificer.game {
 						}
 					}
 				}
-				((RectTransform)listGui.GetChild(0).GetChild(0)).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
-				//listGui.GetChild(0).GetChild(0).localPosition = Vector3.zero;
+				((RectTransform)cashList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
+				//listGui.localPosition = Vector3.zero;
 			}
 		}
 

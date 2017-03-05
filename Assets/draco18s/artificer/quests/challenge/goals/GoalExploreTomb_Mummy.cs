@@ -105,7 +105,8 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		public void getLootDrops(EnumResult result, Quest theQuest, ref int questBonus) {
 			Item i = Items.MUMMY_WRAPPING;
 			int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
-			Main.instance.player.addItemToInventory(new ItemStack(i, s));
+			//Main.instance.player.addItemToInventory(new ItemStack(i, s));
+			ChallengeTypes.Loot.AddStack(theQuest, new ItemStack(i, s));
 		}
 	}
 }

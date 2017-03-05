@@ -7,6 +7,7 @@ using Assets.draco18s.artificer.quests.requirement;
 using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.game;
 using System.Runtime.Serialization;
+using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.items {
 	[Serializable]
@@ -70,6 +71,9 @@ namespace Assets.draco18s.artificer.items {
 			GameRegistry.RegisterIndustry(this);
 			industryItem = new Item(this);
 			industryItem.isConsumable = isConsumableItem;
+			pow50 = Math.Pow(productType.amount, 50);
+			pow10 = Math.Pow(productType.amount, 10);
+			pow1 = productType.amount;
 		}
 
 		public Industry(String name, BigInteger price, BigInteger sell, int outnum, Scalar scale, params IndustryInput[] list) {
@@ -85,21 +89,56 @@ namespace Assets.draco18s.artificer.items {
 			GameRegistry.RegisterIndustry(this);
 			industryItem = new Item(this);
 			industryItem.isConsumable = isConsumableItem;
+			pow50 = Math.Pow(productType.amount, 50);
+			pow10 = Math.Pow(productType.amount, 10);
+			pow1 = productType.amount;
 		}
 
-		public virtual BigInteger GetScaledCost() {
-			return Math.Pow(productType.amount, level) * (cost * halvesAndDoubles);
+		private double pow1;
+		private double pow10;
+		private double pow50;
+		private int lastLevel = -1;
+		private double powLastLevel = -1;
+		private int lastN = -1;
+		private BigRational lastTotal = -1;
+
+		public virtual BigRational GetScaledCost() {
+			/*BigRational c = cost * halvesAndDoubles;
+			c = (BigRational.Pow(productType.amount, level) * c);
+			powCurLevel = new BigRational(c); //ensure cloning
+			return c;*/
+			return GetScaledCost(1);
 		}
 
-		public virtual BigInteger GetScaledCost(int n) {
-			BigInteger b = (cost * halvesAndDoubles);
-			BigInteger q = ((Math.Pow(productType.amount, level) * (Math.Pow(productType.amount, n) - 1)) / (productType.amount - 1)) * b;
-			if(this == Industries.LEATHER) {
-				Debug.Log(cost + " * " + ((Math.Pow(productType.amount, level) * (Math.Pow(productType.amount, n) - 1)) / (productType.amount - 1)));
-				Debug.Log("    = " + q);
+		public virtual BigRational GetScaledCost(int n) {
+			//BigInteger q = ((Math.Pow(productType.amount, level) * (Math.Pow(productType.amount, n) - 1)) / (productType.amount - 1)) * b;
+
+			Profiler.BeginSample("Recalc");
+			if(level == lastLevel && n == lastN) {
+				return lastTotal;
 			}
-
-			return q;
+			lastN = n;
+			if(level != lastLevel) {
+				lastLevel = level;
+				//powLastLevel = BigRational.Pow(productType.amount, level);
+				powLastLevel = Math.Pow(productType.amount, level);
+				/*BigRational _b = (cost * halvesAndDoubles);
+				BigRational v = (n == 1 ? pow1 : (n == 10 ? pow10 : (n == 50 ? pow50 : BigRational.Pow(productType.amount, n))));
+				BigRational _lastTotal = (powLastLevel * (v - 1)) / (productType.amount - 1);
+				BigRational nn = ((powLastLevel * (v - 1)));
+				BigRational dd = new BigRational(productType.amount);
+				Debug.Log(nn.ToDecimalString(3) + " / " + dd.ToDecimalString(3));
+				dd -= 1;
+				Debug.Log((nn / dd).ToDecimalString(3));*/
+			}
+			Profiler.EndSample();
+			Profiler.BeginSample("Return");
+			BigRational b = (cost * halvesAndDoubles);
+			BigRational dd = new BigRational(productType.amount);
+			dd -= 1;
+			lastTotal = 0.51 + b * ((powLastLevel * ((n == 1 ? pow1 : (n == 10 ? pow10 : (n == 50 ? pow50 : BigRational.Pow(productType.amount, n)))) - 1) / (dd)));
+			Profiler.EndSample();
+			return lastTotal;
 		}
 
 		public virtual BigInteger ProduceOutput() {
@@ -148,13 +187,11 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public virtual BigInteger GetSellValue() {
-			//BigInteger sell = GetBaseSellValue() * Main.instance.GetSellMultiplier();
-			//BigInteger frac = Main.instance.GetSellMultiplierMicro() * GetBaseSellValue();
-			//return sell + frac;
-			BigInteger frac = Main.instance.GetSellMultiplierMicro() * valueMulti * GetBaseSellValue();
-			BigInteger ret = (valueMulti * GetBaseSellValue() * Main.instance.GetSellMultiplier()) + frac;
-			//if(ret < 1) ret = 1;
-			return ret;
+			BigRational sell = Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue();
+			return (BigInteger)sell;
+			//BigInteger frac = (BigInteger)(Main.instance.GetSellMultiplierMicro() * valueMulti * (BigRational)GetBaseSellValue());
+			//BigInteger ret = (BigInteger)(valueMulti * (BigRational)GetBaseSellValue() * Main.instance.GetSellMultiplier()) + frac;
+			//return ret;
 		}
 
 		public Industry addReqType(RequirementType type) {
@@ -277,7 +314,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 		public Industry(SerializationInfo info, StreamingContext context) {
 			level = info.GetInt32("level");
-			quantityStored = new BigInteger(info.GetString("quantityStored"));
+			quantityStored = BigInteger.Parse(info.GetString("quantityStored"));
 			isSellingStores = info.GetBoolean("isSellingStores");
 			isConsumersHalted = info.GetBoolean("isConsumersHalted");
 			isProductionHalted = info.GetBoolean("isProductionHalted");

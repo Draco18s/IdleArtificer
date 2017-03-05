@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.game {
 	public class EnchantingManager {

@@ -2,6 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using Assets.draco18s.artificer.ui;
+using System.Collections.Generic;
+using DG.Tweening;
 
 public class GuiManager : MonoBehaviour {
 	public static GuiManager instance;
@@ -28,17 +31,20 @@ public class GuiManager : MonoBehaviour {
 	public GameObject buyApprenticesArea;
 	public GameObject buyJourneymenArea;
 	public GameObject tooltip;
+	public GameObject notification;
 
 	public Sprite gray_square;
+	public Sprite inner_item_bg;
 	public Sprite selTab;
 	public Sprite unselTab;
 	public Sprite[] req_icons;
 
-	
+	private static List<NotificationItem> notificationQueue = new List<NotificationItem>();
 
 	void Start() {
 		instance = this;
 		req_icons = Resources.LoadAll<Sprite>("items/req_icons");
+		notification.transform.position = new Vector3(Screen.width - 5, Screen.height + 2, 0);
 	}
 
 	public static void ShowTooltip(Vector3 p, string v) {
@@ -83,10 +89,34 @@ public class GuiManager : MonoBehaviour {
 		float wid = ((RectTransform)instance.tooltip.transform).rect.width;
 		if(instance.tooltip.transform.position.x + wid > Screen.width) {
 			//shift the tooltip down. No check for off-screen
-			instance.tooltip.transform.position = new Vector3(Screen.width - wid/2 - 5, instance.tooltip.transform.position.y - ((RectTransform)instance.tooltip.transform).rect.height, 0);
+			instance.tooltip.transform.position = new Vector3(Screen.width - wid / 2 - 5, instance.tooltip.transform.position.y - ((RectTransform)instance.tooltip.transform).rect.height, 0);
 		}
 		else {
-			instance.tooltip.transform.position += new Vector3(wid/2, 0, 0);
+			instance.tooltip.transform.position += new Vector3(wid / 2, 0, 0);
 		}
+	}
+
+	public static void ShowNotification(NotificationItem item) {
+		notificationQueue.Add(item);
+	}
+
+	public void Update() {
+		if(!DOTween.IsTweening(notification.transform) && notificationQueue.Count > 0) {
+			NotificationItem item = notificationQueue[0];
+			notificationQueue.RemoveAt(0);
+			notification.transform.FindChild("Title").GetComponent<Text>().text = item.title;
+			notification.transform.FindChild("Text").GetComponent<Text>().text = item.text;
+			notification.transform.FindChild("Img").GetComponent<Image>().sprite = item.image;
+
+			notification.transform.DOMoveY(Screen.height - 70, 0.5f, false).SetEase(Ease.InOutQuad).OnComplete(PausCallback);
+		}
+	}
+
+	public void PausCallback() {
+		notification.transform.DOMoveY(Screen.height - 70, 2.5f, false).SetEase(Ease.InOutQuad).OnComplete(ReturnCallback);
+	}
+
+	public void ReturnCallback() {
+		notification.transform.DOMoveY(Screen.height + 2, 0.5f, false).SetEase(Ease.InOutQuad);//.OnComplete(ReturnCallback);
 	}
 }
