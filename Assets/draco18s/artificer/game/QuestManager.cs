@@ -524,13 +524,13 @@ namespace Assets.draco18s.artificer.game {
 			updateActiveQuestList();
 		}
 
-		public static ItemStack makeRelic(ItemStack stack, ObstacleType ob) {
+		public static ItemStack makeRelic(ItemStack stack, ObstacleType ob, string hero) {
 			if(ob is IRelicMaker) {
 				IRelicMaker maker = (IRelicMaker)ob;
 				if(stack.relicData == null) {
 					stack.relicData = new List<RelicInfo>();
 				}
-				RelicInfo info = new RelicInfo(maker.relicNames(stack), maker.relicDescription(stack), ob.getRewardScalar());
+				RelicInfo info = new RelicInfo(hero, maker.relicNames(stack), maker.relicDescription(stack), ob.getRewardScalar());
 				Debug.Log(info);
 				stack.relicData.Add(info);
 				stack.isIDedByPlayer = true;// false;
@@ -551,10 +551,10 @@ namespace Assets.draco18s.artificer.game {
 					Debug.Log(q.obstacles[j].type.name + ":"  + ((q.obstacles[j].type is IRelicMaker)?" is a RelicMaker":" is not"));
 				} while(j >= 0 && !(q.obstacles[j].type is IRelicMaker));
 				Debug.Log("    " + q.obstacles[j].type.name);
-				return makeRelic(stack, q.obstacles[j].type);
+				return makeRelic(stack, q.obstacles[j].type, q.heroName);
 			}
 			else {
-				return makeRelic(stack, q.obstacles[j].type);
+				return makeRelic(stack, q.obstacles[j].type, q.heroName);
 			}
 			/*QuestChallenge ob = q.obstacles.Last();
 			if(ob.type is IQuestGoal) {

@@ -266,16 +266,16 @@ namespace Assets.draco18s.artificer.game {
 #pragma warning restore 0168
 			//TODO: uncomment this stuff
 			builtItems = new List<Industry>();
-			money = 20000000;// new BigInteger(info.GetString("money"));
+			money = 20;// new BigInteger(info.GetString("money"));
 			moneyFloor = 1;// new BigInteger(info.GetString("moneyFloor"));
 			lifetimeMoney = money;// new BigInteger(info.GetString("lifetimeMoney"));
 			renown = 0;// new BigInteger(info.GetString("renown"));
 			totalRenown = 0;// new BigInteger(info.GetString("totalRenown"));
 
 			maxVendors = info.GetInt32("maxVendors");
-			currentVendors = info.GetInt32("currentVendors");
+			currentVendors = 0;// info.GetInt32("currentVendors");
 			maxApprentices = info.GetInt32("maxApprentices");
-			currentApprentices = info.GetInt32("currentApprentices");
+			currentApprentices = 0;// info.GetInt32("currentApprentices");
 			totalQuestsCompleted = info.GetInt64("totalQuestsCompleted");
 			questsCompleted = info.GetInt64("questsCompleted");
 			skillPoints = info.GetInt32("skillPoints");

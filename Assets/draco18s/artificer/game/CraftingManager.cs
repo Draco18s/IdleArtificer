@@ -359,7 +359,7 @@ namespace Assets.draco18s.artificer.game {
 					else {
 						needs += consumers[i].quantity;
 						img = child.GetChild(0).gameObject;
-						img.transform.parent.localPosition = new Vector3((i % 3 * 32), (i / 3 * vMod), 0);
+						img.transform.parent.localPosition = new Vector3((i % 3 * 32), -(i / 3 * vMod), 0);
 						img.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + consumers[i].item.name);
 					}
 					i++;
@@ -394,7 +394,7 @@ namespace Assets.draco18s.artificer.game {
 						img = info.ConsumersDock.GetChild(i).GetChild(0).gameObject;
 					}
 					needs += inp.quantity;
-					img.transform.parent.localPosition = new Vector3((i%3*32),-(i/3*vMod),0);
+					img.transform.parent.localPosition = new Vector3((i % 3 * 32), -(i / 3 * vMod), 0);
 					img.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + inp.item.name);
 					i++;
 				}
@@ -415,6 +415,7 @@ namespace Assets.draco18s.artificer.game {
 				int num = (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
 				int maxAdd = Main.instance.player.maxVendors - Main.instance.player.currentVendors;
 				num = Math.Min(num, maxAdd);
+				Debug.Log(Main.instance.player.currentVendors + "+" + num);
 				item.AdjustVendors(item.getRawVendors() + num);
 				Main.instance.player.currentVendors = Math.Min(Main.instance.player.currentVendors + num, Main.instance.player.maxVendors);
 			}

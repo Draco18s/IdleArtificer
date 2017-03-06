@@ -54,7 +54,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			ItemStack newRelic = theQuest.determineRelic();
 			if(newRelic != null) {
 				//Debug.Log("Genie is enchanting an item");
-				newRelic = QuestManager.makeRelic(newRelic, this);
+				newRelic = QuestManager.makeRelic(newRelic, this, theQuest.heroName);
 				//Debug.Log("Enchanting a(n) " + newRelic.item.name);
 				Item item;// = Items.getRandom(theQuest.questRand);
 				bool ret = true;
