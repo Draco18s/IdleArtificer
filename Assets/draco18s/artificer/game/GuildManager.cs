@@ -63,17 +63,20 @@ namespace Assets.draco18s.artificer.game {
 			vendeffTxt = GuiManager.instance.buyVendorsArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Mathf.RoundToInt(Main.instance.player.GetVendorValue()*100) + "%";
 			appeffTxt = GuiManager.instance.buyApprenticesArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Main.instance.GetClickRate() + "sec / sec";
 
+			relicList.transform.hierarchyCapacity = 100 * 20;
+
 			int i = 0;
 			FieldInfo[] fields = typeof(Upgrades.Cash).GetFields();
+			cashList.transform.hierarchyCapacity = (fields.Length+1)*60;
 			foreach(FieldInfo field in fields) {
 				//buildButtons.Add(it);
 				Upgrade item = (Upgrade)field.GetValue(null);
 				if(!item.getIsPurchased()) {
-					GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM);
+					GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM, cashList) as GameObject;
 					item.upgradListGui = it;
 					cashUpgradeList.Add(item);
 					it.name = item.displayName;
-					it.transform.SetParent(cashList);
+					//it.transform.SetParent(cashList);
 					it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
 					it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
@@ -104,8 +107,8 @@ namespace Assets.draco18s.artificer.game {
 					GameObject go;
 					relicsList.TryGetValue(stack, out go);
 					if(go == null) {
-						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM);
-						go.transform.SetParent(relicList);
+						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM, relicList) as GameObject;
+						//go.transform.SetParent(relicList);
 						relicsList.Add(stack, go);
 					}
 					go.transform.localPosition = new Vector3((i % 4) * 98 + 5, ((i / 4) * -125) - 5, 0);

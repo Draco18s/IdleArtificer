@@ -42,14 +42,18 @@ namespace Assets.draco18s.artificer.game {
 			validateQuests();
 			((RectTransform)questList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, i * 150 + 10);
 			questList.transform.localPosition = Vector3.zero;
+			inventoryList.hierarchyCapacity = 100 * 30;
+			miscInventoryList.hierarchyCapacity = 100 * 30;
+			questList.hierarchyCapacity = 50 * 30;
+			activeQuestList.hierarchyCapacity = 50 * 30;
 			i = 0;
 			foreach(Industry ind in Main.instance.player.builtItems) {
 				if(ind.industryItem.canBeGivenToQuests) {
 					GameObject go;
 					questInvenList.TryGetValue(ind, out go);
 					if(go == null) {
-						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM);
-						go.transform.SetParent(inventoryList);
+						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM, inventoryList) as GameObject;
+						//go.transform.SetParent(inventoryList);
 						Industry newInd = ind;
 						questInvenList.Add(newInd, go);
 						//ind.questInvenListObj = go;
@@ -94,10 +98,10 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void CreateNewQuestGuiItem(Quest q, int i) {
-			GameObject go = Main.Instantiate(PrefabManager.instance.QUEST_GUI_LISTITEM);
+			GameObject go = Main.Instantiate(PrefabManager.instance.QUEST_GUI_LISTITEM, questList) as GameObject;
 			Quest theQuest = q;
 			q.guiItem = go;
-			go.transform.SetParent(questList);
+			//go.transform.SetParent(questList);
 			go.transform.localPosition = new Vector3(7, (i * -150) - 7, 0);
 			go.transform.FindChild("Name").GetComponent<Text>().text = ToTitleCase(q.obstacles[q.obstacles.Length - 1].type.name);
 			go.transform.FindChild("Hero").GetComponent<Text>().text = "Hero: " + q.heroName;
@@ -139,10 +143,10 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void CreateNewActiveQuestGuiItem(Quest q) {
-			GameObject go = Main.Instantiate(PrefabManager.instance.ACTIVE_QUEST_GUI_LISTITEM);
+			GameObject go = Main.Instantiate(PrefabManager.instance.ACTIVE_QUEST_GUI_LISTITEM, activeQuestList) as GameObject;
 			//Quest theQuest = q;
 			q.guiItem = go;
-			go.transform.SetParent(activeQuestList);
+			//go.transform.SetParent(activeQuestList);
 
 			//go.transform.FindChild("Name").GetComponent<Text>().text = ToTitleCase(q.obstacles[q.obstacles.Length - 1].type.name);
 			go.transform.FindChild("Hero").GetComponent<Text>().text = q.heroName;
@@ -252,8 +256,8 @@ namespace Assets.draco18s.artificer.game {
 			foreach(ItemStack stack in Main.instance.player.miscInventory) {
 				if(stack.item.canBeGivenToQuests) {
 					ItemStack s = stack;
-					GameObject go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM);
-					go.transform.SetParent(miscInventoryList);
+					GameObject go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM, miscInventoryList) as GameObject;
+					//go.transform.SetParent(miscInventoryList);
 					go.transform.localPosition = new Vector3(7, (i * -125) - 5, 0);
 					//ind.invenListObj = go;
 					go.name = stack.item.name;

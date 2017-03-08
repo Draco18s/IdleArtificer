@@ -46,6 +46,9 @@ namespace Assets.draco18s.artificer.game {
 			inventoryList1 = GuiManager.instance.enchantArea.transform.FindChild("Inventory1").GetChild(0).GetChild(0);
 			inventoryList2 = GuiManager.instance.enchantArea.transform.FindChild("Inventory2").GetChild(0).GetChild(0);
 			inventoryList3 = GuiManager.instance.enchantArea.transform.FindChild("Inventory3").GetChild(0).GetChild(0);
+			inventoryList1.transform.hierarchyCapacity = 100 * 10;
+			inventoryList2.transform.hierarchyCapacity = 100 * 10;
+			inventoryList3.transform.hierarchyCapacity = 100 * 10;
 #pragma warning disable 0219
 			Enchantment e = Enchantments.ALERTNESS;
 #pragma warning restore 0219
@@ -82,8 +85,8 @@ namespace Assets.draco18s.artificer.game {
 					GameObject go;
 					enchantInvenList.TryGetValue(ind, out go);
 					if(go == null) {
-						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM);
-						go.transform.SetParent(inventoryList1);
+						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM, inventoryList1) as GameObject;
+						//go.transform.SetParent(inventoryList1);
 						enchantInvenList.Add(newInd, go);
 					}
 					go.transform.localPosition = new Vector3(6, (i * -125) - 5, 0);
@@ -132,8 +135,8 @@ namespace Assets.draco18s.artificer.game {
 				GameObject go;
 				enchantMiscInvenList.TryGetValue(stack, out go);
 				if(go == null) {
-					go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM);
-					go.transform.SetParent(inventoryList2);
+					go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM, inventoryList2) as GameObject;
+					//go.transform.SetParent(inventoryList2);
 					enchantMiscInvenList.Add(s, go);
 				}
 
@@ -193,8 +196,8 @@ namespace Assets.draco18s.artificer.game {
 					GameObject go;
 					enchantIngredList.TryGetValue(enchant.ingredient.industry, out go);
 					if(go == null) {
-						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM);
-						go.transform.SetParent(inventoryList2);
+						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM, inventoryList2) as GameObject;
+						//go.transform.SetParent(inventoryList2);
 						enchantIngredList.Add(enchant.ingredient.industry, go);
 					}
 					go.transform.localPosition = new Vector3(6, (j * -125) - 5, 0);

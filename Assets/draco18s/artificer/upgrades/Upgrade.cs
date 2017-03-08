@@ -44,4 +44,13 @@ namespace Assets.draco18s.artificer.upgrades {
 			return "";
 		}
 	}
+
+	public enum UpgradeType {
+		VENDOR_SIZE,
+		VENDOR_EFF,
+		APPRENTICE_EFF,
+		MONEY_INCOME,
+		RENOWN_INCOME,
+		RENOWN_MULTI
+	}
 }

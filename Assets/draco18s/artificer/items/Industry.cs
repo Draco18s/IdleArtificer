@@ -149,8 +149,28 @@ namespace Assets.draco18s.artificer.items {
 			return value * halvesAndDoubles;
 		}
 
-		public void addTime(float t) {
+		/// <summary>
+		/// Returns true if needed synchro this tick
+		/// </summary>
+		/// <param name="t"></param>
+		/// <returns></returns>
+		public bool addTime(float t) {
+			bool ret = false;
+			if(CraftingManager.doSynchronize && apprentices == 0) {
+				int intTime = Mathf.FloorToInt(Time.time);
+				float synchTime = (intTime % 10) + Time.time - intTime;
+				synchTime = 100 - Mathf.RoundToInt(synchTime * 10);
+				if(Mathf.RoundToInt(timeRemaining * 10) > synchTime) {
+					t *= 2;
+					ret = true;
+				}
+				else if(Mathf.RoundToInt(timeRemaining * 10) < synchTime) {
+					t /= 2;
+					ret = true;
+				}
+			}
 			timeRemaining += (t * halvesAndDoubles);
+			return ret;
 		}
 
 		public void tickApprentices() {
@@ -158,7 +178,8 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public void addTimeRaw(float t) {
-			timeRemaining += t;
+			if(timeRemaining > float.MinValue)
+				timeRemaining += t;
 		}
 
 		public void setTimeRemaining(float v) {

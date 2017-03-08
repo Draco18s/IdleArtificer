@@ -101,6 +101,8 @@ namespace Assets.draco18s.artificer.game {
 				BigInteger renown = getCachedNewRenown() + Main.instance.player.questsCompleted;
 				GuiManager.ShowTooltip(GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").transform.position, "You will gain " + Main.AsCurrency(Main.instance.player.renown + renown) + " Renown if you reset now.", 2.3f);
 			});
+			btn = GuiManager.instance.craftHeader.transform.FindChild("SyncBtn").GetComponent<Button>();
+			btn.onClick.AddListener(delegate { CraftingManager.SynchronizeInustries(); });
 			GuiManager.instance.craftHeader.transform.FindChild("AutoToggle").GetComponent<Toggle>().onValueChanged.AddListener(delegate { debugAutoBuild = !debugAutoBuild; });
 
 			GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyVendor(); });
@@ -243,16 +245,17 @@ namespace Assets.draco18s.artificer.game {
 			GuildManager.update();
 			Profiler.EndSample();
 			Profiler.BeginSample("Tick Built Items");
+			bool needSynchro = false;
 			foreach(Industry i in player.builtItems) {
 				if(i.getTimeRemaining() > float.MinValue && !i.isProductionHalted) {
-					i.addTime(-deltaTime);
+					needSynchro = i.addTime(-deltaTime) || needSynchro;
 					//i.timeRemaining -= deltaTime;
 					if(doAutoClick) {
 						i.tickApprentices();
 					}
 				}
 				if(i.getTimeRemaining() <= 0) {
-					do {
+					//do {
 						bool canExtract = true;
 						foreach(IndustryInput input in i.inputs) {
 							if(input.item.quantityStored < input.quantity * i.level || input.item.isConsumersHalted) {
@@ -276,13 +279,18 @@ namespace Assets.draco18s.artificer.game {
 						else {
 							i.setTimeRemaining(float.MinValue);
 						}
-					} while(i.getTimeRemaining() < 0 && i.getTimeRemaining() > float.MinValue);
+					//} while(i.getTimeRemaining() < 0 && i.getTimeRemaining() > float.MinValue);
 				}
 				//if(i.guiObj != null) {
 					Image img = i.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Progress").GetComponent<Image>();
 					img.material.SetFloat("_Cutoff", ((i.getTimeRemaining() >= 0 ? i.getTimeRemaining() : 10) / 10f));
 					img.material.SetColor("_Color", i.productType.color);
 				//}
+			}
+			//if(CraftingManager.doSynchronize)
+				//Debug.Log(needSynchro);
+			if(!needSynchro && CraftingManager.doSynchronize) {
+				CraftingManager.doSynchronize = false;
 			}
 			Profiler.EndSample();
 			Profiler.BeginSample("Sell Items");
@@ -473,7 +481,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public float GetSpeedMultiplier() {
 			//TODO: Speed bonuses
-			return (debugMode ? 1000 : 10);
+			return (debugMode ? 1000 : 1);
 		}
 
 		public float GetClickRate() {
@@ -514,11 +522,11 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.guildTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			newTab.GetComponent<Image>().sprite = GuiManager.instance.selTab;
 
-			GuiManager.instance.craftArea.SetActive(false);
-			GuiManager.instance.enchantArea.SetActive(false);
-			GuiManager.instance.questArea.SetActive(false);
-			GuiManager.instance.guildArea.SetActive(false);
-			newArea.SetActive(true);
+			GuiManager.instance.craftArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.enchantArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.questArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.guildArea.GetComponent<Canvas>().enabled = false;
+			newArea.GetComponent<Canvas>().enabled = true;
 
 			GuiManager.instance.craftHeader.SetActive(false);
 			GuiManager.instance.enchantHeader.SetActive(false);

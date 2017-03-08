@@ -17,6 +17,7 @@ namespace Assets.draco18s.artificer.game {
 	public class CraftingManager {
 		public static List<GameObject> buildButtons;
 		public static Industry selectedIcon;
+		public static bool doSynchronize = false;
 		protected static Text numVendors;
 
 		private static Vector3 lastPos;
@@ -26,6 +27,7 @@ namespace Assets.draco18s.artificer.game {
 			buildButtons = new List<GameObject>();
 			int i = 0;
 			FieldInfo[] fields = typeof(Industries).GetFields();
+			GuiManager.instance.buildingList.transform.transform.hierarchyCapacity = (fields.Length + 1) * 17;
 			foreach(FieldInfo field in fields) {
 				GameObject it = Main.Instantiate(PrefabManager.instance.BUILDING_GUI_LISTITEM);
 				buildButtons.Add(it);
@@ -415,7 +417,7 @@ namespace Assets.draco18s.artificer.game {
 				int num = (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
 				int maxAdd = Main.instance.player.maxVendors - Main.instance.player.currentVendors;
 				num = Math.Min(num, maxAdd);
-				Debug.Log(Main.instance.player.currentVendors + "+" + num);
+				//Debug.Log(Main.instance.player.currentVendors + "+" + num);
 				item.AdjustVendors(item.getRawVendors() + num);
 				Main.instance.player.currentVendors = Math.Min(Main.instance.player.currentVendors + num, Main.instance.player.maxVendors);
 			}
@@ -509,7 +511,7 @@ namespace Assets.draco18s.artificer.game {
 		public static void AdvanceTimer() {
 			//Industry item;
 			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			selectedIcon.addTimeRaw(Main.instance.GetClickRate());
+			selectedIcon.addTimeRaw(-Main.instance.GetClickRate());
 			//item.timeRemaining -= Main.instance.GetClickRate();
 		}
 
@@ -671,6 +673,11 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.infoPanel.transform.localPosition = new Vector3(-1465, 55, 0);
 			lastLevel = -1;
 		}
+
+		public static void SynchronizeInustries() {
+			doSynchronize = true;
+		}
+
 		private static int lastLevel = 0;
 		private static int lastNum = 0;
 
