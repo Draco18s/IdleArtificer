@@ -6,6 +6,7 @@ using Assets.draco18s.artificer.quests.challenge.goals;
 using Assets.draco18s.artificer.quests.requirement;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
+using Assets.draco18s.artificer.upgrades;
 using Assets.draco18s.util;
 using System;
 using System.Collections.Generic;
@@ -510,7 +511,7 @@ namespace Assets.draco18s.artificer.game {
 			activeQuests.Where(x => !x.isActive()).ToList().ForEach(x => Main.Destroy(x.guiItem));
 			activeQuests.RemoveAll(x => !x.isActive());
 			while(newQuestDelayTimer <= 0) {
-				newQuestDelayTimer += newQuestMaxTime;
+				newQuestDelayTimer += getNewQuestMaxTime();
 				Quest q = Quest.GenerateNewQuest();
 				q.timeUntilQuestExpires = 18000; //5 hours
 				availableQuests.Add(q);
@@ -594,16 +595,10 @@ namespace Assets.draco18s.artificer.game {
 			newQuestDelayTimer = time;
 		}
 
-		public static object getNewQuestMaxTime() {
-			return newQuestMaxTime;
-		}
-
-		public static void LoadMaxTimeFromSave(float v) {
-			newQuestMaxTime = v;
-		}
-
-		public static void alterQuestTimer(float time) {
-			newQuestMaxTime -= time;
+		public static float getNewQuestMaxTime() {
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
+			return newQuestMaxTime - ((UpgradeFloatValue)wrap).value;
 		}
 	}
 }

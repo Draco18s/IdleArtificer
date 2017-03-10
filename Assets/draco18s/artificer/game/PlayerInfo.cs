@@ -5,6 +5,7 @@ using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.artificer.quests.challenge.goals;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
+using Assets.draco18s.artificer.upgrades;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
 using System;
@@ -34,10 +35,7 @@ namespace Assets.draco18s.artificer.game {
 		public long questsCompleted = 0;
 		public int skillPoints = 0;
 		public int resetLevel;
-		private int vendorSellQuantity = 5;
-		private float vendorSellEffectiveness = 1.0f;
-		private float questScalar = 1;
-		private float clickRate = 0.25f;
+		public Dictionary<UpgradeType, UpgradeValueWrapper> upgrades = new Dictionary<UpgradeType, UpgradeValueWrapper>();
 
 		//achivements
 		//upgrades
@@ -47,6 +45,17 @@ namespace Assets.draco18s.artificer.game {
 			lifetimeMoney = money = starting;
 			builtItems = new List<Industry>();
 			resetLevel = 1;
+			upgrades.Add(UpgradeType.CLICK_RATE, new UpgradeFloatValue(0.25f));
+			upgrades.Add(UpgradeType.MONEY_INCOME, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.QUEST_DIFFICULTY, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.QUEST_SCALAR, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.QUEST_SPEED, new UpgradeFloatValue(0f));
+			upgrades.Add(UpgradeType.RENOWN_INCOME, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.RENOWN_MULTI, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.START_CASH, new UpgradeIntValue(20));
+			upgrades.Add(UpgradeType.TICK_RATE, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.VENDOR_SELL_VALUE, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.VENDOR_SIZE, new UpgradeIntValue(5));
 		}
 
 		public void AddMoney(BigInteger val) {
@@ -94,7 +103,9 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public int GetVendorSize() {
-			return vendorSellQuantity;
+			UpgradeValueWrapper vendorSellQuantity;
+			upgrades.TryGetValue(UpgradeType.VENDOR_SIZE, out vendorSellQuantity);
+			return ((UpgradeIntValue)vendorSellQuantity).value;
 		}
 
 		public float GetVendorValue() {
@@ -102,11 +113,9 @@ namespace Assets.draco18s.artificer.game {
 			v -= (v % 3);
 			v /= 3;
 			v = Math.Max(v - 1, 0);
-			return vendorSellEffectiveness + (0.05f * v);
-		}
-
-		public void IncreaseVendorValue(float amt) {
-			vendorSellEffectiveness += amt;
+			UpgradeValueWrapper vendorSellEffectiveness;
+			upgrades.TryGetValue(UpgradeType.VENDOR_SELL_VALUE, out vendorSellEffectiveness);
+			return ((UpgradeFloatValue)vendorSellEffectiveness).value + (0.05f * v);
 		}
 
 		public BigRational GetSellMultiplierFull() {
@@ -178,7 +187,9 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public void QuestComplete(ObstacleType goal) {
-			int v = Mathf.RoundToInt(goal.getRewardScalar() * questScalar);
+			UpgradeValueWrapper questScalar;
+			upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out questScalar);
+			int v = Mathf.RoundToInt(goal.getRewardScalar() * ((UpgradeFloatValue)questScalar).value);
 			totalQuestsCompleted += v;
 			questsCompleted += v;
 			goal.numOfTypeCompleted++;
@@ -214,10 +225,16 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("questsCompleted", questsCompleted);
 			info.AddValue("skillPoints", skillPoints);
 			info.AddValue("resetLevel", resetLevel);
-			info.AddValue("vendorSellQuantity", vendorSellQuantity);
-			info.AddValue("vendorSellEffectiveness", vendorSellEffectiveness);
-			info.AddValue("questScalar", questScalar);
-			info.AddValue("clickRate", clickRate);
+
+			UpgradeValueWrapper wrap;
+			upgrades.TryGetValue(UpgradeType.VENDOR_SIZE, out wrap);
+			info.AddValue("vendorSellQuantity", ((UpgradeIntValue)wrap).value);
+			upgrades.TryGetValue(UpgradeType.VENDOR_SELL_VALUE, out wrap);
+			info.AddValue("vendorSellEffectiveness", ((UpgradeFloatValue)wrap).value);
+			upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out wrap);
+			info.AddValue("questScalar", ((UpgradeFloatValue)wrap).value);
+			upgrades.TryGetValue(UpgradeType.CLICK_RATE, out wrap);
+			info.AddValue("clickRate", ((UpgradeFloatValue)wrap).value);
 
 			info.AddValue("miscInventorySize", miscInventory.Count);
 			for(int i = 0; i < miscInventory.Count; i++) {
@@ -247,7 +264,8 @@ namespace Assets.draco18s.artificer.game {
 				info.AddValue("availableRelics_" + i, QuestManager.availableRelics[i], typeof(ItemStack));
 			}
 			info.AddValue("newQuestTimer", QuestManager.getNewQuestTimer());
-			info.AddValue("newQuestMaxTime", QuestManager.getNewQuestMaxTime());
+			upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
+			info.AddValue("newQuestMaxTime", ((UpgradeFloatValue)wrap).value);
 			GuildManager.writeSaveData(ref info, ref context);
 		}
 
@@ -256,6 +274,17 @@ namespace Assets.draco18s.artificer.game {
 		private List<QuestLoadWrapper> questsFromDisk = new List<QuestLoadWrapper>();
 
 		public PlayerInfo(SerializationInfo info, StreamingContext context) {
+			upgrades.Add(UpgradeType.CLICK_RATE, new UpgradeFloatValue(0.25f));
+			upgrades.Add(UpgradeType.MONEY_INCOME, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.QUEST_DIFFICULTY, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.QUEST_SCALAR, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.QUEST_SPEED, new UpgradeFloatValue(0f));
+			upgrades.Add(UpgradeType.RENOWN_INCOME, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.RENOWN_MULTI, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.START_CASH, new UpgradeIntValue(20));
+			upgrades.Add(UpgradeType.TICK_RATE, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.VENDOR_SELL_VALUE, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.VENDOR_SIZE, new UpgradeIntValue(5));
 #pragma warning disable 0168
 			try {
 				Main.saveVersionFromDisk = info.GetInt32("SaveVersion");
@@ -280,11 +309,24 @@ namespace Assets.draco18s.artificer.game {
 			questsCompleted = info.GetInt64("questsCompleted");
 			skillPoints = info.GetInt32("skillPoints");
 			resetLevel = info.GetInt32("resetLevel");
-			vendorSellQuantity = info.GetInt32("vendorSellQuantity");
-			vendorSellEffectiveness = (float)info.GetDouble("vendorSellEffectiveness");
-			questScalar = (float)info.GetDouble("questScalar");
-			if(Main.saveVersionFromDisk >= 4)
-				clickRate = (float)info.GetDouble("clickRate");
+			UpgradeValueWrapper wrap;
+			int a;
+			float f;
+			a = info.GetInt32("vendorSellQuantity");
+			upgrades.TryGetValue(UpgradeType.VENDOR_SIZE, out wrap);
+			((UpgradeIntValue)wrap).value = a;
+
+			upgrades.TryGetValue(UpgradeType.VENDOR_SELL_VALUE, out wrap);
+			f = (float)info.GetDouble("vendorSellEffectiveness");
+			((UpgradeFloatValue)wrap).value = f;
+			upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out wrap);
+			f = (float)info.GetDouble("questScalar");
+			((UpgradeFloatValue)wrap).value = f;
+			if(Main.saveVersionFromDisk >= 4) {
+				upgrades.TryGetValue(UpgradeType.CLICK_RATE, out wrap);
+				f = (float)info.GetDouble("clickRate");
+				((UpgradeFloatValue)wrap).value = f;
+			}
 
 			int num;
 			num = info.GetInt32("miscInventorySize");
@@ -323,11 +365,11 @@ namespace Assets.draco18s.artificer.game {
 			for(int o = 0; o < num; o++) {
 				//QuestManager.availableRelics.Add((ItemStack)info.GetValue("availableRelics_" + o, typeof(ItemStack)));
 			}
-			//QuestManager.LoadTimerFromSave((float)info.GetDouble("newQuestTimer"));
-			//QuestManager.LoadMaxTimeFromSave((float)info.GetDouble("newQuestMaxTime"));
-			QuestManager.LoadTimerFromSave(-3600);
-			QuestManager.LoadMaxTimeFromSave(1200);
-			
+
+			//upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
+			//f = (float)info.GetDouble("newQuestMaxTime");
+			//((UpgradeFloatValue)wrap).value = f;
+
 			if(Main.saveVersionFromDisk >= 2)
 				GuildManager.readSaveData(ref info, ref context);
 		}
@@ -375,11 +417,9 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public float getClickRate() {
-			return clickRate;
-		}
-
-		public void adjustClickRate(float v) {
-			clickRate += v;
+			UpgradeValueWrapper clickRate;
+			upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out clickRate);
+			return ((UpgradeFloatValue)clickRate).value;
 		}
 	}
 }

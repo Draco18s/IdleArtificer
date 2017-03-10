@@ -9,17 +9,21 @@ using System.Text;
 namespace Assets.draco18s.artificer.upgrades {
 	class UpgradeClickRate : Upgrade {
 		protected readonly float time;
-		public UpgradeClickRate(BigInteger upgradeCost, float timeDelta, string saveName) : base(upgradeCost, "Increase Click Rate by " + Main.SecondsToTime(timeDelta), saveName) {
+		public UpgradeClickRate(BigInteger upgradeCost, float timeDelta, string saveName) : base(UpgradeType.CLICK_RATE, upgradeCost, "Increase Click Rate by " + Main.SecondsToTime(timeDelta), saveName) {
 			time = timeDelta;
 		}
 
 		public override void applyUpgrade() {
 			base.applyUpgrade();
-			Main.instance.player.adjustClickRate(time);
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
+			((UpgradeFloatValue)wrap).value += time;
 		}
 		public override void revokeUpgrade() {
 			base.revokeUpgrade();
-			Main.instance.player.adjustClickRate(-time);
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
+			((UpgradeFloatValue)wrap).value -= time;
 		}
 
 		public override string getTooltip() {

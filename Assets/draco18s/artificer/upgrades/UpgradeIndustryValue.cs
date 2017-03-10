@@ -12,7 +12,7 @@ namespace Assets.draco18s.artificer.upgrades {
 		public readonly Industry affectedIndustry;
 		public readonly float multiplier;
 
-		public UpgradeIndustryValue(BigInteger upgradeCost, float moneyMultiplier, Industry affects, string saveName) : base(upgradeCost, moneyMultiplier + "x " + Main.ToTitleCase(affects.name) + " Value", saveName) {
+		public UpgradeIndustryValue(BigInteger upgradeCost, float moneyMultiplier, Industry affects, string saveName) : base(UpgradeType.MISC, upgradeCost, moneyMultiplier + "x " + Main.ToTitleCase(affects.name) + " Value", saveName) {
 			affectedIndustry = affects;
 			multiplier = moneyMultiplier;
 		}

@@ -9,17 +9,21 @@ using System.Text;
 namespace Assets.draco18s.artificer.upgrades {
 	public class UpgradeQuestSpeed : Upgrade {
 		protected readonly float time;
-		public UpgradeQuestSpeed(BigInteger upgradeCost, float timeDelta, string saveName) : base(upgradeCost, "Reduces new quest delay by " + Main.SecondsToTime(timeDelta), saveName) {
+		public UpgradeQuestSpeed(BigInteger upgradeCost, float timeDelta, string saveName) : base(UpgradeType.QUEST_SPEED, upgradeCost, "Reduces new quest delay by " + Main.SecondsToTime(timeDelta), saveName) {
 			time = timeDelta;
 		}
 
 		public override void applyUpgrade() {
 			base.applyUpgrade();
-			QuestManager.alterQuestTimer(time);
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
+			((UpgradeFloatValue)wrap).value += time;
 		}
 		public override void revokeUpgrade() {
 			base.revokeUpgrade();
-			QuestManager.alterQuestTimer(-time);
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
+			((UpgradeFloatValue)wrap).value -= time;
 		}
 
 		public override string getTooltip() {

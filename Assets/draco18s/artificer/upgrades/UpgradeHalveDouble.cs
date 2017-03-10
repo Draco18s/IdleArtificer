@@ -10,7 +10,7 @@ using Koopakiller.Numerics;
 namespace Assets.draco18s.artificer.upgrades {
 	public class UpgradeHalveDouble : Upgrade {
 		public readonly Industry affectedIndustry;
-		public UpgradeHalveDouble(BigInteger upgradeCost, Industry affects, string saveName) : base(upgradeCost, "Halve-and-Double " + Main.ToTitleCase(affects.name), saveName) {
+		public UpgradeHalveDouble(BigInteger upgradeCost, Industry affects, string saveName) : base(UpgradeType.MISC, upgradeCost, "Halve-and-Double " + Main.ToTitleCase(affects.name), saveName) {
 			affectedIndustry = affects;
 		}
 		public override void applyUpgrade() {
