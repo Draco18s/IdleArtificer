@@ -48,18 +48,19 @@ namespace Assets.draco18s.artificer.upgrades {
 	}
 
 	public enum UpgradeType {
-		MISC,
+		MISC, //not applied to the player info class
 		START_CASH,
 		CLICK_RATE,
 		VENDOR_SIZE,
 		VENDOR_SELL_VALUE,
 		MONEY_INCOME,
 		RENOWN_INCOME,
-		RENOWN_MULTI,
+		RENOWN_MULTI, //2% -> 4%
 		TICK_RATE,
 		QUEST_SCALAR,
 		QUEST_SPEED,
-		QUEST_DIFFICULTY
+		QUEST_DIFFICULTY,
+		ENCHANTMENT_COST
 	}
 
 	public abstract class UpgradeValueWrapper {

@@ -18,7 +18,7 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade LEATHER_ARMOR1 =			new UpgradeIndustryValue(new BigInteger(1, 8), 10, Industries.ARMOR_LEATHER, "LEATHER_ARMOR1");
 			public static Upgrade HEALTH1 =					new UpgradeIndustryValue(new BigInteger(1, 9), 10, Industries.POT_HEALTH, "HEALTH1");
 			public static Upgrade MANA1 =					new UpgradeIndustryValue(new BigInteger(1, 9), 10, Industries.POT_MANA, "MANA1");
-			public static Upgrade CLICK_RATE1 =				new UpgradeClickRate(new BigInteger(1,10), 0.25f, "CLICK_RATE1");
+			public static Upgrade CLICK_RATE1 =				new UpgradeClickRate	(new BigInteger(1,10), 0.25f, "CLICK_RATE1");
 			public static Upgrade STR1 =					new UpgradeIndustryValue(new BigInteger(1, 11), 10, Industries.POT_STRENGTH, "STR1");
 			public static Upgrade AGL1 =					new UpgradeIndustryValue(new BigInteger(1, 11), 10, Industries.POT_AGILITY, "AGL1");
 			public static Upgrade INT1 =					new UpgradeIndustryValue(new BigInteger(1, 11), 10, Industries.POT_INTELLIGENCE, "INT1");
@@ -27,15 +27,21 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade IRON_SWORD1 =				new UpgradeIndustryValue(new BigInteger(1, 16), 10, Industries.IRON_SWORD, "IRON_SWORD1");
 			public static Upgrade IRON_RING1 =				new UpgradeIndustryValue(new BigInteger(1, 19), 10, Industries.IRON_RING, "IRON_RING1");
 			public static Upgrade HOLY_SYMBOL1 =			new UpgradeIndustryValue(new BigInteger(1, 21), 10, Industries.HOLY_SYMBOL, "HOLY_SYMBOL1");
-			//other potions here?
-			public static Upgrade TORCHES2 =				new UpgradeIndustryValue(new BigInteger(1, 23), 10, Industries.TORCHES, "TORCHES2");
-			public static Upgrade LEATHER_ARMOR2 =			new UpgradeIndustryValue(new BigInteger(1, 24), 10, Industries.ARMOR_LEATHER, "LEATHER_ARMOR2");
-			public static Upgrade HEALTH2 =					new UpgradeIndustryValue(new BigInteger(1, 25), 10, Industries.POT_HEALTH, "HEALTH2");
-			public static Upgrade MANA2 =					new UpgradeIndustryValue(new BigInteger(1, 25), 10, Industries.POT_MANA, "MANA2");
+			public static Upgrade POT_WATER_BREATH1 =		new UpgradeIndustryValue(new BigInteger(1, 22), 10, Industries.POT_WATER_BREATH, "POT_WATER_BREATH1");
+			public static Upgrade POT_BARKSKIN1 =			new UpgradeIndustryValue(new BigInteger(1, 22), 10, Industries.POT_BARKSKIN, "POT_BARKSKIN1");
+			public static Upgrade POT_ALERTNESS1 =			new UpgradeIndustryValue(new BigInteger(1, 22), 10, Industries.POT_ALERTNESS, "POT_ALERTNESS1");
+			public static Upgrade POT_REVIVE1 =				new UpgradeIndustryValue(new BigInteger(1, 22), 10, Industries.POT_REVIVE, "POT_REVIVE1");
+			//all income? x3?
+			public static Upgrade TORCHES2 =				new UpgradeIndustryValue(new BigInteger(1, 24), 10, Industries.TORCHES, "TORCHES2");
+			public static Upgrade LEATHER_ARMOR2 =			new UpgradeIndustryValue(new BigInteger(1, 25), 10, Industries.ARMOR_LEATHER, "LEATHER_ARMOR2");
+			public static Upgrade HEALTH2 =					new UpgradeIndustryValue(new BigInteger(1, 26), 10, Industries.POT_HEALTH, "HEALTH2");
+			public static Upgrade MANA2 =					new UpgradeIndustryValue(new BigInteger(1, 27), 10, Industries.POT_MANA, "MANA2");
 			//increase relic ID speed
 
 		}
 		public static class Renown {
+			public static Upgrade START_CASH1 = new UpgradeStartingCash(100, 10, "START_CASH1");
+			public static Upgrade RENOWN_MULTI1 = new UpgradeRenownMulti(1000, 0.01f, "RENOWN_MULTI1");
 			//upgrade renown value
 			//upgrade renown from quests
 			//decrease enchantment costs

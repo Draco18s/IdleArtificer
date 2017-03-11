@@ -76,6 +76,7 @@
      <Compile Include="Assets\draco18s\artificer\game\PlayerInfo.cs" />
      <Compile Include="Assets\draco18s\artificer\game\PrefabManager.cs" />
      <Compile Include="Assets\draco18s\artificer\game\QuestManager.cs" />
+     <Compile Include="Assets\draco18s\artificer\game\ResearchManager.cs" />
      <Compile Include="Assets\draco18s\artificer\init\ChallengeTypes.cs" />
      <Compile Include="Assets\draco18s\artificer\init\Enchantments.cs" />
      <Compile Include="Assets\draco18s\artificer\init\GameRegistry.cs" />
@@ -198,6 +199,8 @@
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeHalveDouble.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeIndustryValue.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeQuestSpeed.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeRenownMulti.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeStartingCash.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorEffectiveness.cs" />
      <Compile Include="Assets\draco18s\config\Configuration.cs" />
      <Compile Include="Assets\draco18s\util\ColorHelper.cs" />

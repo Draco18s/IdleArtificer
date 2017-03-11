@@ -45,8 +45,8 @@ namespace Assets.draco18s.artificer.game {
 			questList.transform.localPosition = Vector3.zero;
 			inventoryList.hierarchyCapacity = 100 * 30;
 			miscInventoryList.hierarchyCapacity = 100 * 30;
-			questList.hierarchyCapacity = 50 * 30;
-			activeQuestList.hierarchyCapacity = 50 * 30;
+			questList.hierarchyCapacity = 50 * 30 + 1500;
+			activeQuestList.hierarchyCapacity = 50 * 30 + 1500;
 			i = 0;
 			foreach(Industry ind in Main.instance.player.builtItems) {
 				if(ind.industryItem.canBeGivenToQuests) {
@@ -61,7 +61,7 @@ namespace Assets.draco18s.artificer.game {
 						go.name = ind.name;
 						Text tx = go.transform.FindChild("Title").GetComponent<Text>();
 						tx.text = Main.ToTitleCase(ind.name);
-						tx.fontSize = 56;
+						tx.fontSize = 28;
 						go.transform.FindChild("Quantity").GetComponent<Text>().text = "0 / " + Main.AsCurrency(ind.quantityStored);
 						go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.name);
 						int req_num = 1;
@@ -265,7 +265,7 @@ namespace Assets.draco18s.artificer.game {
 					Text tx = go.transform.FindChild("Title").GetComponent<Text>();
 					tx.text = Main.ToTitleCase(stack.getDisplayName());
 					if(stack.relicData == null)
-						tx.fontSize = 56;
+						tx.fontSize = 28;
 					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize);
 					go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
 					int req_num = 1;
@@ -317,11 +317,12 @@ namespace Assets.draco18s.artificer.game {
 					//bool haveEnough = ind.quantityStored >= total;
 					int jjj = 0;
 					foreach(Quest q in availableQuests) {
+						totalForQuest = 0;
 						bool questReady = true;
 						foreach(ItemStack stack in q.inventory) {
 							if(stack.item == ind.industryItem) {
 								totalForQuest += stack.stackSize;
-								questReady &= (ind.quantityStored >= total);
+								questReady &= (ind.quantityStored >= totalForQuest);
 							}
 						}
 						jjj++;

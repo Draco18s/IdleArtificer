@@ -26,6 +26,10 @@ public class GuiManager : MonoBehaviour {
 	public GameObject guildTab;
 	public GameObject guildArea;
 	public GameObject guildHeader;
+	public GameObject researchTab;
+	public GameObject researchArea;
+	public GameObject researchHeader;
+
 	public GameObject autoBuildBar;
 	public GameObject buyVendorsArea;
 	public GameObject buyApprenticesArea;

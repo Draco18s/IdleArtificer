@@ -45,7 +45,7 @@ namespace Assets.draco18s.artificer.game {
 			csv_st.WriteLine("TotalTime,TimeToNextBuilding,Income/Sec,CashOnHand,LastPurchase");*/
 			instance = this;
 			Application.runInBackground = true;
-			player = new PlayerInfo(new BigInteger(100000));
+			player = new PlayerInfo();
 			//money = new BigInteger(10000);
 			GuiManager.instance.mainCanvas.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.FacilityUnselected(); });
 			/* TODO: Load data from save */
@@ -54,6 +54,7 @@ namespace Assets.draco18s.artificer.game {
 			CraftingManager.setupUI();
 			QuestManager.setupUI();
 			GuildManager.OneTimeSetup();
+			ResearchManager.OneTimeSetup();
 			Configuration.loadCurrentDirectory();
 
 			InfoPanel panel = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
@@ -90,6 +91,7 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.enchantTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.enchantTab, GuiManager.instance.enchantArea, GuiManager.instance.enchantHeader); });
 			GuiManager.instance.questTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.questTab, GuiManager.instance.questArea, GuiManager.instance.questHeader); });
 			GuiManager.instance.guildTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.guildTab, GuiManager.instance.guildArea, GuiManager.instance.guildHeader); });
+			GuiManager.instance.researchTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.researchTab, GuiManager.instance.researchArea, GuiManager.instance.researchHeader); });
 
 			btn = GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { player.reset(); });
@@ -506,32 +508,27 @@ namespace Assets.draco18s.artificer.game {
 		public BigRational GetSellMultiplierFull() {
 			return player.GetSellMultiplierFull();
 		}
-		[Obsolete]
-		public BigInteger GetSellMultiplier() {
-			return player.GetSellMultiplier();
-		}
-		[Obsolete]
-		public float GetSellMultiplierMicro() {
-			return player.GetSellMultiplierMicro();
-		}
 
 		private void switchTabImage(GameObject newTab, GameObject newArea, GameObject newHeader) {
 			GuiManager.instance.craftTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			GuiManager.instance.enchantTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			GuiManager.instance.questTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			GuiManager.instance.guildTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
+			GuiManager.instance.researchTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			newTab.GetComponent<Image>().sprite = GuiManager.instance.selTab;
 
 			GuiManager.instance.craftArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.enchantArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.questArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.guildArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.researchArea.GetComponent<Canvas>().enabled = false;
 			newArea.GetComponent<Canvas>().enabled = true;
 
 			GuiManager.instance.craftHeader.SetActive(false);
 			GuiManager.instance.enchantHeader.SetActive(false);
 			GuiManager.instance.questHeader.SetActive(false);
 			GuiManager.instance.guildHeader.SetActive(false);
+			GuiManager.instance.researchHeader.SetActive(false);
 			newHeader.SetActive(true);
 
 			if(newTab == GuiManager.instance.craftTab) {
@@ -545,6 +542,9 @@ namespace Assets.draco18s.artificer.game {
 			}
 			if(newTab == GuiManager.instance.guildTab) {
 				GuildManager.setupUI();
+			}
+			if(newTab == GuiManager.instance.researchTab) {
+				ResearchManager.setupUI();
 			}
 			GuiManager.instance.infoPanel.transform.localPosition = new Vector3(-1465, 55, 0);
 			CraftingManager.FacilityUnselected(null);

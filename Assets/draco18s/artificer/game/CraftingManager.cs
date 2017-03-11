@@ -1,5 +1,6 @@
 ﻿using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.items;
+using Assets.draco18s.artificer.quests;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
 using Assets.draco18s.util;
@@ -130,9 +131,55 @@ namespace Assets.draco18s.artificer.game {
 					if(Mathf.FloorToInt(Time.time * 10) % 20 == 0) {
 						Transform t;
 						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico1");
+						if(QuestManager.IsIndustryOnQuest(item)) {
+							int totalForQuest = 0;
+							int totalReady = 0;
+							int totalNeed = 0;
+							foreach(Quest q in QuestManager.availableQuests) {
+								bool questReady = true;
+								bool needed = false;
+								totalForQuest = 0;
+								foreach(ItemStack stack in q.inventory) {
+									if(stack.item == item.industryItem) {
+										totalForQuest += stack.stackSize;
+										questReady &= (item.quantityStored >= totalForQuest);
+										needed = true;
+									}
+								}
+								if(needed) {
+									totalNeed++;
+									if(questReady) {
+										totalReady++;
+									}
+								}
+							}
+							Debug.Log(totalReady +" >= "+totalNeed);
+							if(totalReady >= totalNeed) {
+								t.GetComponent<Image>().color = Color.green;
+							}
+							else if(totalReady > 0) {
+								t.GetComponent<Image>().color = Color.blue;
+							}
+							else {
+								t.GetComponent<Image>().color = Color.red;
+							}
+						}
 						t.gameObject.SetActive(QuestManager.IsIndustryOnQuest(item));
 						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");
-						t.gameObject.SetActive(item.getRawVendors() > 0);
+						if(item.getRawVendors() > 0) {
+							BigInteger avaialbleToSell = item.output * item.level + (item.isSellingStores?item.quantityStored:0) - item.consumeAmount;
+							BigInteger sellCapacity = item.getVendors() * Main.instance.GetVendorSize();
+							if(avaialbleToSell < sellCapacity && avaialbleToSell <= sellCapacity-(item.getOneVendor()*Main.instance.GetVendorSize())) {
+								t.GetComponent<Image>().color = Color.red;
+							}
+							else {
+								t.GetComponent<Image>().color = Color.black;
+							}
+							t.gameObject.SetActive(true);
+						}
+						else {
+							t.gameObject.SetActive(false);
+						}
 						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico3");
 						t.gameObject.SetActive(item.apprentices > 0);
 					}
@@ -410,7 +457,6 @@ namespace Assets.draco18s.artificer.game {
 				IncreaseVendors(selectedIcon);
 				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().VendNum.text = "" + selectedIcon.getRawVendors();
 			}
-			numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
 		}
 		public static void IncreaseVendors(Industry item) {
 			if(Main.instance.player.currentVendors < Main.instance.player.maxVendors) {
@@ -420,7 +466,24 @@ namespace Assets.draco18s.artificer.game {
 				//Debug.Log(Main.instance.player.currentVendors + "+" + num);
 				item.AdjustVendors(item.getRawVendors() + num);
 				Main.instance.player.currentVendors = Math.Min(Main.instance.player.currentVendors + num, Main.instance.player.maxVendors);
+
+				Transform t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");
+				if(item.getRawVendors() > 0) {
+					BigInteger avaialbleToSell = item.output * item.level + (item.isSellingStores ? item.quantityStored : 0) - item.consumeAmount;
+					BigInteger sellCapacity = item.getVendors() * Main.instance.GetVendorSize();
+					if(avaialbleToSell < sellCapacity && avaialbleToSell <= sellCapacity - (item.getOneVendor() * Main.instance.GetVendorSize())) {
+						t.GetComponent<Image>().color = Color.red;
+					}
+					else {
+						t.GetComponent<Image>().color = Color.black;
+					}
+					t.gameObject.SetActive(true);
+				}
+				else {
+					t.gameObject.SetActive(false);
+				}
 			}
+			numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
 		}
 
 		public static void DecreaseVendors() {
@@ -430,7 +493,6 @@ namespace Assets.draco18s.artificer.game {
 				DecreaseVendors(selectedIcon);
 				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().VendNum.text = "" + selectedIcon.getRawVendors();
 			}
-			numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
 		}
 		public static void DecreaseVendors(Industry item) {
 			if(item.getRawVendors() > 0) {
@@ -438,7 +500,24 @@ namespace Assets.draco18s.artificer.game {
 				num = Math.Min(num, item.getRawVendors());
 				item.AdjustVendors(item.getRawVendors() - num);
 				Main.instance.player.currentVendors -= num;
+
+				Transform t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");
+				if(item.getRawVendors() > 0) {
+					BigInteger avaialbleToSell = item.output * item.level + (item.isSellingStores ? item.quantityStored : 0) - item.consumeAmount;
+					BigInteger sellCapacity = item.getVendors() * Main.instance.GetVendorSize();
+					if(avaialbleToSell < sellCapacity && avaialbleToSell <= sellCapacity - (item.getOneVendor() * Main.instance.GetVendorSize())) {
+						t.GetComponent<Image>().color = Color.red;
+					}
+					else {
+						t.GetComponent<Image>().color = Color.black;
+					}
+					t.gameObject.SetActive(true);
+				}
+				else {
+					t.gameObject.SetActive(false);
+				}
 			}
+			numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
 		}
 
 		public static void IncreaseApprentices() {

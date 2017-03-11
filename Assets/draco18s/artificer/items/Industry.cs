@@ -271,6 +271,10 @@ namespace Assets.draco18s.artificer.items {
 			return Mathf.RoundToInt(vendors * vendorSizeMulti);
 		}
 
+		public int getOneVendor() {
+			return Mathf.RoundToInt(1 * vendorSizeMulti);
+		}
+
 		public int getRawVendors() {
 			return vendors;
 		}
