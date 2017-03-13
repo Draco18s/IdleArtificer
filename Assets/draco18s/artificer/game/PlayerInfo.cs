@@ -35,6 +35,7 @@ namespace Assets.draco18s.artificer.game {
 		public long questsCompleted = 0;
 		public int skillPoints = 0;
 		public int resetLevel;
+		internal float researchTime;
 		public Dictionary<UpgradeType, UpgradeValueWrapper> upgrades = new Dictionary<UpgradeType, UpgradeValueWrapper>();
 
 		//achivements
@@ -56,6 +57,7 @@ namespace Assets.draco18s.artificer.game {
 			upgrades.Add(UpgradeType.TICK_RATE, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.VENDOR_SELL_VALUE, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.VENDOR_SIZE, new UpgradeIntValue(5));
+			upgrades.Add(UpgradeType.RESEARCH_RATE, new UpgradeFloatValue(1f));
 		}
 
 		public void AddMoney(BigInteger val) {
@@ -227,6 +229,8 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("startCash", ((UpgradeIntValue)wrap).value);
 			upgrades.TryGetValue(UpgradeType.RENOWN_MULTI, out wrap);
 			info.AddValue("renownMulti", ((UpgradeFloatValue)wrap).value);
+			upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
+			info.AddValue("researchRate", ((UpgradeFloatValue)wrap).value);
 
 			info.AddValue("miscInventorySize", miscInventory.Count);
 			for(int i = 0; i < miscInventory.Count; i++) {
@@ -277,6 +281,7 @@ namespace Assets.draco18s.artificer.game {
 			upgrades.Add(UpgradeType.TICK_RATE, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.VENDOR_SELL_VALUE, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.VENDOR_SIZE, new UpgradeIntValue(5));
+			upgrades.Add(UpgradeType.RESEARCH_RATE, new UpgradeFloatValue(1f));
 #pragma warning disable 0168
 			try {
 				Main.saveVersionFromDisk = info.GetInt32("SaveVersion");
@@ -287,7 +292,7 @@ namespace Assets.draco18s.artificer.game {
 #pragma warning restore 0168
 			//TODO: uncomment this stuff
 			builtItems = new List<Industry>();
-			money = 20;// new BigInteger(info.GetString("money"));
+			money = 200000000;// new BigInteger(info.GetString("money"));
 			moneyFloor = 1;// new BigInteger(info.GetString("moneyFloor"));
 			lifetimeMoney = money;// new BigInteger(info.GetString("lifetimeMoney"));
 			renown = 0;// new BigInteger(info.GetString("renown"));
@@ -325,6 +330,9 @@ namespace Assets.draco18s.artificer.game {
 				((UpgradeIntValue)wrap).value = a;
 				upgrades.TryGetValue(UpgradeType.RENOWN_MULTI, out wrap);
 				f = (float)info.GetDouble("renownMulti");
+				((UpgradeFloatValue)wrap).value = f;
+				upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
+				f = (float)info.GetDouble("researchRate");
 				((UpgradeFloatValue)wrap).value = f;
 			}
 

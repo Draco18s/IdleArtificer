@@ -2652,7 +2652,7 @@ namespace Koopakiller.Numerics
 		}
 
 		public static int Log10(BigInteger val) {
-			return val.ToString().Length - 1;
+			return (Abs(new BigInteger(val))).ToString().Length - 1;
 		}
 
 		public static BigInteger THREE_D = 3;

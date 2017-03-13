@@ -37,6 +37,7 @@ namespace Assets.draco18s.artificer.game {
 		public bool close_file = false;
 
 		void Start() {
+			Profiler.maxNumberOfSamplesPerFrame = -1;
 			/*string path = "E:\\Users\\Major\\Desktop\\time_data.csv";
 			if(File.Exists(path)) {
 				File.Delete(path);
@@ -245,6 +246,9 @@ namespace Assets.draco18s.artificer.game {
 			Profiler.EndSample();
 			Profiler.BeginSample("Guild Manager");
 			GuildManager.update();
+			Profiler.EndSample();
+			Profiler.BeginSample("Research Manager");
+			ResearchManager.update(deltaTime);
 			Profiler.EndSample();
 			Profiler.BeginSample("Tick Built Items");
 			bool needSynchro = false;
@@ -483,7 +487,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public float GetSpeedMultiplier() {
 			//TODO: Speed bonuses
-			return (debugMode ? 1000 : 1);
+			return (debugMode ? 1000 : 10);
 		}
 
 		public float GetClickRate() {
@@ -581,9 +585,11 @@ namespace Assets.draco18s.artificer.game {
 			return AsCurrency(cost, 9, false);
 		}
 
-		public static string AsCurrency(BigInteger cost, int maxDigits, bool skipDecimal) {
+		public static string AsCurrency(BigInteger val, int maxDigits, bool skipDecimal) {
 			if(maxDigits < 4) maxDigits = 4;
-			string simple = cost.ToString();
+			bool isNeg = val.IsNegative;
+			BigInteger num = BigInteger.Abs(new BigInteger(val));
+			string simple = num.ToString();
 			string output = "";
 			if(simple.Length > maxDigits) {
 				int d = (simple.Length%3);
@@ -629,6 +635,9 @@ namespace Assets.draco18s.artificer.game {
 					}
 					output = simple[(simple.Length - i - 1)] + output;
 				}
+			}
+			if(isNeg) {
+				output = "-" + output;
 			}
 			return output;
 		}

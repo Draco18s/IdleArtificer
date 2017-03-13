@@ -298,7 +298,6 @@ namespace Assets.draco18s.artificer.game {
 		private static void validateQuests() {
 			int i = 0;
 			foreach(Industry ind in Main.instance.player.builtItems) {
-				long totalForQuest = 0;
 				GameObject go;// = ind.questInvenListObj;
 				questInvenList.TryGetValue(ind, out go);
 				if(go != null) {
@@ -315,23 +314,25 @@ namespace Assets.draco18s.artificer.game {
 					}
 					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored) + " / " + total;
 					//bool haveEnough = ind.quantityStored >= total;
-					int jjj = 0;
-					foreach(Quest q in availableQuests) {
-						totalForQuest = 0;
-						bool questReady = true;
-						foreach(ItemStack stack in q.inventory) {
-							if(stack.item == ind.industryItem) {
-								totalForQuest += stack.stackSize;
-								questReady &= (ind.quantityStored >= totalForQuest);
-							}
-						}
-						jjj++;
-						q.guiItem.transform.FindChild("Start").GetComponent<Button>().interactable = questReady;
-					}
+					
 					i++;
 				}
 			}
 			((RectTransform)inventoryList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, i * 126 + 5);
+
+
+			foreach(Quest q in availableQuests) {
+				bool questReady = true;
+				long totalForQuest = 0;
+				foreach(ItemStack stack in q.inventory) {
+					totalForQuest = 0;
+					if(stack.item.industry != null) {
+						totalForQuest += stack.stackSize;
+						questReady &= (stack.item.industry.quantityStored >= totalForQuest);
+					}
+				}
+				q.guiItem.transform.FindChild("Start").GetComponent<Button>().interactable = questReady;
+			}
 		}
 
 		public static bool IsIndustryOnQuest(Industry item) {
@@ -486,15 +487,15 @@ namespace Assets.draco18s.artificer.game {
 							}
 						}
 						foreach(ItemStack st in q.inventory) {
-							if(st.relicData != null /*&& st != newRelic*/) {
+							if(st.relicData != null || st.enchants.Count > 0 /*&& st != newRelic*/) {
 								//if the player gave it to the hero, then it's ID'd and can go back to the player's general inventory
 								//if it isn't, then it goes to the Unidentified Relics list
-								if(st.relicData != null || st.enchants.Count > 0) {
-									if(st.isIDedByPlayer)
-										Main.instance.player.addItemToInventory(st);
-									else
-										Main.instance.player.unidentifiedRelics.Add(st);
-								}
+								Debug.Log(st.isIDedByPlayer);
+								if(st.isIDedByPlayer)
+									Main.instance.player.addItemToInventory(st);
+								else
+									Main.instance.player.unidentifiedRelics.Add(st);
+								
 							}
 						}
 						Main.instance.CompleteQuest(q.getGoal());
@@ -539,7 +540,7 @@ namespace Assets.draco18s.artificer.game {
 				RelicInfo info = new RelicInfo(hero, maker.relicNames(stack), maker.relicDescription(stack), ob.getRewardScalar());
 				Debug.Log(info);
 				stack.relicData.Add(info);
-				stack.isIDedByPlayer = true;// false;
+				stack.isIDedByPlayer = false;
 			}
 			return stack;
 		}

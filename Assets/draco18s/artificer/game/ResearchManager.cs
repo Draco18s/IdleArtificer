@@ -1,5 +1,6 @@
 ﻿using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.ui;
+using Assets.draco18s.artificer.upgrades;
 using Assets.draco18s.util;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,17 @@ namespace Assets.draco18s.artificer.game {
 	class ResearchManager {
 		private static Transform relicList;
 		private static Dictionary<ItemStack, GameObject> relicsList = new Dictionary<ItemStack, GameObject>();
+		private static Material progressBarMat;
+		private static Text timeLeftTxt;
+		private static System.Random rand = new System.Random();
 
 		public static void OneTimeSetup() {
-			relicList = GuiManager.instance.researchArea.transform.FindChild("RelicsList").GetChild(0).GetChild(0);
+			Transform trans = GuiManager.instance.researchArea.transform;
+			relicList = trans.FindChild("RelicsList").GetChild(0).GetChild(0);
 			relicList.transform.hierarchyCapacity = 200 * 20;
+			progressBarMat = trans.FindChild("Research").FindChild("RelicProgress").GetComponent<Image>().material;
+			trans.FindChild("Research").FindChild("Barbg").GetComponent<Button>().onClick.AddListener(delegate { IncrementResearch(); });
+			timeLeftTxt = trans.FindChild("Research").FindChild("TimeLeft").GetComponent<Text>();
 		}
 		public static void setupUI() {
 			int i = 0;
@@ -75,6 +83,32 @@ namespace Assets.draco18s.artificer.game {
 			}
 			((RectTransform)relicList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ((i / 4) * 100 + 10));
 			relicList.localPosition = Vector3.zero;
+		}
+
+		public static void update(float dt) {
+			if(Main.instance.player.unidentifiedRelics.Count > 0) {
+				Debug.Log("Time " + Main.instance.player.researchTime);
+				UpgradeValueWrapper wrap;
+				Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
+				Main.instance.player.researchTime += dt * ((UpgradeFloatValue)wrap).value;
+				if(Main.instance.player.researchTime >= 3600) {
+					Main.instance.player.researchTime -= 3600;
+					ItemStack s = Main.instance.player.unidentifiedRelics[rand.Next(Main.instance.player.unidentifiedRelics.Count)];
+					s.isIDedByPlayer = true;
+					Main.instance.player.unidentifiedRelics.Remove(s);
+					Main.instance.player.addItemToInventory(s);
+				}
+				timeLeftTxt.text = Main.SecondsToTime(3600 - Main.instance.player.researchTime);
+			}
+			timeLeftTxt.text = "∞";
+		}
+
+		public static void IncrementResearch() {
+			UpgradeValueWrapper wrap1;
+			Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap1);
+			UpgradeValueWrapper wrap2;
+			Main.instance.player.upgrades.TryGetValue(UpgradeType.CLICK_RATE, out wrap2);
+			Main.instance.player.researchTime += 200 * ((UpgradeFloatValue)wrap1).value * ((UpgradeFloatValue)wrap2).value;
 		}
 	}
 }

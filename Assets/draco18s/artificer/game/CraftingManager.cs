@@ -153,7 +153,6 @@ namespace Assets.draco18s.artificer.game {
 									}
 								}
 							}
-							Debug.Log(totalReady +" >= "+totalNeed);
 							if(totalReady >= totalNeed) {
 								t.GetComponent<Image>().color = Color.green;
 							}
