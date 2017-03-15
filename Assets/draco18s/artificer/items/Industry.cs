@@ -157,9 +157,32 @@ namespace Assets.draco18s.artificer.items {
 		public bool addTime(float t) {
 			bool ret = false;
 			if(CraftingManager.doSynchronize && apprentices == 0) {
-				int intTime = Mathf.FloorToInt(Time.time);
-				float synchTime = (intTime % 10) + Time.time - intTime;
-				synchTime = 100 - Mathf.RoundToInt(synchTime * 10);
+				int intTime = Mathf.FloorToInt(Time.time*Main.instance.GetSpeedMultiplier());
+				float synchTime = (intTime % 10) + (Time.time * Main.instance.GetSpeedMultiplier()) - intTime;
+
+				int diff = Mathf.Abs((100 - Mathf.RoundToInt(timeRemaining * 10)) - Mathf.RoundToInt(synchTime * 10));
+
+				if(diff > 1) {
+					t *= 0.25f;
+					ret = true;
+					Debug.Log(name + ": still syncing (big) " + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime*10));
+				}
+				else if(diff > 0) {
+					if((100 - Mathf.RoundToInt(timeRemaining * 10)) > Mathf.RoundToInt(synchTime * 10)) {
+						t *= 0.95f;
+					}
+					else {
+						t *= 1.05f;
+					}
+					ret = true;
+					Debug.Log(name + ": still syncing (micro) " + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime * 10));
+				}
+				/*if(100 - Mathf.RoundToInt(timeRemaining * 10) > Mathf.RoundToInt(synchTime *10)) {
+					t *= 0.5f;
+					ret = true;
+					Debug.Log(name + ": still syncing (fast)" + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime*10));
+				}*/
+				/*synchTime = 100 - Mathf.RoundToInt(synchTime * 10);
 				if(Mathf.RoundToInt(timeRemaining * 10) > synchTime) {
 					t *= 2;
 					ret = true;
@@ -167,7 +190,7 @@ namespace Assets.draco18s.artificer.items {
 				else if(Mathf.RoundToInt(timeRemaining * 10) < synchTime) {
 					t /= 2;
 					ret = true;
-				}
+				}*/
 			}
 			timeRemaining += (t * halvesAndDoubles);
 			return ret;

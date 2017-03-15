@@ -105,7 +105,7 @@ namespace Assets.draco18s.artificer.game {
 				foreach(Industry item in Main.instance.player.builtItems) {
 					foreach(IndustryInput input in item.inputs) {
 						GameObject obj = input.arrow; //Instantiate(PrefabManager.instance.GRID_GUI_ARROW);
-						obj.transform.SetParent(item.craftingGridGO.transform.parent.GetChild(0));
+						//obj.transform.SetParent(item.craftingGridGO.transform.parent.GetChild(0));
 						obj.transform.localPosition = item.craftingGridGO.transform.GetChild(0).localPosition;
 
 						if(input.item.craftingGridGO != null) {
@@ -207,9 +207,9 @@ namespace Assets.draco18s.artificer.game {
 					Main.instance.player.builtItems.Sort((a, b) => a.cost.CompareTo(b.cost));
 					if(!fromSave)
 						item.setTimeRemaining(float.MinValue);
-					GameObject it = Main.Instantiate(PrefabManager.instance.BUILDING_GUI_GRIDITEM);
+					GameObject it = Main.Instantiate(PrefabManager.instance.BUILDING_GUI_GRIDITEM, GuiManager.instance.gridArea.transform.GetChild(1)) as GameObject;
 					it.name = "Grid_Icon_" + item.name;
-					it.transform.SetParent(GuiManager.instance.gridArea.transform);
+					//it.transform.SetParent(GuiManager.instance.gridArea.transform);
 					it.transform.localPosition = new Vector3(0, 0, 0);
 					int y = (Screen.height - 128) / 2;
 					y = MathHelper.snap(y, 24);
@@ -232,8 +232,8 @@ namespace Assets.draco18s.artificer.game {
 					Main.instance.player.itemData.TryGetValue(it, out item2);
 					Debug.Log(item.name + " -> " + item2);*/
 					foreach(IndustryInput input in item.inputs) {
-						GameObject obj = Main.Instantiate(PrefabManager.instance.GRID_GUI_ARROW);
-						obj.transform.SetParent(it.transform.parent.GetChild(0));
+						GameObject obj = Main.Instantiate(PrefabManager.instance.GRID_GUI_ARROW, GuiManager.instance.gridArea.transform.GetChild(0)) as GameObject;
+						//obj.transform.SetParent(it.transform.parent.GetChild(0));
 						obj.transform.localPosition = it.transform.GetChild(0).localPosition;
 						input.arrow = obj;
 						if(input.item.craftingGridGO != null) {
@@ -754,6 +754,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void SynchronizeInustries() {
 			doSynchronize = true;
+			GuiManager.instance.craftHeader.transform.FindChild("SyncBtn").GetComponent<Button>().interactable = false;
 		}
 
 		private static int lastLevel = 0;
@@ -834,10 +835,10 @@ namespace Assets.draco18s.artificer.game {
 
 					//pos.y -= 120;
 					int v = (Screen.height) / 2;
-					pos.y -= v;
+					//pos.y += v;
 					int h = (Screen.width / 2) - 170;
 					pos.x = Mathf.Clamp(pos.x, 115 - h, h);
-					pos.y = Mathf.Clamp(pos.y, -v + 170, v - 270) + 0.5f;
+					pos.y = Mathf.Clamp(pos.y, v-214, v+110) + 0.5f;
 
 					GuiManager.instance.infoPanel.transform.localPosition = pos;
 				}

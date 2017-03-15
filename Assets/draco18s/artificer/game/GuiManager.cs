@@ -45,6 +45,7 @@ public class GuiManager : MonoBehaviour {
 
 	private static List<NotificationItem> notificationQueue = new List<NotificationItem>();
 
+
 	void Start() {
 		instance = this;
 		req_icons = Resources.LoadAll<Sprite>("items/req_icons");

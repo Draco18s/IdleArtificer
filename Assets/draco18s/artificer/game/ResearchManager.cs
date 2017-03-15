@@ -15,6 +15,7 @@ namespace Assets.draco18s.artificer.game {
 		private static Dictionary<ItemStack, GameObject> relicsList = new Dictionary<ItemStack, GameObject>();
 		private static Material progressBarMat;
 		private static Text timeLeftTxt;
+		private static Text relicsLeftTxt;
 		private static System.Random rand = new System.Random();
 
 		public static void OneTimeSetup() {
@@ -24,6 +25,7 @@ namespace Assets.draco18s.artificer.game {
 			progressBarMat = trans.FindChild("Research").FindChild("RelicProgress").GetComponent<Image>().material;
 			trans.FindChild("Research").FindChild("Barbg").GetComponent<Button>().onClick.AddListener(delegate { IncrementResearch(); });
 			timeLeftTxt = trans.FindChild("Research").FindChild("TimeLeft").GetComponent<Text>();
+			relicsLeftTxt = trans.FindChild("Research").FindChild("NumUnidentified").GetComponent<Text>();
 		}
 		public static void setupUI() {
 			int i = 0;
@@ -83,6 +85,7 @@ namespace Assets.draco18s.artificer.game {
 			}
 			((RectTransform)relicList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ((i / 4) * 100 + 10));
 			relicList.localPosition = Vector3.zero;
+			relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
 		}
 
 		public static void update(float dt) {
@@ -97,10 +100,15 @@ namespace Assets.draco18s.artificer.game {
 					s.isIDedByPlayer = true;
 					Main.instance.player.unidentifiedRelics.Remove(s);
 					Main.instance.player.addItemToInventory(s);
+					relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
 				}
 				timeLeftTxt.text = Main.SecondsToTime(3600 - Main.instance.player.researchTime);
+				progressBarMat.SetFloat("_Cutoff", 1-Main.instance.player.researchTime / 3600f);
 			}
-			timeLeftTxt.text = "∞";
+			else {
+				timeLeftTxt.text = "∞";
+				progressBarMat.SetFloat("_Cutoff", 1);
+			}
 		}
 
 		public static void IncrementResearch() {

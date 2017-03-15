@@ -253,7 +253,7 @@ namespace Assets.draco18s.artificer.init {
 				Item i = Items.getRandom(theQuest.questRand, 0, 9);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + i.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
 				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
@@ -261,7 +261,7 @@ namespace Assets.draco18s.artificer.init {
 				Item i = Items.getRandom(theQuest.questRand, 9, 19);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + i.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
 				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
@@ -269,7 +269,7 @@ namespace Assets.draco18s.artificer.init {
 				Item i = Items.getRandom(theQuest.questRand, 19, 29);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + i.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
 				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
@@ -277,7 +277,7 @@ namespace Assets.draco18s.artificer.init {
 				Item i = Items.getRandomType(theQuest.questRand, type);
 				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 				s += checkHerbalism(theQuest, i);
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + i.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
 				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
@@ -308,7 +308,7 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static void AddStack(Quest theQuest, ItemStack stack) {
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + stack.item.name + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + stack.item.name));
+				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(stack.item.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + stack.item.name));
 				Main.instance.player.addItemToInventory(stack, notify);
 			}
 		}

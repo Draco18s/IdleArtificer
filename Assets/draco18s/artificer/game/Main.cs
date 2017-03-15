@@ -297,6 +297,7 @@ namespace Assets.draco18s.artificer.game {
 				//Debug.Log(needSynchro);
 			if(!needSynchro && CraftingManager.doSynchronize) {
 				CraftingManager.doSynchronize = false;
+				GuiManager.instance.craftHeader.transform.FindChild("SyncBtn").GetComponent<Button>().interactable = true;
 			}
 			Profiler.EndSample();
 			Profiler.BeginSample("Sell Items");
