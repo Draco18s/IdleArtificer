@@ -17,6 +17,7 @@ namespace Assets.draco18s.artificer.items {
 		protected RequirementType reqProperties;
 		protected AidType aidProperties;
 		protected int questSize = 1;
+		protected float effectivenessMultiplier = 1;
 
 		public Item(string name) {
 			this.name = name;
@@ -59,6 +60,10 @@ namespace Assets.draco18s.artificer.items {
 			return reqProperties;
 		}
 
+		public float getEffectiveness() {
+			return effectivenessMultiplier;
+		}
+
 		public AidType getAllAids() {
 			return aidProperties;
 		}
@@ -86,6 +91,11 @@ namespace Assets.draco18s.artificer.items {
 
 		public Item setIsViableRelic(bool val) {
 			isViableRelic = val;
+			return this;
+		}
+
+		public Item setEffectiveness(float val) {
+			effectivenessMultiplier = val;
 			return this;
 		}
 	}

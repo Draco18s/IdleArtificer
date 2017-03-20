@@ -703,6 +703,14 @@ namespace Assets.draco18s.artificer.game {
 			}
 			selectedIcon.level -= buyNum;
 			info.DowngradeBtn.gameObject.SetActive(true);
+			if(selectedIcon.level <= 0) {
+				Main.instance.player.builtItems.Remove(selectedIcon);
+				Main.Destroy(selectedIcon.craftingGridGO);
+				selectedIcon.craftingGridGO = null;
+				if(Main.instance.player.builtItems.Count == 0 && Main.instance.player.money < 10) {
+					Main.instance.player.money = 20;// Main.instance.player.GetStartingCash();
+				}
+			}
 		}
 
 		public static void ToggleAllowConsume() {
@@ -768,7 +776,7 @@ namespace Assets.draco18s.artificer.game {
 				//int minx = Mathf.RoundToInt(((RectTransform)selectedIcon.transform.parent).offsetMin.x);
 				int maxy = Screen.height - 100;
 				int minx = Screen.width / 2 - 32;
-				newpos.y = Mathf.Clamp(newpos.y, 32, maxy-32);
+				newpos.y = Mathf.Clamp(newpos.y, 48, maxy-32);
 				newpos.x = Mathf.Clamp(newpos.x, -1*(minx - 128), minx);
 				newpos = MathHelper.snap(newpos, 24);
 				selectedIcon.craftingGridGO.transform.GetChild(0).localPosition = newpos;

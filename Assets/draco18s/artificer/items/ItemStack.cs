@@ -124,6 +124,23 @@ namespace Assets.draco18s.artificer.items {
 			enchants.Sort((x, y) => x.ID.CompareTo(y.ID));
 		}
 
+		public float getEffectiveness(RequirementType type) {
+			float f = 0;
+			if(item.hasReqType(type))
+				f = item.getEffectiveness();
+			foreach(Enchantment e in enchants) {
+				if((e.reqTypes & type) > 0) {
+					if(f == 0) {
+						f = e.getEffectiveness();
+					}
+					else {
+						f *= (1 + e.getEffectiveness());
+					}
+				}
+			}
+			return f;
+		}
+
 		public ItemStack split(int v) {
 			if(v > stackSize) v = stackSize;
 			if(v <= 0) return null;

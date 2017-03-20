@@ -125,6 +125,8 @@ namespace Assets.draco18s.artificer.game {
 					i++;
 				}
 			}
+			((RectTransform)inventoryList1).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, i * 126 + 5);
+			inventoryList1.transform.localPosition = Vector3.zero;
 			i = 0;
 			int j = 0;
 
@@ -155,8 +157,9 @@ namespace Assets.draco18s.artificer.game {
 					go.GetComponent<Button>().onClick.AddListener(delegate { /*SelectItem(s);*/addInput2(s); });
 				}
 				else {
+					Debug.Log((stack.relicData==null?"Null":""+stack.relicData.Count));
 					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize);
-					if(stack.enchants.Count > 0) {
+					if(stack.enchants.Count > 0 || stack.relicData != null) {
 						go.transform.SetParent(inventoryList3);
 						go.transform.localPosition = new Vector3(6, (i * -125) - 5, 0);
 						go.GetComponent<Button>().onClick.AddListener(delegate { /*SelectItem(s);*/addInput1(s); });
@@ -237,7 +240,7 @@ namespace Assets.draco18s.artificer.game {
 
 			((RectTransform)inventoryList2).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, j * 126 + 5);
 			inventoryList2.transform.localPosition = Vector3.zero;
-			((RectTransform)inventoryList1).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, i * 126 + 5);
+			((RectTransform)inventoryList3).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, i * 126 + 5);
 			inventoryList1.transform.localPosition = Vector3.zero;
 		}
 

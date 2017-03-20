@@ -25,8 +25,8 @@ namespace Assets.draco18s.artificer.game {
 		public BigInteger money = 0;
 		public BigInteger moneyFloor = 1;
 		public BigInteger lifetimeMoney = 0;// = new BigInteger("1000000000");
-		public BigInteger renown = 100;
-		public BigInteger totalRenown = 100;
+		public BigInteger renown = 0;
+		public BigInteger totalRenown = 0;
 		public int maxVendors = 5;
 		public int currentVendors = 0;
 		public int maxApprentices = 0;
@@ -46,6 +46,10 @@ namespace Assets.draco18s.artificer.game {
 			lifetimeMoney = money = 20;
 			builtItems = new List<Industry>();
 			resetLevel = 1;
+			SetDefaultUpgrades();
+		}
+
+		private void SetDefaultUpgrades() {
 			upgrades.Add(UpgradeType.CLICK_RATE, new UpgradeFloatValue(0.25f));
 			upgrades.Add(UpgradeType.MONEY_INCOME, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.QUEST_DIFFICULTY, new UpgradeFloatValue(1f));
@@ -78,6 +82,15 @@ namespace Assets.draco18s.artificer.game {
 
 		public void addItemToInventory(ItemStack stack) {
 			if(stack == null) return;
+			if(Main.instance.player.miscInventory.Contains(stack)) return;
+			if(Main.instance.player.unidentifiedRelics.Contains(stack)) {
+				if(stack.isIDedByPlayer) {
+					Main.instance.player.unidentifiedRelics.Remove(stack);
+				}
+				else {
+					return;
+				}
+			}
 			if(stack.relicData == null) {
 				foreach(ItemStack s in miscInventory) {
 					if(s.item == stack.item) {
@@ -270,18 +283,7 @@ namespace Assets.draco18s.artificer.game {
 		private List<QuestLoadWrapper> questsFromDisk = new List<QuestLoadWrapper>();
 
 		public PlayerInfo(SerializationInfo info, StreamingContext context) {
-			upgrades.Add(UpgradeType.CLICK_RATE, new UpgradeFloatValue(0.25f));
-			upgrades.Add(UpgradeType.MONEY_INCOME, new UpgradeFloatValue(1f));
-			upgrades.Add(UpgradeType.QUEST_DIFFICULTY, new UpgradeFloatValue(1f));
-			upgrades.Add(UpgradeType.QUEST_SCALAR, new UpgradeFloatValue(1f));
-			upgrades.Add(UpgradeType.QUEST_SPEED, new UpgradeFloatValue(0f));
-			upgrades.Add(UpgradeType.RENOWN_INCOME, new UpgradeFloatValue(1f));
-			upgrades.Add(UpgradeType.RENOWN_MULTI, new UpgradeFloatValue(0.02f));
-			upgrades.Add(UpgradeType.START_CASH, new UpgradeIntValue(20));
-			upgrades.Add(UpgradeType.TICK_RATE, new UpgradeFloatValue(1f));
-			upgrades.Add(UpgradeType.VENDOR_SELL_VALUE, new UpgradeFloatValue(1f));
-			upgrades.Add(UpgradeType.VENDOR_SIZE, new UpgradeIntValue(5));
-			upgrades.Add(UpgradeType.RESEARCH_RATE, new UpgradeFloatValue(1f));
+			SetDefaultUpgrades();
 #pragma warning disable 0168
 			try {
 				Main.saveVersionFromDisk = info.GetInt32("SaveVersion");

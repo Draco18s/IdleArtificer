@@ -393,21 +393,43 @@ namespace Assets.draco18s.artificer.quests {
 						bestMagic = stack;
 					}
 				}
-				if(bestArmor != null && bestArmor.item.isConsumable) bestArmor.stackSize--;
-				if(bestShield != null && bestShield.item.isConsumable) bestShield.stackSize--;
-				if(bestMagic != null && bestMagic.item.isConsumable) bestMagic.stackSize--;
+				
+				if(bestArmor != null) {
+					if(bestArmor.item.isConsumable) bestArmor.stackSize--;
+					bestArmorV *= bestArmor.getEffectiveness(RequirementType.ARMOR);
+				}
+				if(bestShield != null) {
+					if(bestShield.item.isConsumable) bestShield.stackSize--;
+					bestShieldV *= bestShield.getEffectiveness(RequirementType.ARMOR);
+				}
+				if(bestMagic != null) {
+					if(bestMagic.item.isConsumable) bestMagic.stackSize--;
+					bestMagicV *= bestMagic.getEffectiveness(RequirementType.ARMOR);
+				}
+
 				reduction = bestArmorV + bestShieldV + bestMagicV;
 				amt -= Mathf.FloorToInt(amt * reduction);
 			}
 			else {
-				if(doesHeroHave(damage.getImmunityType())) {
-					amt -= Mathf.FloorToInt(amt * 0.75f);
+				float best = 0;
+				ItemStack bestStack = null;
+				foreach(ItemStack stack in inventory) {
+					float f = stack.getEffectiveness(damage.getImmunityType());
+					if(f > best && stack.stackSize > 0) {
+						best = f;
+						bestStack = stack;
+					}
+				}
+
+				amt -= Mathf.FloorToInt(amt * best);
+				if(bestStack != null && bestStack.item.isConsumable) {
+					bestStack.stackSize--;
 				}
 			}
-
-			heroCurHealth -= amt;
-			tryToHeal();
-
+			if(amt > 0) {
+				heroCurHealth -= amt;
+				tryToHeal();
+			}
 			inventory.RemoveAll(x => x.stackSize == 0);
 		}
 		[Flags]
@@ -459,24 +481,6 @@ namespace Assets.draco18s.artificer.quests {
 			}
 			return 0;
 		}
-		/*if(doesHeroHave(AidType.HEAVY_ARMOR)) {
-				reduction = 0.3f;
-			}
-			else if(doesHeroHave(AidType.MEDIUM_ARMOR)) {
-				reduction = 0.2f;
-			}
-			else if(doesHeroHave(AidType.LIGHT_ARMOR)) {
-				reduction = 0.1f;
-			}
-			if(doesHeroHave(AidType.LIGHT_SHIELD)) {
-				reduction += 0.05f;
-			}
-			else if(doesHeroHave(AidType.HEAVY_SHIELD)) {
-				reduction += 0.1f;
-			}
-			if(doesHeroHave(AidType.BARKSKIN)) {
-				reduction += 0.1f;
-			}*/
 
 		public bool doesHeroHave(AidType aid) {
 			return doesHeroHave(aid, true);

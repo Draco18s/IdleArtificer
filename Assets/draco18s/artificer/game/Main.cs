@@ -52,7 +52,6 @@ namespace Assets.draco18s.artificer.game {
 			/* TODO: Load data from save */
 			
 			EnchantingManager.OneTimeSetup();
-			CraftingManager.setupUI();
 			QuestManager.setupUI();
 			GuildManager.OneTimeSetup();
 			ResearchManager.OneTimeSetup();
@@ -133,6 +132,7 @@ namespace Assets.draco18s.artificer.game {
 				Debug.Log("No save data, generating quests");
 				QuestManager.tickAllQuests(3600);
 			}
+			CraftingManager.setupUI();
 			GuildManager.update();
 		}
 

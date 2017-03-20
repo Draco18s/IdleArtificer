@@ -336,6 +336,11 @@ namespace Assets.draco18s.artificer.items {
 			return this;
 		}
 
+		public Industry setEffectiveness(float val) {
+			industryItem.setEffectiveness(val);
+			return this;
+		}
+
 		public void addValueMultiplier(float multiplier) {
 			valueMulti *= multiplier;
 		}

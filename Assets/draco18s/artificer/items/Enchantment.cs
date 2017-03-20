@@ -14,6 +14,7 @@ namespace Assets.draco18s.artificer.items {
 		public readonly RequirementType reqTypes;
 		public int maxConcurrent = 1;
 		public int ID;
+		protected float effectivenessMulti = 1;
 		public Enchantment(string enchantName, Item ingredientHerb, int quantity, ItemEquipType restrictions, RequirementType satisfiesReq) {
 			name = enchantName;
 			ingredient = ingredientHerb;
@@ -26,6 +27,15 @@ namespace Assets.draco18s.artificer.items {
 		public Enchantment setStacksTo(int v) {
 			maxConcurrent = v;
 			return this;
+		}
+
+		public Enchantment setEffectiveness(float val) {
+			effectivenessMulti = val;
+			return this;
+		}
+
+		public float getEffectiveness() {
+			return effectivenessMulti;
 		}
 	}
 

@@ -113,12 +113,12 @@ public class GuiManager : MonoBehaviour {
 			notification.transform.FindChild("Text").GetComponent<Text>().text = item.text;
 			notification.transform.FindChild("Img").GetComponent<Image>().sprite = item.image;
 
-			notification.transform.DOMoveY(Screen.height - 70, 0.5f, false).SetEase(Ease.InOutQuad).OnComplete(PausCallback);
+			notification.transform.DOMoveY(Screen.height - 85, 0.5f, false).SetEase(Ease.InOutQuad).OnComplete(PauseCallback);
 		}
 	}
 
-	public void PausCallback() {
-		notification.transform.DOMoveY(Screen.height - 70, 2.5f, false).SetEase(Ease.InOutQuad).OnComplete(ReturnCallback);
+	public void PauseCallback() {
+		notification.transform.DOMoveY(Screen.height - 85, 2.5f, false).SetEase(Ease.InOutQuad).OnComplete(ReturnCallback);
 	}
 
 	public void ReturnCallback() {

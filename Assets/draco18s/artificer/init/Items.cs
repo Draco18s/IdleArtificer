@@ -10,13 +10,13 @@ namespace Assets.draco18s.artificer.init {
 	public class Items {
 		public static Item ROOSTER_TEETH = new Item("rooster_teeth").setRandomSize(4, 6).setDisallowedForQuests();//
 		public static Item GLOWING_FUNGS = new Item("glowing_fungus").setRandomSize(4, 6).setConsumable(true).addReqType(RequirementType.HERB).setStackSizeForQuest(5);//
-		public static Item DIATOM_EARTH = new Item("diatomaceous_earth").setRandomSize(4, 6).setConsumable(true).addReqType(RequirementType.ACID_IMMUNE).setStackSizeForQuest(5);//
+		public static Item DIATOM_EARTH = new Item("diatomaceous_earth").setRandomSize(4, 6).setConsumable(true).addReqType(RequirementType.ACID_IMMUNE).setStackSizeForQuest(5).setEffectiveness(0.5f);//
 		public static Item WOLFSBANE = new Item("wolfsbane").setRandomSize(4, 6).setDisallowedForQuests();//
 		public static Item OBSIDIAN_SHARD = new Item("obsidian_shards").setRandomSize(4, 6).setDisallowedForQuests();//
 		public static Item ROYAL_JELLY = new Item("royal_jelly").setRandomSize(4, 6).setDisallowedForQuests();//
 		public static Item HOARFROST = new Item("hoarfrost").setRandomSize(4, 6).setConsumable(true).addReqType(RequirementType.COLD_DAMAGE).setStackSizeForQuest(10);//consumable item for cold damage?
 		public static Item MIDNIGHT_SUN = new Item("midnight_sun").setRandomSize(4, 6).setDisallowedForQuests();//
-		public static Item CORLY_ROOT = new Item("corly_root").setRandomSize(4, 6).setConsumable(true).addReqType(RequirementType.POISON_IMMUNE).addReqType(RequirementType.HERB).setStackSizeForQuest(5);
+		public static Item CORLY_ROOT = new Item("corly_root").setRandomSize(4, 6).setConsumable(true).addReqType(RequirementType.POISON_IMMUNE).addReqType(RequirementType.HERB).setStackSizeForQuest(5).setEffectiveness(0.5f);
 
 		public static Item STARDUST = new Item("stardust").setRandomSize(4, 6).setDisallowedForQuests();//
 		public static Item DIAMONDS = new Item("diamonds").setRandomSize(4, 6).setDisallowedForQuests();//

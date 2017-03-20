@@ -36,6 +36,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					}
 					rangedStack.stackSize--;
 				}
+				dmg = (int)Math.Round(rangedStack.getEffectiveness(RequirementType.RANGED) * dmg);
 				monsterHealth -= dmg;
 			}
 			type.OnAttempt(result, theQuest, ref questBonus);
@@ -45,11 +46,12 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				if(meleeStack.doesStackHave(Enchantments.ENHANCEMENT)) {
 					dmg += 5;
 				}
-				if(meleeStack.doesStackHave(Enchantments.ENHANCEMENT)) {
+				if(meleeStack.doesStackHave(Enchantments.KEEN)) {
 					if(theQuest.testLuck(5) == 0) {
 						dmg *= 2;
 					}
 				}
+				dmg = (int)Math.Round(meleeStack.getEffectiveness(RequirementType.WEAPON) * dmg);
 				monsterHealth -= dmg;
 				if(monsterHealth > 0) {
 					theQuest.repeatTask();

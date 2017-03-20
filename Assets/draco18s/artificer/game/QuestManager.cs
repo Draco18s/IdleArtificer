@@ -375,6 +375,7 @@ namespace Assets.draco18s.artificer.game {
 			foreach(ItemStack stack in theQuest.inventory) {
 				if(stack.item.industry != null && stack.relicData == null && stack.enchants.Count == 0) {
 					stack.item.industry.quantityStored -= stack.stackSize;
+					Debug.Log(stack.GetHashCode());
 				}
 				else {
 					Main.instance.player.miscInventory.Remove(stack);
@@ -491,11 +492,13 @@ namespace Assets.draco18s.artificer.game {
 								//if the player gave it to the hero, then it's ID'd and can go back to the player's general inventory
 								//if it isn't, then it goes to the Unidentified Relics list
 								Debug.Log(st.isIDedByPlayer);
-								if(st.isIDedByPlayer)
+								if(st.isIDedByPlayer) {
 									Main.instance.player.addItemToInventory(st);
-								else
-									Main.instance.player.unidentifiedRelics.Add(st);
-								
+								}
+								else {
+									if(!Main.instance.player.unidentifiedRelics.Contains(st))
+										Main.instance.player.unidentifiedRelics.Add(st);
+								}
 							}
 						}
 						Main.instance.CompleteQuest(q.getGoal());
