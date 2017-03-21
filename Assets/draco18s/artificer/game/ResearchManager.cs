@@ -117,6 +117,7 @@ namespace Assets.draco18s.artificer.game {
 					Main.instance.player.unidentifiedRelics.Remove(s);
 					Main.instance.player.addItemToInventory(s);
 					relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
+					setupUI();
 				}
 				timeLeftTxt.text = Main.SecondsToTime(3600 - Main.instance.player.researchTime);
 				progressBarMat.SetFloat("_Cutoff", 1-Main.instance.player.researchTime / 3600f);
