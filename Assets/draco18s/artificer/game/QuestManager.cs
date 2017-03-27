@@ -21,6 +21,8 @@ namespace Assets.draco18s.artificer.game {
 		public static List<Quest> activeQuests = new List<Quest>();
 		//public static List<ItemStack> allRelics = new List<ItemStack>();
 		public static List<ItemStack> availableRelics = new List<ItemStack>();
+		private static float questEquipTimer = 0;
+		private static float questEquipTimerMax = 7200; //120 minutes
 		private static float newQuestDelayTimer = 0;
 		private static float newQuestMaxTime = 1200; //20 minutes
 		private static Transform activeQuestList;
@@ -188,6 +190,9 @@ namespace Assets.draco18s.artificer.game {
 		private static void AddRemoveItemFromQuest(Quest theQuest, int slot) {
 			if(selectedIndustry == null && selectedStack == null) {
 				if(slot < theQuest.inventory.Count) {
+					if(theQuest.inventory[slot].wasAddedByJourneyman && (theQuest.inventory[slot].relicData != null || theQuest.inventory[slot].enchants.Count > 0)) {
+						Main.instance.player.addItemToInventory(theQuest.inventory[slot]);
+					}
 					theQuest.inventory.Remove(theQuest.inventory[slot]);
 				}
 			}
@@ -491,7 +496,7 @@ namespace Assets.draco18s.artificer.game {
 							if(st.relicData != null || st.enchants.Count > 0 /*&& st != newRelic*/) {
 								//if the player gave it to the hero, then it's ID'd and can go back to the player's general inventory
 								//if it isn't, then it goes to the Unidentified Relics list
-								Debug.Log(st.isIDedByPlayer);
+								Debug.Log("ID? " + st.isIDedByPlayer);
 								if(st.isIDedByPlayer) {
 									Main.instance.player.addItemToInventory(st);
 								}
@@ -529,9 +534,92 @@ namespace Assets.draco18s.artificer.game {
 					Main.Destroy(q.guiItem);
 				}
 			}
+
+			List<Quest> questsToStart = new List<Quest>();
+			for(int j = 0; j < Main.instance.player.journeymen; j++) {
+				if(j < availableQuests.Count) {
+					Quest jq = availableQuests[j];
+					if(jq.timeUntilQuestExpires < 30 && jq.inventory.Count > 0) {
+						bool questReady = true;
+						long totalForQuest = 0;
+						foreach(ItemStack stack in jq.inventory) {
+							totalForQuest = 0;
+							if(stack.item.industry != null) {
+								totalForQuest += stack.stackSize;
+								questReady &= (stack.item.industry.quantityStored >= totalForQuest);
+							}
+						}
+						if(questReady) {
+							questsToStart.Add(jq);
+						}
+					}
+				}
+			}
+
+			foreach(Quest q in questsToStart) {
+				startQuest(q, q.guiItem);
+			}
+
 			availableQuests.RemoveAll(x => x.timeUntilQuestExpires <= 0);
 			GuiManager.instance.questHeader.transform.FindChild("NewQuestTime").GetComponent<Text>().text = "New Quest in " + Main.SecondsToTime((int)newQuestDelayTimer);
 			updateActiveQuestList();
+			questEquipTimer += time;
+			//journeyman equip loop
+			if(questEquipTimer >= questEquipTimerMax) {
+				questEquipTimer -= questEquipTimerMax;
+				int questIndex = 0;
+				for(int j = 0; j < Main.instance.player.journeymen*2; j++) {
+					if(questIndex < availableQuests.Count) {
+						Quest jq = availableQuests[questIndex];
+						for(int r = 6; r >= 1; r--) {
+							RequirementType req = (RequirementType)jq.getReq(r - 1);
+							if(req != 0 && !jq.doesHeroHave(req)) {
+								foreach(ItemStack stack in Main.instance.player.miscInventory) {
+									if(stack.relicData != null || stack.enchants.Count > 0) {
+										Main.instance.player.miscInventory.Remove(stack);
+										ItemStack toPlayer = stack.split(stack.stackSize - 1);
+										Main.instance.player.addItemToInventory(toPlayer);
+										stack.wasAddedByJourneyman = true;
+										jq.inventory.Add(stack);
+										goto foundItem;
+									}
+								}
+								foreach(Industry ind in Main.instance.player.builtItems) {
+									if(ind.hasReqType(req)) {
+										int v = Mathf.RoundToInt(ind.getStackSizeForQuest() * Main.instance.GetQuestStackMultiplier(ind, jq.numQuestsBefore) * jq.getGoal().getReqScalar());
+										if(ind.quantityStored >= v) {
+											ItemStack stack = new ItemStack(ind, v);
+											jq.inventory.Add(stack);
+											goto foundItem;
+										}
+									}
+								}
+							}
+						}
+						j--;
+						questIndex++;
+						foundItem:
+						;
+					}
+				}
+				for(int j = 0; j <= questIndex && j < availableQuests.Count; j++) {
+					Quest q = availableQuests[j];
+					if(q.guiItem != null) {
+						for(int r = 1; r <= 6; r++) {
+							Image im = q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>();
+							im.sprite = GuiManager.instance.gray_square;
+							if(q.inventory.Count >= r) {
+								if(q.inventory[r - 1].item.industry != null) {
+									im.GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
+								}
+								else {
+									im.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.inventory[r - 1].item.name);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 		public static ItemStack makeRelic(ItemStack stack, ObstacleType ob, string hero) {

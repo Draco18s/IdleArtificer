@@ -109,6 +109,7 @@ namespace Assets.draco18s.artificer.game {
 
 			GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyVendor(); });
 			GuiManager.instance.buyApprenticesArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyApprentice(); });
+			GuiManager.instance.buyJourneymenArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyJourneyman(); });
 
 			GuiManager.instance.topPanel.transform.FindChild("SaveBtn").GetComponent<Button>().onClick.AddListener(delegate { Main.writeDataToSave(); });
 #pragma warning disable 0219

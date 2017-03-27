@@ -2642,7 +2642,8 @@ namespace Koopakiller.Numerics
 		//! Throw DivideByZeroException?
 
 		public static int ToInt32(BigInteger val) {
-			if(val.data.Length <= 1) {
+			if(val == 0) return 0;
+			if(val.data.Length == 1) {
 				uint i = val.data[0];
 				if(i <= int.MaxValue) {
 					return (int)i;

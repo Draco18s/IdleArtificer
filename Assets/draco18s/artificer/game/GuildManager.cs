@@ -23,10 +23,14 @@ namespace Assets.draco18s.artificer.game {
 		private static Text numVend2;
 		private static Text numApp1;
 		private static Text numApp2;
+		private static Text numJour1;
+		//private static Text numJour2;
 		private static Text buyVendTxt;
 		private static Text buyAppTxt;
+		private static Text buyJourTxt;
 		private static Text vendeffTxt;
 		private static Text appeffTxt;
+		private static Text joureffTxt;
 		private static Transform cashList;
 		private static Transform renownList;
 		private static List<Upgrade> cashUpgradeList = new List<Upgrade>();
@@ -53,15 +57,18 @@ namespace Assets.draco18s.artificer.game {
 			renownList = GuiManager.instance.guildArea.transform.FindChild("RenownUpgrades").GetChild(0).GetChild(0);
 			buyVendTxt = GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
 			buyAppTxt = GuiManager.instance.buyApprenticesArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
+			buyJourTxt = GuiManager.instance.buyJourneymenArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
 
 			numVend1 = GuiManager.instance.buyVendorsArea.transform.FindChild("OwnedTxt").GetComponent<Text>();
 			numVend2 = GuiManager.instance.buyVendorsArea.transform.FindChild("AvailableTxt").GetComponent<Text>();
 			numApp1 = GuiManager.instance.buyApprenticesArea.transform.FindChild("OwnedTxt").GetComponent<Text>();
 			numApp2 = GuiManager.instance.buyApprenticesArea.transform.FindChild("AvailableTxt").GetComponent<Text>();
+			numJour1 = GuiManager.instance.buyJourneymenArea.transform.FindChild("OwnedTxt").GetComponent<Text>();
+			//numJour2 = GuiManager.instance.buyJourneymenArea.transform.FindChild("AvailableTxt").GetComponent<Text>();
 
 			vendeffTxt = GuiManager.instance.buyVendorsArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Mathf.RoundToInt(Main.instance.player.GetVendorValue()*100) + "%";
 			appeffTxt = GuiManager.instance.buyApprenticesArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Main.instance.GetClickRate() + "sec / sec";
-
+			joureffTxt = GuiManager.instance.buyJourneymenArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Main.instance.GetClickRate() + "sec / sec";
 
 			int i = 0;
 			FieldInfo[] fields = typeof(Upgrades.Cash).GetFields();
@@ -108,12 +115,12 @@ namespace Assets.draco18s.artificer.game {
 					it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
 					it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
-					it.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.cost);
+					it.transform.FindChild("Cost").GetComponent<Text>().text = Main.AsCurrency(item.cost) + RENOWN_SYMBOL;
 					it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
 					Upgrade _item = item;
 					Button btn = it.GetComponent<Button>();
 					btn.onClick.AddListener(delegate { buyUpgradeRenown(_item); });
-					if(item.cost > Main.instance.player.money) {
+					if(item.cost > Main.instance.player.renown) {
 						btn.interactable = false;
 					}
 					Upgrade up = item;
@@ -147,8 +154,10 @@ namespace Assets.draco18s.artificer.game {
 			numVend2.text = "" + (Main.instance.player.maxVendors-Main.instance.player.currentVendors);
 			numApp1.text = "" + Main.instance.player.maxApprentices;
 			numApp2.text = "" + (Main.instance.player.maxApprentices - Main.instance.player.currentApprentices);
+			numJour1.text = "" + Main.instance.player.journeymen;
 			buyVendTxt.text = "+1 ($" + Main.AsCurrency(getVendorCost()) + ")";
 			buyAppTxt.text = "+1 (" + Main.AsCurrency(getApprenticeCost()) + RENOWN_SYMBOL + ")";
+			buyJourTxt.text = "+1 (" + Main.AsCurrency(getJourneymenCost()) + RENOWN_SYMBOL + ")";
 
 			vendeffTxt.text = Mathf.RoundToInt(Main.instance.player.GetVendorValue() * 100) + "%";
 			appeffTxt.text = Main.instance.GetClickRate() + "sec / sec";
@@ -212,7 +221,7 @@ namespace Assets.draco18s.artificer.game {
 						item.upgradListGui.name = item.displayName;
 						item.upgradListGui.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
-						if(item.cost > Main.instance.player.money) {
+						if(item.cost > Main.instance.player.renown) {
 							item.upgradListGui.GetComponent<Button>().interactable = false;
 							//item.upgradListGui.GetComponent<Image>().color = Color.red;
 						}
@@ -229,7 +238,7 @@ namespace Assets.draco18s.artificer.game {
 						}
 					}
 				}
-				((RectTransform)cashList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
+				((RectTransform)renownList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
 				//listGui.localPosition = Vector3.zero;
 			}
 		}
@@ -270,6 +279,15 @@ namespace Assets.draco18s.artificer.game {
 			return c;
 		}
 
+		protected static BigInteger getJourneymenCost() {
+			BigInteger c = 25;
+			int vend = Main.instance.player.journeymen;
+			for(; vend > 0; vend--) {
+				c *= 15;
+			}
+			return c;
+		}
+
 		public static void BuyVendor() {
 			BigInteger cost = getVendorCost();
 			if(Main.instance.player.money >= cost) {
@@ -281,10 +299,17 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void BuyApprentice() {
 			BigInteger cost = getApprenticeCost();
-			Debug.Log(Main.instance.player.renown + ">=" + cost);
 			if(Main.instance.player.renown >= cost) {
 				Main.instance.player.renown -= cost;
 				Main.instance.player.maxApprentices += 1;
+			}
+		}
+
+		public static void BuyJourneyman() {
+			BigInteger cost = getJourneymenCost();
+			if(Main.instance.player.renown >= cost) {
+				Main.instance.player.renown -= cost;
+				Main.instance.player.journeymen += 1;
 			}
 		}
 

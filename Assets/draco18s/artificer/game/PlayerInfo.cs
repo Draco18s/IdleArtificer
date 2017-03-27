@@ -31,6 +31,7 @@ namespace Assets.draco18s.artificer.game {
 		public int currentVendors = 0;
 		public int maxApprentices = 0;
 		public int currentApprentices = 0;
+		public int journeymen = 0;
 		public long totalQuestsCompleted = 0;
 		public long questsCompleted = 0;
 		public int skillPoints = 0;
@@ -82,6 +83,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public void addItemToInventory(ItemStack stack) {
 			if(stack == null) return;
+			stack.wasAddedByJourneyman = false;
 			if(Main.instance.player.miscInventory.Contains(stack)) return;
 			if(Main.instance.player.unidentifiedRelics.Contains(stack)) {
 				if(stack.isIDedByPlayer) {
@@ -134,12 +136,14 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public BigRational GetSellMultiplierFull() {
+			UpgradeValueWrapper multi;
+			upgrades.TryGetValue(UpgradeType.MONEY_INCOME, out multi);
 			if(renown > 0) {
 				UpgradeValueWrapper wrap;
 				upgrades.TryGetValue(UpgradeType.RENOWN_MULTI, out wrap);
-				return 1 + (((BigRational)renown + (totalQuestsCompleted - questsCompleted)) * ((UpgradeFloatValue)wrap).value);
+				return 1 + (((BigRational)renown + (totalQuestsCompleted - questsCompleted)) * ((UpgradeFloatValue)wrap).value * ((UpgradeFloatValue)multi).value);
 			}
-			return 1;
+			return 1 * ((UpgradeFloatValue)multi).value;
 		}
 
 		public BigInteger GetStartingCash() {
@@ -214,7 +218,7 @@ namespace Assets.draco18s.artificer.game {
 
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
-			info.AddValue("SaveVersion", 5);
+			info.AddValue("SaveVersion", 6);
 			info.AddValue("money", money.ToString());
 			info.AddValue("moneyFloor", moneyFloor.ToString());
 			info.AddValue("lifetimeMoney", lifetimeMoney.ToString());
@@ -223,6 +227,7 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("maxVendors", maxVendors);
 			info.AddValue("currentVendors", currentVendors);
 			info.AddValue("maxApprentices", maxApprentices);
+			info.AddValue("journeymen", journeymen);
 			info.AddValue("currentApprentices", currentApprentices);
 			info.AddValue("totalQuestsCompleted", totalQuestsCompleted);
 			info.AddValue("questsCompleted", questsCompleted);
@@ -297,12 +302,15 @@ namespace Assets.draco18s.artificer.game {
 			money = 200000000;// new BigInteger(info.GetString("money"));
 			moneyFloor = 1;// new BigInteger(info.GetString("moneyFloor"));
 			lifetimeMoney = money;// new BigInteger(info.GetString("lifetimeMoney"));
-			renown = 0;// new BigInteger(info.GetString("renown"));
-			totalRenown = 0;// new BigInteger(info.GetString("totalRenown"));
+			renown = 1000;// new BigInteger(info.GetString("renown"));
+			totalRenown = 1000;// new BigInteger(info.GetString("totalRenown"));
 
 			maxVendors = info.GetInt32("maxVendors");
 			currentVendors = 0;// info.GetInt32("currentVendors");
 			maxApprentices = info.GetInt32("maxApprentices");
+			if(Main.saveVersionFromDisk >= 6) {
+				journeymen = info.GetInt32("journeymen");
+			}
 			currentApprentices = 0;// info.GetInt32("currentApprentices");
 			totalQuestsCompleted = info.GetInt64("totalQuestsCompleted");
 			questsCompleted = info.GetInt64("questsCompleted");

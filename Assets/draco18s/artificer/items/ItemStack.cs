@@ -18,6 +18,7 @@ namespace Assets.draco18s.artificer.items {
 		public int antiquity = 0;
 		public int numTimesUsedOnQuest = 0;
 		public bool isIDedByPlayer = true;
+		public bool wasAddedByJourneyman = false;
 		public ItemStack(Item item, int count) {
 			this.item = item;
 			stackSize = count;
@@ -183,6 +184,7 @@ namespace Assets.draco18s.artificer.items {
 			for(int i = 0; i < enchants.Count; i++) {
 				info.AddValue("enchants_" + i, enchants[i].ID, typeof(Enchantment));
 			}
+			info.AddValue("wasAddedByJourneyman", wasAddedByJourneyman);
 		}
 
 		public ItemStack(SerializationInfo info, StreamingContext context) {
@@ -211,6 +213,9 @@ namespace Assets.draco18s.artificer.items {
 			enchants = new List<Enchantment>();
 			for(int o = 0; o < num; o++) {
 				enchants.Add(GameRegistry.GetEnchantmentByID(info.GetInt32("enchants_"+o)));
+			}
+			if(Main.saveVersionFromDisk >= 6) {
+				wasAddedByJourneyman = info.GetBoolean("wasAddedByJourneyman");
 			}
 		}
 

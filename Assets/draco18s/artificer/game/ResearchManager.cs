@@ -119,7 +119,7 @@ namespace Assets.draco18s.artificer.game {
 					relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
 					setupUI();
 				}
-				timeLeftTxt.text = Main.SecondsToTime(3600 - Main.instance.player.researchTime);
+				timeLeftTxt.text = Main.SecondsToTime((3600 - Main.instance.player.researchTime) / ((UpgradeFloatValue)wrap).value);
 				progressBarMat.SetFloat("_Cutoff", 1-Main.instance.player.researchTime / 3600f);
 			}
 			else {

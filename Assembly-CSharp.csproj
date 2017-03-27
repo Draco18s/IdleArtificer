@@ -198,8 +198,10 @@
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeClickRate.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeHalveDouble.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeIndustryValue.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeJourneymanRate.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeQuestSpeed.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeRenownMulti.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeResearchSpeed.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeStartingCash.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorEffectiveness.cs" />
      <Compile Include="Assets\draco18s\config\Configuration.cs" />

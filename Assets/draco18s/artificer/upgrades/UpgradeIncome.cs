@@ -8,9 +8,9 @@ using System.Text;
 using UnityEngine;
 
 namespace Assets.draco18s.artificer.upgrades {
-	class UpgradeRenownMulti : Upgrade {
+	class UpgradeIncome : Upgrade {
 		protected readonly float amount;
-		public UpgradeRenownMulti(BigInteger upgradeCost, float amount, string saveName) : base(UpgradeType.RENOWN_MULTI, upgradeCost, "Increase Renown Effectiveness by " + Mathf.FloorToInt(amount*100) +"%", saveName) {
+		public UpgradeIncome(BigInteger upgradeCost, float amount, string saveName) : base(UpgradeType.RENOWN_MULTI, upgradeCost, "Increase all Income by x" + amount, saveName) {
 			this.amount = amount;
 		}
 
@@ -18,23 +18,24 @@ namespace Assets.draco18s.artificer.upgrades {
 			base.applyUpgrade();
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
-			((UpgradeFloatValue)wrap).value += amount;
+			((UpgradeFloatValue)wrap).value *= amount;
 		}
 		public override void revokeUpgrade() {
 			base.revokeUpgrade();
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
-			((UpgradeFloatValue)wrap).value -= amount;
+			((UpgradeFloatValue)wrap).value /= amount;
 		}
 
 		public override string getTooltip() {
-			UpgradeValueWrapper wrap;
+			/*UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
-			return "Increases the effectiveness of renown on your cash income.\nBase value is 2% extra income per renown, currently it is " + (((UpgradeFloatValue)wrap).value*100) + "%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + amount) *100) +"%";
+			return "Increases all income";*/
+			return "";
 		}
 
 		public override string getIconName() {
-			return "upgrades/renown_multi";
+			return "upgrades/cash_multi";
 		}
 	}
 }
