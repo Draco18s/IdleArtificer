@@ -27,6 +27,7 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade IRON_SWORD1 =				new UpgradeIndustryValue(new BigInteger(1, 16), 10, Industries.IRON_SWORD, "IRON_SWORD1");
 			public static Upgrade IRON_RING1 =				new UpgradeIndustryValue(new BigInteger(1, 19), 10, Industries.IRON_RING, "IRON_RING1");
 			public static Upgrade HOLY_SYMBOL1 =			new UpgradeIndustryValue(new BigInteger(1, 21), 10, Industries.HOLY_SYMBOL, "HOLY_SYMBOL1");
+			public static Upgrade QUEST_MULTI1 =			new UpgradeQuestRenown	(new BigInteger(1, 24), 0.5f, "QUEST_MULTI1");
 			public static Upgrade RESEARCH1 =				new UpgradeResearchSpeed(new BigInteger(1, 28), 0.05f, "RESEARCH1");
 			public static Upgrade POT_WATER_BREATH1 =		new UpgradeIndustryValue(new BigInteger(1, 22), 10, Industries.POT_WATER_BREATH, "POT_WATER_BREATH1");
 			public static Upgrade POT_BARKSKIN1 =			new UpgradeIndustryValue(new BigInteger(1, 22), 10, Industries.POT_BARKSKIN, "POT_BARKSKIN1");
@@ -37,7 +38,8 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade LEATHER_ARMOR2 =			new UpgradeIndustryValue(new BigInteger(1, 25), 10, Industries.ARMOR_LEATHER, "LEATHER_ARMOR2");
 			public static Upgrade HEALTH2 =					new UpgradeIndustryValue(new BigInteger(1, 26), 10, Industries.POT_HEALTH, "HEALTH2");
 			public static Upgrade MANA2 =					new UpgradeIndustryValue(new BigInteger(1, 27), 10, Industries.POT_MANA, "MANA2");
-			public static Upgrade RESEARCH2 =				new UpgradeResearchSpeed(new BigInteger(1, 28), 0.05f, "RESEARCH2");
+			public static Upgrade QUEST_MULTI2 =			new UpgradeQuestRenown	(new BigInteger(1, 28), 0.5f, "QUEST_MULTI2");
+			public static Upgrade RESEARCH2 =				new UpgradeResearchSpeed(new BigInteger(1, 29), 0.05f, "RESEARCH2");
 
 		}
 		public static class Renown {
@@ -47,6 +49,7 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade RESEARCH1 =				new UpgradeResearchSpeed(500, 0.5f, "RESEARCH1");
 			public static Upgrade RENOWN_MULTI1 =			new UpgradeRenownMulti	(1000, 0.01f, "RENOWN_MULTI1");
 			public static Upgrade JOURNEYMAN_RATE2 =		new UpgradeJourneymanRate(1500, 300, "JOURNEYMAN_RATE2");
+			public static Upgrade QUEST_MULTI1 =			new UpgradeQuestRenown	(2500, 1.5f, "QUEST_MULTI1");
 			//upgrade renown value
 			//upgrade renown from quests
 			//decrease enchantment costs

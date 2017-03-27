@@ -438,7 +438,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public float getClickRate() {
 			UpgradeValueWrapper clickRate;
-			upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out clickRate);
+			upgrades.TryGetValue(UpgradeType.CLICK_RATE, out clickRate);
 			return ((UpgradeFloatValue)clickRate).value;
 		}
 	}
