@@ -30,10 +30,11 @@ namespace Assets.draco18s.artificer.items {
 		public bool doAutobuild = false;
 		public int autoBuildLevel = 0;
 		public int autoBuildMagnitude;
+		public int bonusLevel = 0;
 		protected int vendors;
 		protected float timeRemaining;
 		protected int halvesAndDoubles = 1;
-		
+
 		[NonSerialized]
 		public readonly Scalar productType;
 		[NonSerialized]
@@ -142,7 +143,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public virtual BigInteger ProduceOutput() {
-			return output * level;
+			return output * (level + bonusLevel);
 		}
 
 		public virtual BigInteger GetBaseSellValue() {
@@ -228,6 +229,10 @@ namespace Assets.draco18s.artificer.items {
 
 		public int getHalveAndDouble() {
 			return halvesAndDoubles;
+		}
+
+		public int getTotalLevel() {
+			return level + bonusLevel;
 		}
 
 		public virtual BigInteger GetSellValue() {
@@ -350,6 +355,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
 			info.AddValue("level", level);
+			info.AddValue("bonusLevel", bonusLevel);
 			info.AddValue("quantityStored", quantityStored.ToString());
 			info.AddValue("isSellingStores", isSellingStores);
 			info.AddValue("isConsumersHalted", isConsumersHalted);
@@ -375,6 +381,9 @@ namespace Assets.draco18s.artificer.items {
 			autoBuildLevel = info.GetInt32("autoBuildLevel");
 			if(Main.saveVersionFromDisk >= 3) {
 				autoBuildMagnitude = info.GetInt32("autoBuildMagnitude");
+			}
+			if(Main.saveVersionFromDisk >= 6) {
+				bonusLevel = info.GetInt32("bonusLevel");
 			}
 			apprentices = info.GetInt32("apprentices");
 			vendors = info.GetInt32("vendors");

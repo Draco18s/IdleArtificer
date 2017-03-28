@@ -947,7 +947,7 @@ namespace Assets.draco18s.artificer.game {
 				info.ConfDowngradeBtn.GetComponentInChildren<Text>().text = "Confirm " + info.Downgrade.text;
 			}
 			info.SetOutputNum("x" + Main.AsCurrency(selectedIcon.output * selectedIcon.level, 3, true));
-			info.Level.text = "Level " + selectedIcon.level;
+			info.Level.text = "Level " + selectedIcon.getTotalLevel();
 
 			foreach(GameObject bt in buildButtons) {
 				ItemButtonData dat = bt.GetComponent<ItemButtonData>();

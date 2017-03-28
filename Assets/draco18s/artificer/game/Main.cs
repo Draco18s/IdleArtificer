@@ -265,13 +265,13 @@ namespace Assets.draco18s.artificer.game {
 					//do {
 						bool canExtract = true;
 						foreach(IndustryInput input in i.inputs) {
-							if(input.item.quantityStored < input.quantity * i.level || input.item.isConsumersHalted) {
+							if(input.item.quantityStored < input.quantity * i.getTotalLevel() || input.item.isConsumersHalted) {
 								canExtract = false;
 							}
 						}
 						if(canExtract) {
 							foreach(IndustryInput input in i.inputs) {
-								input.item.quantityStored -= input.quantity * i.level;
+								input.item.quantityStored -= input.quantity * i.getTotalLevel();
 							}
 							if(i.getTimeRemaining() > float.MinValue) {
 								i.didComplete++;
@@ -305,7 +305,7 @@ namespace Assets.draco18s.artificer.game {
 			foreach(Industry i in player.builtItems) {
 				if(i.didComplete > 0) {
 					do {
-						BigInteger maxSell = (i.isSellingStores ? -1 : (i.output * i.level) - i.consumeAmount);
+						BigInteger maxSell = (i.isSellingStores ? -1 : (i.output * i.getTotalLevel()) - i.consumeAmount);
 						BigInteger quant = i.quantityStored;
 						BigInteger amt = i.getVendors() * GetVendorSize();
 						if(maxSell >= 0)
@@ -367,7 +367,7 @@ namespace Assets.draco18s.artificer.game {
 					foreach(IndustryInput input in item.inputs) {
 						if(!item.isProductionHalted && !input.item.isConsumersHalted) {
 							float mod = (float)item.getHalveAndDouble() / input.item.getHalveAndDouble();
-							input.item.consumeAmount += Mathf.RoundToInt((input.quantity * item.level) * mod);
+							input.item.consumeAmount += Mathf.RoundToInt((input.quantity * item.getTotalLevel()) * mod);
 						}
 					}
 				}
@@ -397,8 +397,8 @@ namespace Assets.draco18s.artificer.game {
 						if(input.item.level == 0) { 
 							penalty = 1000;
 						}
-						else if(input.item.consumeAmount >= input.item.output * input.item.level) {
-							penalty *= 10*Math.Pow(input.item.productType.amount, 1 + input.item.level + ((input.item.consumeAmount - (input.item.output * input.item.level)) / input.item.output));
+						else if(input.item.consumeAmount >= input.item.output * input.item.getTotalLevel()) {
+							penalty *= 10*Math.Pow(input.item.productType.amount, 1 + input.item.getTotalLevel() + ((input.item.consumeAmount - (input.item.output * input.item.getTotalLevel())) / input.item.output));
 							//Debug.Log(ind.name + " (" + input.item.name + "):" + penalty);
 						}
 						inputCosts += (input.item.GetBaseSellValue() * input.quantity);
@@ -468,7 +468,7 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static int GetNeededVendors(Industry indust) {
-			int j = Mathf.CeilToInt((float)((indust.output * indust.level) - indust.consumeAmount) / Main.instance.GetVendorSize());
+			int j = Mathf.CeilToInt((float)((indust.output * indust.getTotalLevel()) - indust.consumeAmount) / Main.instance.GetVendorSize());
 			
 			return j>=0?j:0;
 		}
@@ -477,7 +477,7 @@ namespace Assets.draco18s.artificer.game {
 			BigInteger outval = 0;
 			foreach(FieldInfo field in fields) {
 				Industry ind = (Industry)field.GetValue(null);
-				BigInteger o = ((ind.output * ind.level) - ind.consumeAmount);
+				BigInteger o = ((ind.output * ind.getTotalLevel()) - ind.consumeAmount);
 				outval += ind.GetSellValue() * (o >= 0 ? o : 0);
 			}
 			return outval;

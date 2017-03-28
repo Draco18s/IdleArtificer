@@ -63,6 +63,8 @@ namespace Assets.draco18s.artificer.game {
 			upgrades.Add(UpgradeType.VENDOR_SELL_VALUE, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.VENDOR_SIZE, new UpgradeIntValue(5));
 			upgrades.Add(UpgradeType.RESEARCH_RATE, new UpgradeFloatValue(1f));
+			upgrades.Add(UpgradeType.JOURNEYMAN_RATE, new UpgradeFloatValue(0f));
+			upgrades.Add(UpgradeType.QUEST_GOODS_VALUE, new UpgradeFloatValue(0f));
 		}
 
 		public void AddMoney(BigInteger val) {
@@ -234,7 +236,7 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("skillPoints", skillPoints);
 			info.AddValue("resetLevel", resetLevel);
 
-			UpgradeValueWrapper wrap;
+			/*UpgradeValueWrapper wrap;
 			upgrades.TryGetValue(UpgradeType.VENDOR_SIZE, out wrap);
 			info.AddValue("vendorSellQuantity", ((UpgradeIntValue)wrap).value);
 			upgrades.TryGetValue(UpgradeType.VENDOR_SELL_VALUE, out wrap);
@@ -249,6 +251,8 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("renownMulti", ((UpgradeFloatValue)wrap).value);
 			upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
 			info.AddValue("researchRate", ((UpgradeFloatValue)wrap).value);
+			upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
+			info.AddValue("newQuestMaxTime", ((UpgradeFloatValue)wrap).value);*/
 
 			info.AddValue("miscInventorySize", miscInventory.Count);
 			for(int i = 0; i < miscInventory.Count; i++) {
@@ -278,8 +282,6 @@ namespace Assets.draco18s.artificer.game {
 				info.AddValue("availableRelics_" + i, QuestManager.availableRelics[i], typeof(ItemStack));
 			}
 			info.AddValue("newQuestTimer", QuestManager.getNewQuestTimer());
-			upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
-			info.AddValue("newQuestMaxTime", ((UpgradeFloatValue)wrap).value);
 			GuildManager.writeSaveData(ref info, ref context);
 		}
 
@@ -299,7 +301,7 @@ namespace Assets.draco18s.artificer.game {
 #pragma warning restore 0168
 			//TODO: uncomment this stuff
 			builtItems = new List<Industry>();
-			money = 200000000;// new BigInteger(info.GetString("money"));
+			money = 20;// new BigInteger(info.GetString("money"));
 			moneyFloor = 1;// new BigInteger(info.GetString("moneyFloor"));
 			lifetimeMoney = money;// new BigInteger(info.GetString("lifetimeMoney"));
 			renown = 1000;// new BigInteger(info.GetString("renown"));
@@ -316,8 +318,9 @@ namespace Assets.draco18s.artificer.game {
 			questsCompleted = info.GetInt64("questsCompleted");
 			skillPoints = info.GetInt32("skillPoints");
 			resetLevel = info.GetInt32("resetLevel");
-			UpgradeValueWrapper wrap;
-			int a;
+			//we don't actually need this
+			//UpgradeValueWrapper wrap;
+			/*int a;
 			float f;
 			a = info.GetInt32("vendorSellQuantity");
 			upgrades.TryGetValue(UpgradeType.VENDOR_SIZE, out wrap);
@@ -344,7 +347,7 @@ namespace Assets.draco18s.artificer.game {
 				upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
 				f = (float)info.GetDouble("researchRate");
 				((UpgradeFloatValue)wrap).value = f;
-			}
+			}*/
 
 			int num;
 			num = info.GetInt32("miscInventorySize");

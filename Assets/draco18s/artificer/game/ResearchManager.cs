@@ -20,6 +20,7 @@ namespace Assets.draco18s.artificer.game {
 		private static Text relicsLeftTxt;
 		private static System.Random rand = new System.Random();
 		private static ItemStack examinedStack = null;
+		public static readonly int maxResearchTime = 7200;
 
 		public static void OneTimeSetup() {
 			Transform trans = GuiManager.instance.researchArea.transform;
@@ -110,8 +111,8 @@ namespace Assets.draco18s.artificer.game {
 				UpgradeValueWrapper wrap;
 				Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
 				Main.instance.player.researchTime += dt * ((UpgradeFloatValue)wrap).value;
-				if(Main.instance.player.researchTime >= 3600) {
-					Main.instance.player.researchTime -= 3600;
+				if(Main.instance.player.researchTime >= maxResearchTime) {
+					Main.instance.player.researchTime -= maxResearchTime;
 					ItemStack s = Main.instance.player.unidentifiedRelics[rand.Next(Main.instance.player.unidentifiedRelics.Count)];
 					s.isIDedByPlayer = true;
 					Main.instance.player.unidentifiedRelics.Remove(s);
@@ -119,8 +120,8 @@ namespace Assets.draco18s.artificer.game {
 					relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
 					setupUI();
 				}
-				timeLeftTxt.text = Main.SecondsToTime((3600 - Main.instance.player.researchTime) / ((UpgradeFloatValue)wrap).value);
-				progressBarMat.SetFloat("_Cutoff", 1-Main.instance.player.researchTime / 3600f);
+				timeLeftTxt.text = Main.SecondsToTime((maxResearchTime - Main.instance.player.researchTime) / ((UpgradeFloatValue)wrap).value);
+				progressBarMat.SetFloat("_Cutoff", 1-Main.instance.player.researchTime / maxResearchTime);
 			}
 			else {
 				timeLeftTxt.text = "∞";

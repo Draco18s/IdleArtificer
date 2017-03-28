@@ -8,6 +8,7 @@ using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
 using Assets.draco18s.artificer.upgrades;
 using Assets.draco18s.util;
+using Koopakiller.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -380,6 +381,11 @@ namespace Assets.draco18s.artificer.game {
 			foreach(ItemStack stack in theQuest.inventory) {
 				if(stack.item.industry != null && stack.relicData == null && stack.enchants.Count == 0) {
 					stack.item.industry.quantityStored -= stack.stackSize;
+
+					UpgradeValueWrapper wrap;
+					Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_GOODS_VALUE, out wrap);
+					Main.instance.player.money += BigRational.ToBigInt(new BigRational(stack.stackSize) * ((UpgradeFloatValue)wrap).value);
+
 					Debug.Log(stack.GetHashCode());
 				}
 				else {

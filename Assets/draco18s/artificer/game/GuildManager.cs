@@ -158,6 +158,9 @@ namespace Assets.draco18s.artificer.game {
 			buyVendTxt.text = "+1 ($" + Main.AsCurrency(getVendorCost()) + ")";
 			buyAppTxt.text = "+1 (" + Main.AsCurrency(getApprenticeCost()) + RENOWN_SYMBOL + ")";
 			buyJourTxt.text = "+1 (" + Main.AsCurrency(getJourneymenCost()) + RENOWN_SYMBOL + ")";
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(UpgradeType.JOURNEYMAN_RATE, out wrap);
+			joureffTxt.text = (2 * Main.instance.player.journeymen) + " Items / " + Main.SecondsToTime(ResearchManager.maxResearchTime / ((UpgradeFloatValue)wrap).value);
 
 			vendeffTxt.text = Mathf.RoundToInt(Main.instance.player.GetVendorValue() * 100) + "%";
 			appeffTxt.text = Main.instance.GetClickRate() + "sec / sec";
@@ -184,7 +187,7 @@ namespace Assets.draco18s.artificer.game {
 				hasListChanged = false;
 				int i = 0;
 				foreach(Upgrade item in cashUpgradeList) {
-					if(!item.getIsPurchased()) {
+					if(!item.getIsPurchased() && (item.cost < Main.instance.player.money * 10 || i < 10)) {
 						if(item.upgradListGui == null) {
 							GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM, cashList) as GameObject;
 							item.upgradListGui = it;
@@ -213,7 +216,8 @@ namespace Assets.draco18s.artificer.game {
 
 				i = 0;
 				foreach(Upgrade item in renownUpgradeList) {
-					if(!item.getIsPurchased()) {
+					Debug.Log(item.cost + " < " + (Main.instance.player.renown * 10) + " || " + i + " < 10");
+					if(!item.getIsPurchased() && (item.cost < Main.instance.player.renown * 10 || i < 10)) {
 						if(item.upgradListGui == null) {
 							GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM,renownList) as GameObject;
 							item.upgradListGui = it;
@@ -317,16 +321,35 @@ namespace Assets.draco18s.artificer.game {
 			foreach(Upgrade item in cashUpgradeList) {
 				info.AddValue("upgrade_" + item.saveName, item.getIsPurchased());
 			}
+			foreach(Upgrade item in renownUpgradeList) {
+				info.AddValue("renown_upgrade_" + item.saveName, item.getIsPurchased());
+			}
 		}
 
 		public static void readSaveData(ref SerializationInfo info, ref StreamingContext context) {
 			if(Main.saveVersionFromDisk >= 4) {
 				foreach(Upgrade item in cashUpgradeList) {
 					try {
-						item.setIsPurchased(info.GetBoolean("upgrade_" + item.saveName));
+						if(info.GetBoolean("upgrade_" + item.saveName)) {
+							item.applyUpgrade();
+						}
+						//item.setIsPurchased(info.GetBoolean("upgrade_" + item.saveName));
 					}
 					catch (SerializationException e) {
 						//Debug.Log(e);
+					}
+				}
+				if(Main.saveVersionFromDisk >= 6) {
+					foreach(Upgrade item in cashUpgradeList) {
+						try {
+							if(info.GetBoolean("renown_upgrade_" + item.saveName)) {
+								item.applyUpgrade();
+							}
+							//item.setIsPurchased(info.GetBoolean("renown_upgrade_" + item.saveName));
+						}
+						catch(SerializationException e) {
+							//Debug.Log(e);
+						}
 					}
 				}
 			}

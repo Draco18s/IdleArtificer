@@ -62,7 +62,8 @@ namespace Assets.draco18s.artificer.upgrades {
 		QUEST_DIFFICULTY,
 		ENCHANTMENT_COST,
 		RESEARCH_RATE,
-		JOURNEYMAN_RATE
+		JOURNEYMAN_RATE,
+		QUEST_GOODS_VALUE
 	}
 
 	public abstract class UpgradeValueWrapper {
