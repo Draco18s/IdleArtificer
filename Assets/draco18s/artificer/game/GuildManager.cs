@@ -216,7 +216,7 @@ namespace Assets.draco18s.artificer.game {
 
 				i = 0;
 				foreach(Upgrade item in renownUpgradeList) {
-					Debug.Log(item.cost + " < " + (Main.instance.player.renown * 10) + " || " + i + " < 10");
+					//Debug.Log(item.cost + " < " + (Main.instance.player.renown * 10) + " || " + i + " < 10");
 					if(!item.getIsPurchased() && (item.cost < Main.instance.player.renown * 10 || i < 10)) {
 						if(item.upgradListGui == null) {
 							GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM,renownList) as GameObject;

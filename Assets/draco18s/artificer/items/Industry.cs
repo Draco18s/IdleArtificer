@@ -158,8 +158,8 @@ namespace Assets.draco18s.artificer.items {
 		public bool addTime(float t) {
 			bool ret = false;
 			if(CraftingManager.doSynchronize && apprentices == 0) {
-				int intTime = Mathf.FloorToInt(Time.time*Main.instance.GetSpeedMultiplier());
-				float synchTime = (intTime % 10) + (Time.time * Main.instance.GetSpeedMultiplier()) - intTime;
+				int intTime = Mathf.FloorToInt(Time.time*Main.instance.GetSpeedMultiplier() * halvesAndDoubles);
+				float synchTime = (intTime % 10) + (Time.time * Main.instance.GetSpeedMultiplier() * halvesAndDoubles) - intTime;
 
 				int diff = Mathf.Abs((100 - Mathf.RoundToInt(timeRemaining * 10)) - Mathf.RoundToInt(synchTime * 10));
 

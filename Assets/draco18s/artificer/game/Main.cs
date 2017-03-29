@@ -93,6 +93,12 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.guildTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.guildTab, GuiManager.instance.guildArea, GuiManager.instance.guildHeader); });
 			GuiManager.instance.researchTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.researchTab, GuiManager.instance.researchArea, GuiManager.instance.researchHeader); });
 
+			GuiManager.instance.craftArea.GetComponent<Canvas>().enabled = true;
+			GuiManager.instance.enchantArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.questArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.guildArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.researchArea.GetComponent<Canvas>().enabled = false;
+
 			btn = GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { player.reset(); });
 			btn.AddHover(delegate (Vector3 p){
@@ -489,7 +495,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public float GetSpeedMultiplier() {
 			//TODO: Speed bonuses
-			return (debugMode ? 1000 : 10);
+			return (debugMode ? 1000 : 1);
 		}
 
 		public float GetClickRate() {

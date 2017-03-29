@@ -70,11 +70,44 @@ namespace Koopakiller.Numerics
             this.Denominator = 1;
         }
 
-        /// <summary>
-        /// Erstellt eine neue Instanz der <see cref="BigRational"/>-Struktur mit dem angegebenen Wert.
-        /// </summary>
-        /// <param name="value">Der als Bruch zu speichernde Wert.</param>
-        public BigRational(double value) : this() {
+		public BigRational(float value) : this() {
+			string str = value.ToString();
+			int s = str.Length;
+			s -= (str.IndexOf('.'));
+			double p = 1 / (Math.Pow(10, s));
+			Numerator = 1;
+			Denominator = 1;
+			long bits = BitConverter.DoubleToInt64Bits(value + p);
+			bool negative = (bits < 0);
+			int exponent = (int)((bits >> 52) & 0x7ffL);
+			long mantissa = bits & 0xfffffffffffffL;
+			if(exponent == 0) {
+				exponent++;
+			}
+			else {
+				mantissa = mantissa | (1L << 52);
+			}
+
+			int div = (exponent - 1023);
+
+			if(div >= 0) {
+				Numerator = mantissa * BigInteger.Pow(2, div);
+				Denominator = BigInteger.Pow(2, 52);
+			}
+			else {
+				div = -div;
+				Numerator = mantissa * BigInteger.Pow(2, 0);
+				Denominator = BigInteger.Pow(2, 52 + div);
+			}
+
+			this = BigRational.Truncate(new BigRational((negative ? -1 : 1) * Numerator, Denominator), (uint)(s - 1));
+		}
+
+		/// <summary>
+		/// Erstellt eine neue Instanz der <see cref="BigRational"/>-Struktur mit dem angegebenen Wert.
+		/// </summary>
+		/// <param name="value">Der als Bruch zu speichernde Wert.</param>
+		public BigRational(double value) : this() {
 			string str = value.ToString();
 			int s = str.Length;
 			s -= (str.IndexOf('.'));
@@ -919,13 +952,21 @@ namespace Koopakiller.Numerics
         public static implicit operator BigRational(BigInteger value)
         {
             return new BigRational(value);
-        }
-        /// <summary>
-        /// Erstellt eine neue Instanz der <see cref="BigRational"/>-Struktur aus dem angegebenen Wert.
-        /// </summary>
-        /// <param name="value">Der zu speichernde Wert.</param>
-        /// <returns>Der Wert von <paramref name="value"/>, abgespeichert in einer Instanz der <see cref="BigRational"/>-Struktur.</returns>
-        public static implicit operator BigRational(double value)
+		}
+		/// <summary>
+		/// Erstellt eine neue Instanz der <see cref="BigRational"/>-Struktur aus dem angegebenen Wert.
+		/// </summary>
+		/// <param name="value">Der zu speichernde Wert.</param>
+		/// <returns>Der Wert von <paramref name="value"/>, abgespeichert in einer Instanz der <see cref="BigRational"/>-Struktur.</returns>
+		public static implicit operator BigRational(float value) {
+			return new BigRational(value);
+		}
+		/// <summary>
+		/// Erstellt eine neue Instanz der <see cref="BigRational"/>-Struktur aus dem angegebenen Wert.
+		/// </summary>
+		/// <param name="value">Der zu speichernde Wert.</param>
+		/// <returns>Der Wert von <paramref name="value"/>, abgespeichert in einer Instanz der <see cref="BigRational"/>-Struktur.</returns>
+		public static implicit operator BigRational(double value)
         {
             return new BigRational(value);
         }

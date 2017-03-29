@@ -202,7 +202,7 @@ namespace Assets.draco18s.artificer.game {
 			}
 			else {
 				if(selectedIndustry != null) {
-					ItemStack stack = new ItemStack(selectedIndustry, Mathf.RoundToInt(selectedIndustry.getStackSizeForQuest() * Main.instance.GetQuestStackMultiplier(selectedIndustry, theQuest.numQuestsBefore) * theQuest.getGoal().getReqScalar()));
+					ItemStack stack = new ItemStack(selectedIndustry, Mathf.RoundToInt(selectedIndustry.getStackSizeForQuest() * Main.instance.GetQuestStackMultiplier(selectedIndustry, theQuest.numQuestsBefore) * theQuest.getGoal().getReqScalar() / (selectedIndustry.industryItem.getEffectiveness()>1? selectedIndustry.industryItem.getEffectiveness():1)));
 					if(slot < theQuest.inventory.Count) {
 						theQuest.inventory[slot] = stack;
 					}

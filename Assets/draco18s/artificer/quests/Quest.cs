@@ -545,7 +545,7 @@ namespace Assets.draco18s.artificer.quests {
 		private void tryToHeal() {
 			int needed = heroMaxHealth - heroCurHealth;
 			do {
-				if(needed >= 100)	 needed -= doesHeroHave(AidType.HEALING_LARGE)  ? heal(100) : heal(-50);//should need ressurection
+				if(needed >= 100)	 needed -= doesHeroHave(AidType.RESSURECTION)  ? heal(100) : heal(-needed);
 				else if(needed >= 50) needed -= doesHeroHave(AidType.HEALING_LARGE)  ? heal(50) : heal(-30);
 				else if(needed >= 20) needed -= doesHeroHave(AidType.HEALING_MEDIUM) ? heal(20) : heal(-10);
 				else if(needed >= 10) needed -= doesHeroHave(AidType.HEALING_SMALL)  ? heal(10) : heal(-5);
