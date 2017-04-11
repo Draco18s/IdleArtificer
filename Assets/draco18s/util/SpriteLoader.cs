@@ -16,12 +16,11 @@ namespace Assets.draco18s.util {
 		public static GameObject gameObjectForResource(string texName) {
 			//Debug.Log(texName);
 			Texture2D t = null;
-			if(allSprites.ContainsKey(texName)) {
-				allSprites.TryGetValue(texName, out t);
-			}
-			else {
+			allSprites.TryGetValue(texName, out t);
+
+			if (t == null)
+			{
 				t = Resources.Load<Texture2D>(texName);
-				//Debug.Log("Loaded: " + t);
 				allSprites.Add(texName, t);
 			}
 			return gameObjectForResource(t, new Rect(0, 0, t.width, t.height));
@@ -29,10 +28,10 @@ namespace Assets.draco18s.util {
 
 		public static GameObject gameObjectForResource(string texName, Rect size) {
 			Texture2D t = null;
-			if(allSprites.ContainsKey(texName)) {
-				allSprites.TryGetValue(texName, out t);
-			}
-			else {
+			allSprites.TryGetValue(texName, out t);
+
+			if (t == null)
+			{
 				t = Resources.Load<Texture2D>(texName);
 				allSprites.Add(texName, t);
 			}
@@ -55,10 +54,10 @@ namespace Assets.draco18s.util {
 
 		public static Sprite getSpriteForResource(string texName, Rect size) {
 			Texture2D t = null;
-			if(allSprites.ContainsKey(texName)) {
-				allSprites.TryGetValue(texName, out t);
-			}
-			else {
+			allSprites.TryGetValue(texName, out t);
+
+			if (t == null)
+			{
 				t = Resources.Load<Texture2D>(texName);
 				allSprites.Add(texName, t);
 			}
@@ -67,10 +66,10 @@ namespace Assets.draco18s.util {
 
 		public static Texture2D getTextureForResource(string texName) {
 			Texture2D t = null;
-			if(allSprites.ContainsKey(texName)) {
-				allSprites.TryGetValue(texName, out t);
-			}
-			else {
+			allSprites.TryGetValue(texName, out t);
+
+			if (t == null)
+			{
 				t = Resources.Load<Texture2D>(texName);
 				allSprites.Add(texName, t);
 			}
@@ -80,17 +79,19 @@ namespace Assets.draco18s.util {
 		public static Sprite getSpriteForResource(string texName) {
 			//Debug.Log(texName);
 			Texture2D t = null;
-			if(allSprites.ContainsKey(texName)) {
-				allSprites.TryGetValue(texName, out t);
-			}
-			else {
+			allSprites.TryGetValue(texName, out t);
+
+			if (t == null)
+			{
 				t = Resources.Load<Texture2D>(texName);
-				allSprites.Add(texName, t);
-			}
-			if(t == null) {
-				Exception err = new Exception("Unable to load image file '" + texName + "'");
-				Configuration.writeToErrorFile("MainThreadErrors.txt", err.ToString());
-				return null;
+				if(t == null) {
+					Exception err = new Exception("Unable to load image file '" + texName + "'");
+					Configuration.writeToErrorFile("MainThreadErrors.txt", err.ToString());
+					return null;
+				}
+				else {
+					allSprites.Add(texName, t);
+				}
 			}
 			Rect size = new Rect(0, 0, t.width, t.height);
 			return Sprite.Create(t, size, new Vector2(0.5f,0.5f), Configuration.PIXELS_PER_UNIT, 0, SpriteMeshType.FullRect);
