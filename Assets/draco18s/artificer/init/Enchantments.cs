@@ -8,18 +8,19 @@ using System.Text;
 namespace Assets.draco18s.artificer.init {
 	public class Enchantments {
 		//armor
-		public static Enchantment HEALING = new Enchantment("Healing", Items.ROYAL_JELLY, 1, ItemEquipType.ARMOR | ItemEquipType.RING, RequirementType.HEALING);
+		public static Enchantment HEALING = new Enchantment("Healing", Items.ROYAL_JELLY, 200, ItemEquipType.ARMOR | ItemEquipType.RING, RequirementType.HEALING);
 		public static Enchantment FIRE_RESISTANCE = new Enchantment("Fire Resistance", Items.DRAGON_SCALES, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.FIRE_IMMUNE).setEffectiveness(0.25f).setStacksTo(7);
 		public static Enchantment COLD_RESISTANCE = new Enchantment("Cold Resistance", Items.ROOSTER_TEETH, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.COLD_IMMUNE).setEffectiveness(0.25f).setStacksTo(7);
 		public static Enchantment POISON_RESISTANCE = new Enchantment("Poison Resistance", Items.VENOM, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.POISON_IMMUNE).setEffectiveness(0.25f).setStacksTo(7);
 		public static Enchantment ACID_RESISTANCE = new Enchantment("Acid Resistance", Items.DIATOM_EARTH, 200, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.ACID_IMMUNE).setEffectiveness(0.25f).setStacksTo(7);
-		public static Enchantment SPELL_RESIST = new Enchantment("Spell Resistance", Items.MUMMY_WRAPPING, 200, ItemEquipType.ARMOR | ItemEquipType.SHIELD, RequirementType.SPELL_RESIST);
 
 		//cloak
 		public static Enchantment ETHEREAL = new Enchantment("Ethereal", Items.BLACK_PEARLS, 200, ItemEquipType.CLOAK, RequirementType.ETHEREALNESS);
 		public static Enchantment ENDURANCE = new Enchantment("Endurance", Items.CORLY_ROOT, 200, ItemEquipType.CLOAK | ItemEquipType.RING, RequirementType.ENDURANCE);
-		//HOLY/UNHOLY resist
-
+		public static Enchantment SPELL_RESIST = new Enchantment("Spell Resistance", Items.MUMMY_WRAPPING, 200, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.SPELL_RESIST);
+		public static Enchantment BLESSED = new Enchantment("Blessed", Industries.HOLY_SYMBOL.industryItem, 25000, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.UNHOLY_IMMUNE);
+		public static Enchantment UNBLESSED = new Enchantment("Unblessed", Industries.UNHOLY_SYMBOL.industryItem, 25000, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.HOLY_IMMUNE);
+		
 		//weapon
 		public static Enchantment BRIGHT = new Enchantment("Bright", Items.STARDUST, 200, ItemEquipType.RING | ItemEquipType.WEAPON, RequirementType.LIGHT);
 		public static Enchantment ENHANCEMENT = new Enchantment("Enhancement", Items.DIAMONDS, 200, ItemEquipType.WEAPON | ItemEquipType.RANGED | ItemEquipType.ARMOR | ItemEquipType.SHIELD, 0).setStacksTo(5);
@@ -35,6 +36,7 @@ namespace Assets.draco18s.artificer.init {
 		public static Enchantment BRILIANT_ENERGY = new Enchantment("Briliant Energy", Items.RED_MERCURY, 200, ItemEquipType.WEAPON, RequirementType.BRILIANT_ENERGY);
 
 		//ranged
+		public static Enchantment PERFECT_AIM = new Enchantment("Perfect Aim", Items.GLASS_LENS, 200, ItemEquipType.RANGED, 0);
 
 		//helmet
 		public static Enchantment ALERTNESS = new Enchantment("Alertness", Items.CYCLOPS_EYE, 200, ItemEquipType.HELMET | ItemEquipType.RING, RequirementType.DETECTION);
@@ -53,11 +55,11 @@ namespace Assets.draco18s.artificer.init {
 		//shield
 		public static Enchantment MIRRORED = new Enchantment("Mirrored", Items.MOON_SLIVER, 200, ItemEquipType.SHIELD, RequirementType.MIRRORED);
 		public static Enchantment GLOWING = new Enchantment("Glowing", Items.FIRE_OPAL, 200, ItemEquipType.SHIELD, RequirementType.LIGHT);
+		public static Enchantment THORNS = new Enchantment("Thorns", Items.TANGLED_ROSE, 200, ItemEquipType.SHIELD, 0);
+		public static Enchantment ARROW_CATCH = new Enchantment("Arrow Catching", Items.LOADSTONE, 200, ItemEquipType.SHIELD, RequirementType.ARROW_CATCHING).setEffectiveness(0.5f);
 
 		//boots
 		public static Enchantment STRONG = new Enchantment("Strong", Industries.POT_STRENGTH.industryItem, 25000, ItemEquipType.BOOTS, RequirementType.STRENGTH);
-		public static Enchantment AGILE = new Enchantment("Agile", Industries.POT_AGILITY.industryItem, 5, ItemEquipType.ARMOR, RequirementType.AGILITY);
-
-		//red mercury ~ 25-100
+		public static Enchantment AGILE = new Enchantment("Agile", Industries.POT_AGILITY.industryItem, 25000, ItemEquipType.ARMOR, RequirementType.AGILITY);
 	}
 }

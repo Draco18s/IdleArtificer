@@ -31,6 +31,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				ItemStack rangedStack = theQuest.getHeroItemWith(AidType.RANGED_WEAPON);
 				int dmg = ((IMonsterChallenge)type).getRangedDamage(result, theQuest, ref questBonus, rangedStack);
 				if(rangedStack != null) {
+					//TODO: account for stacking
 					if(rangedStack.doesStackHave(Enchantments.ENHANCEMENT)) {
 						dmg += 5;
 					}
@@ -39,7 +40,9 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				dmg = (int)Math.Round(rangedStack.getEffectiveness(RequirementType.RANGED) * dmg);
 				monsterHealth -= dmg;
 			}
+			int hpBefore = theQuest.heroCurHealth;
 			type.OnAttempt(result, theQuest, ref questBonus);
+			bool tookDamage = hpBefore != theQuest.heroCurHealth;
 			if(type is IMonsterChallenge) {
 				ItemStack meleeStack = theQuest.getHeroItemWith(AidType.WEAPON);
 				int dmg = ((IMonsterChallenge)type).getDamageDealtToMonster(result, theQuest, ref questBonus, meleeStack);
@@ -52,6 +55,10 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					}
 				}
 				dmg = (int)Math.Round(meleeStack.getEffectiveness(RequirementType.WEAPON) * dmg);
+				bool hasThorns = theQuest.getHeroItemWith(Enchantments.THORNS) != null;
+				if(tookDamage && hasThorns) {
+					dmg += 5;
+				}
 				monsterHealth -= dmg;
 				if(monsterHealth > 0) {
 					theQuest.repeatTask();

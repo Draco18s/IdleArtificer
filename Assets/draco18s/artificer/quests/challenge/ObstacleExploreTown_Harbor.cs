@@ -43,12 +43,13 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Scenario.PIRATE_SHIP, 0));
 					break;
 				case EnumResult.MIXED:
-					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Initial.TAVERN, 0));
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Initial.Sub.BAR_BRAWL, 0));
 					break;
-				case EnumResult.SUCCESS: //TODO?
+				case EnumResult.SUCCESS:
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Initial.TAVERN, questBonus));
 					break;
 				case EnumResult.CRIT_SUCCESS:
-					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Travel.SAIL_SEAS, 0));
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Travel.SAIL_SEAS, questBonus));
 					break;
 			}
 		}

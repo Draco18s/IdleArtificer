@@ -369,8 +369,9 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public void harmHero(int amt, DamageType damage) {
+			amt = 0;
 			if(amt <= 0) return;
-			if(damage == DamageType.GENERIC) {
+			if(!damage.getBypassesArmor()) {
 				float reduction = 0;
 
 				float bestArmorV = 0, bestShieldV = 0, bestMagicV = 0;
@@ -410,7 +411,7 @@ namespace Assets.draco18s.artificer.quests {
 				reduction = bestArmorV + bestShieldV + bestMagicV;
 				amt -= Mathf.FloorToInt(amt * reduction);
 			}
-			else {
+			if(damage.getImmunityType() != 0) {
 				float best = 0;
 				ItemStack bestStack = null;
 				foreach(ItemStack stack in inventory) {
@@ -502,6 +503,14 @@ namespace Assets.draco18s.artificer.quests {
 			}
 			return false;
 		}
+		public ItemStack getHeroItemWith(Enchantment ench) {
+			foreach(ItemStack stack in inventory) {
+				if(stack.doesStackHave(ench) && stack.stackSize > 0) {
+					return stack;
+				}
+			}
+			return null;
+		}
 
 		public ItemStack getHeroItemWith(AidType aid) {
 			foreach(ItemStack stack in inventory) {
@@ -570,6 +579,7 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public void hastenQuestEnding(int v) {
+			v = 0;
 			if(doesHeroHave(AidType.MANA_LARGE) && v >= 120) {
 				v = Math.Max(v - 120, 0);
 			}

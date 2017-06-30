@@ -123,6 +123,7 @@ namespace Assets.draco18s.artificer.game {
 			ob = ChallengeTypes.Goals.ALCHEMY_LAB;
 			ob = ChallengeTypes.Goals.Sub.MUMMY;
 			ob = ChallengeTypes.Initial.AT_HOME;
+			ob = ChallengeTypes.Initial.Sub.BAR_BRAWL;
 			ob = ChallengeTypes.Initial.Town.GARDENS;
 			ob = ChallengeTypes.Loot.TREASURE;
 			ob = ChallengeTypes.Scenario.Pirates.MAROONED;

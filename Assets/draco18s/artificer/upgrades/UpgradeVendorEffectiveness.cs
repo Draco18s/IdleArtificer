@@ -1,4 +1,5 @@
 ﻿using Assets.draco18s.artificer.game;
+using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
 using System;
@@ -25,7 +26,15 @@ namespace Assets.draco18s.artificer.upgrades {
 			((UpgradeFloatValue)wrap).value -= increaseAmt;
 		}
 		public override string getTooltip() {
-			return "Increases the price vendors sell items at.";
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
+			int v = StatisticsTracker.moneyMagnitude.value;
+			v -= (v % 3);
+			v /= 3;
+			v = Math.Max(v - 1, 0);
+			float b = 0.05f * v;
+			return "Increases the price vendors sell items by " + (increaseAmt * 100) + "%.\nThe base value is "+((b+1)*100)+"%, currently it is " + ((((UpgradeFloatValue)wrap).value+b) * 100) + "%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + increaseAmt + b) * 100) + "%";
+			//return "Increases the price vendors sell items at.";
 		}
 	}
 }

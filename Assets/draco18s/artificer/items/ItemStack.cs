@@ -120,9 +120,19 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public void applyEnchantment(Enchantment enchantment) {
-			if(!enchants.Contains(enchantment))
-				enchants.Add(enchantment);
+			//if(!enchants.Contains(enchantment))
+			enchants.Add(enchantment);
 			enchants.Sort((x, y) => x.ID.CompareTo(y.ID));
+		}
+
+		public int enchantmentCount(Enchantment ench) {
+			int f = 0;
+			foreach(Enchantment e in enchants) {
+				if(e == ench) {
+					f++;
+				}
+			}
+			return f;
 		}
 
 		public float getEffectiveness(RequirementType type) {

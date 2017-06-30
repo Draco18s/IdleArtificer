@@ -56,6 +56,7 @@ namespace Assets.draco18s.artificer.game {
 			upgrades.Add(UpgradeType.QUEST_DIFFICULTY, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.QUEST_SCALAR, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.QUEST_SPEED, new UpgradeFloatValue(0f));
+			upgrades.Add(UpgradeType.QUEST_LOOT, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.RENOWN_INCOME, new UpgradeFloatValue(1f));
 			upgrades.Add(UpgradeType.RENOWN_MULTI, new UpgradeFloatValue(0.02f));
 			upgrades.Add(UpgradeType.START_CASH, new UpgradeIntValue(20));
@@ -301,7 +302,7 @@ namespace Assets.draco18s.artificer.game {
 #pragma warning restore 0168
 			//TODO: uncomment this stuff
 			builtItems = new List<Industry>();
-			money = 20;// new BigInteger(info.GetString("money"));
+			money = 2000000000000;// new BigInteger(info.GetString("money"));
 			moneyFloor = 1;// new BigInteger(info.GetString("moneyFloor"));
 			lifetimeMoney = money;// new BigInteger(info.GetString("lifetimeMoney"));
 			renown = 1000;// new BigInteger(info.GetString("renown"));

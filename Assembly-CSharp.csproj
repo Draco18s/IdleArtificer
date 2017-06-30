@@ -105,6 +105,7 @@
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleDecypherMap.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleDesert.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleDetained.cs" />
+     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleDrunkenFight.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleExploreTown.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleExploreTown_Gardens.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleExploreTown_Harbor.cs" />
@@ -146,6 +147,7 @@
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleType.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleUnderwaterRuins.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleUneventful.cs" />
+     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleVampireTradingHouse.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleWaterTransport.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleWilderness.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstcaleStealSupplies.cs" />
@@ -207,6 +209,7 @@
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeRenownMulti.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeResearchSpeed.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeStartingCash.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeTheLoots.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorEffectiveness.cs" />
      <Compile Include="Assets\draco18s\config\Configuration.cs" />
      <Compile Include="Assets\draco18s\util\ColorHelper.cs" />

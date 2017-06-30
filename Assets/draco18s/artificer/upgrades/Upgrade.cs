@@ -60,6 +60,7 @@ namespace Assets.draco18s.artificer.upgrades {
 		QUEST_SCALAR,
 		QUEST_SPEED,
 		QUEST_DIFFICULTY,
+		QUEST_LOOT,
 		ENCHANTMENT_COST,
 		RESEARCH_RATE,
 		JOURNEYMAN_RATE,

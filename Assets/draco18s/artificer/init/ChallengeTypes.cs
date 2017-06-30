@@ -11,6 +11,7 @@ using Assets.draco18s.artificer.game;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
 using Assets.draco18s.util;
+using Assets.draco18s.artificer.upgrades;
 
 namespace Assets.draco18s.artificer.init {
 	public static class ChallengeTypes {
@@ -92,6 +93,10 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType TAVERN = new ObstacleTavern();
 			public static ObstacleType DETAINED = new ObstacleDetained();
 
+			public static class Sub {
+				public static ObstacleType BAR_BRAWL = new ObstacleDrunkenFight();
+			}
+
 			public static class Town {
 				public static ObstacleType HARBOR = new ObstacleExploreTown_Harbor();
 				public static ObstacleType MARKET = new ObstacleExploreTown_Market();
@@ -157,6 +162,7 @@ namespace Assets.draco18s.artificer.init {
 				public static ObstacleType TRAPPED_PASSAGE_ACID = new ObstacleTrappedPassage(DamageType.ACID);
 				public static ObstacleType TRAPPED_PASSAGE_POISON = new ObstacleTrappedPassage(DamageType.POISON);
 				public static ObstacleType TRAPPED_PASSAGE_GENERIC = new ObstacleTrappedPassage(DamageType.GENERIC);
+				public static ObstacleType TRAPPED_PASSAGE_ARROWS = new ObstacleTrappedPassage(DamageType.ARROWS);
 
 				public static ObstacleType MAGIC_TRAP_FIRE = new ObstacleMagicTrap(DamageType.FIRE);
 				public static ObstacleType MAGIC_TRAP_COLD = new ObstacleMagicTrap(DamageType.COLD);
@@ -167,6 +173,7 @@ namespace Assets.draco18s.artificer.init {
 			}
 			public static class Monsters {
 				public static ObstacleType BANDIT = new ObstacleMonster("bandit", DamageType.GENERIC, RequirementType.WEAPON);
+				public static ObstacleType BRIGAND = new ObstacleMonster("brigand", DamageType.ARROWS, RequirementType.WEAPON);
 
 				public static ObstacleType HELLHOUND = new ObstacleMonster("hellhound",DamageType.FIRE, RequirementType.COLD_DAMAGE);
 				public static ObstacleType OOZE = new ObstacleMonster("ooze", DamageType.ACID, RequirementType.FIRE_DAMAGE);
@@ -190,7 +197,7 @@ namespace Assets.draco18s.artificer.init {
 				}
 				else if(r == fields.Length) { //traps
 					r = rand.Next(fields.Length);
-					if(r > 4) r = rand.Next(fields.Length); //less likely to roll magic
+					if(r >= fields.Length-6) r = rand.Next(fields.Length); //less likely to roll magic
 					FieldInfo field = fields[r];
 					fields = typeof(Traps).GetFields();
 					return (ObstacleType)field.GetValue(null);
@@ -212,6 +219,9 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType RARE_ITEM = new ObstacleResourceCache();
 			public static ObstacleType TRAVELING_MERCHANT = new ObstacleBuyEquipment("traveling merchant");
 			public static ObstacleType HOARD = new ObstacleHoard();
+
+			//not the best category, but it'll do for now
+			public static ObstacleType VAMPIRE_MARKET = new ObstacleVampireTradingHouse();
 
 			public static ObstacleType getRandom(Random rand) {
 				return getRandom(rand, false);
@@ -250,24 +260,24 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static void AddCommonResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 0, 9);
-				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
+				Item i = Items.getRandom(theQuest.questRand, 0, 10);
+				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
 				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
 				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
 			public static void AddUncommonResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 9, 19);
-				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
+				Item i = Items.getRandom(theQuest.questRand, 10, 22);
+				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
 				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
 				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
 			}
 
 			public static void AddRareResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 19, 29);
-				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
+				Item i = Items.getRandom(theQuest.questRand, 22, 32);
+				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
 				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
 				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
@@ -275,10 +285,19 @@ namespace Assets.draco18s.artificer.init {
 
 			public static void AddResource(Quest theQuest, Items.ItemType type) {
 				Item i = Items.getRandomType(theQuest.questRand, type);
-				int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
+				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
 				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
 				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
+			}
+
+			private static int ResourceQuantity(Random rand, int min, int max) {
+				UpgradeValueWrapper wrap;
+				Main.instance.player.upgrades.TryGetValue(upgrades.UpgradeType.QUEST_LOOT, out wrap);
+				float f = ((UpgradeFloatValue)wrap).value;
+				min = UnityEngine.Mathf.RoundToInt(min * f);
+				max = UnityEngine.Mathf.RoundToInt(max * f);
+				return rand.Next(max - min + 1) + max;
 			}
 
 			private static int checkHerbalism(Quest theQuest, Item item) {
@@ -290,7 +309,7 @@ namespace Assets.draco18s.artificer.init {
 					}
 				}
 				if(hasHerbalism) {
-					return 1 + theQuest.questRand.Next(3);
+					return ResourceQuantity(theQuest.questRand, 1, 4);
 				}
 				return 0;
 			}

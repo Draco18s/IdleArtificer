@@ -18,19 +18,20 @@ namespace Assets.draco18s.artificer.upgrades {
 			base.applyUpgrade();
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
-			((UpgradeFloatValue)wrap).value *= amount;
+			((UpgradeFloatValue)wrap).value += amount;
 		}
 		public override void revokeUpgrade() {
 			base.revokeUpgrade();
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
-			((UpgradeFloatValue)wrap).value /= amount;
+			((UpgradeFloatValue)wrap).value -= amount;
 		}
 
 		public override string getTooltip() {
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
-			return "Increases the amount of renown each quest completion adds by " + (amount * 100) + "%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + amount) * 100) + "%";
+			return "Increases the amount of renown each quest completion adds by " + (amount * 100) + "%.\nThe base value is 100%, currently it is " + (((UpgradeFloatValue)wrap).value * 100) + "%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + amount) * 100) + "%";
+			//return "Increases the amount of renown each quest completion adds by " + (amount * 100) + "%, the base value is 100% and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + amount) * 100) + "%";
 		}
 
 		public override string getIconName() {

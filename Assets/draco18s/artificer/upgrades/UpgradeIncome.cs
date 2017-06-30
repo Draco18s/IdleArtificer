@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Assets.draco18s.artificer.upgrades {
 	class UpgradeIncome : Upgrade {
 		protected readonly float amount;
-		public UpgradeIncome(BigInteger upgradeCost, float amount, string saveName) : base(UpgradeType.RENOWN_MULTI, upgradeCost, "Increase all Income by x" + amount, saveName) {
+		public UpgradeIncome(BigInteger upgradeCost, float amount, string saveName) : base(UpgradeType.MONEY_INCOME, upgradeCost, "Increase all Income by " + amount + "x", saveName) {
 			this.amount = amount;
 		}
 

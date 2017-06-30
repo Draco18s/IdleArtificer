@@ -3,6 +3,7 @@
 namespace Assets.draco18s.artificer.quests {
 	public class DamageType {
 		public static DamageType GENERIC = new DamageType();
+		public static DamageType ARROWS = new DamageType(RequirementType.ARROW_CATCHING);
 		public static DamageType STARVE = new DamageType().setBypassesArmor();
 		public static DamageType DROWN = new DamageType(RequirementType.WATER_BREATH).setBypassesArmor();
 		public static DamageType FIRE = new DamageType(RequirementType.FIRE_IMMUNE).setBypassesArmor();

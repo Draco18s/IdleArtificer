@@ -41,7 +41,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			switch(result) {
 				case EnumResult.CRIT_FAIL: //get drunk and have an item stolen
 					theQuest.addTime(60);
-					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.THIEF, -2));
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Initial.Sub.BAR_BRAWL, -1));
 					break;
 				case EnumResult.FAIL: //get drunk and lose time
 					theQuest.addTime(60);
