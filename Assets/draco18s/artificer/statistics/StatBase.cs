@@ -63,7 +63,7 @@ namespace Assets.draco18s.artificer.statistics {
 		}
 
 		public virtual void setValue(int v) {
-
+			statValue = v;
 		}
 
 		public virtual void resetValue() {

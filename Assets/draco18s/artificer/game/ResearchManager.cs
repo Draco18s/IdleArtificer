@@ -21,6 +21,7 @@ namespace Assets.draco18s.artificer.game {
 		private static System.Random rand = new System.Random();
 		private static ItemStack examinedStack = null;
 		public static readonly int maxResearchTime = 7200;
+		private static Text moneyDisp;
 
 		public static void OneTimeSetup() {
 			Transform trans = GuiManager.instance.researchArea.transform;
@@ -42,6 +43,7 @@ namespace Assets.draco18s.artificer.game {
 				}
 			});
 			relicInfo.FindChild("DiscardBtn").GetComponent<Button>().onClick.AddListener(delegate { DiscardItem(); });
+			moneyDisp = GuiManager.instance.researchHeader.transform.FindChild("MoneyArea").GetChild(0).GetComponent<Text>();
 		}
 
 		public static void setupUI() {
@@ -127,6 +129,7 @@ namespace Assets.draco18s.artificer.game {
 				timeLeftTxt.text = "∞";
 				progressBarMat.SetFloat("_Cutoff", 1);
 			}
+			moneyDisp.text = Main.AsCurrency(Main.instance.player.money);
 		}
 
 		public static void IncrementResearch() {

@@ -28,6 +28,10 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatAchievement twentiethQuestCompleted = new StatAchievement("twentiethQuestCompleted").register();
 		public static readonly StatAchievement allQuestsUnlocked = new StatAchievement("allQuestsUnlocked").register();
 		public static readonly StatAchievement relicFromGenie = new StatAchievement("relicFromGenie").register();
+		public static readonly StatAchievement unlockedEnchanting = new StatAchievement("unlockedEnchanting").register();
+		public static readonly StatAchievement unlockedQuesting = new StatAchievement("unlockedQuesting").register();
+		public static readonly StatAchievement unlockedGuild = new StatAchievement("unlockedGuild").register();
+		public static readonly StatAchievement unlockedResearch = new StatAchievement("unlockedResearch").register();
 		#endregion
 		//unlocked all quests
 		//built all buildings - have ever built x
@@ -59,12 +63,24 @@ namespace Assets.draco18s.artificer.statistics {
 			}
 		}
 
-		public static void serializeAllStats(SerializationInfo info, StreamingContext context) {
-			
+		public static void serializeAllStats(ref SerializationInfo info, ref StreamingContext context) {
+			foreach(StatBase s in allStatistics) {
+				info.AddValue(s.statName, s.value);
+			}
+			foreach(StatAchievement s in allAchievements) {
+				info.AddValue(s.achieveName, s.isAchieved());
+			}
 		}
 
-		public static void deserializeAllStats(SerializationInfo info, StreamingContext context) {
-			
+		public static void deserializeAllStats(ref SerializationInfo info, ref StreamingContext context) {
+			foreach(StatBase s in allStatistics) {
+				s.setValue(info.GetInt32(s.statName));
+			}
+			foreach(StatAchievement s in allAchievements) {
+				if(info.GetBoolean(s.achieveName)) {
+					s.setAchieved();
+				}
+			}
 		}
 
 		public static IEnumerator<StatAchievement> getAchievementsList() {

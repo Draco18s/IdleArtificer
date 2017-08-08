@@ -188,6 +188,18 @@ namespace Assets.draco18s.artificer.game {
 				GuiManager.instance.currentMoney.GetComponent<Text>().text = "$" + Main.AsCurrency(Main.instance.player.money, 12);
 				Profiler.EndSample();
 
+				if(!StatisticsTracker.unlockedGuild.isAchieved()) {
+					if(Main.instance.player.money >= 20000) {
+						StatisticsTracker.unlockedGuild.setAchieved();
+						GuiManager.instance.guildTab.GetComponent<Button>().interactable = true;
+					}
+				}
+				if(!StatisticsTracker.unlockedQuesting.isAchieved()) {
+					if(Main.instance.player.money >= 10000) {
+						StatisticsTracker.unlockedQuesting.setAchieved();
+						GuiManager.instance.questTab.GetComponent<Button>().interactable = true;
+					}
+				}
 			}
 		}
 		public static void BuildIndustry(Industry item) {
@@ -312,6 +324,10 @@ namespace Assets.draco18s.artificer.game {
 					t.GetComponent<Button>().OnRightClick(delegate { DecreaseApprentices(item); });
 				}
 				Main.instance.mouseDownTime += 1;
+				Transform tBtn = GuiManager.instance.buildingList.transform.FindChild(item.name.ToUpper());
+				if(tBtn != null) {
+					tBtn.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency((BigInteger)item.GetScaledCost());
+				}
 			}
 		}
 		public static void SelectInput(int inputNum) {
@@ -340,8 +356,6 @@ namespace Assets.draco18s.artificer.game {
 						}
 					}
 				}
-				Debug.Log(inputNum + " > " + consumers.Count);
-				Debug.Log(consumers[inputNum].item.name);
 				FacilitySelected(consumers[inputNum].item);
 			}
 		}
@@ -680,6 +694,10 @@ namespace Assets.draco18s.artificer.game {
 					BuildIndustry(selectedIcon, false, true);
 				}
 				selectedIcon.level+=buyNum;
+				Transform tBtn = GuiManager.instance.buildingList.transform.FindChild(selectedIcon.name.ToUpper());
+				if(tBtn != null) {
+					tBtn.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency((BigInteger)selectedIcon.GetScaledCost());
+				}
 			}
 			GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
 		}

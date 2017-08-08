@@ -157,7 +157,6 @@ namespace Assets.draco18s.artificer.game {
 					go.GetComponent<Button>().onClick.AddListener(delegate { /*SelectItem(s);*/addInput2(s); });
 				}
 				else {
-					Debug.Log((stack.relicData==null?"Null":""+stack.relicData.Count));
 					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize);
 					if(stack.enchants.Count > 0 || stack.relicData != null) {
 						go.transform.SetParent(inventoryList3);

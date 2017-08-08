@@ -166,7 +166,7 @@ namespace Assets.draco18s.artificer.items {
 				if(diff > 1) {
 					t *= 0.25f;
 					ret = true;
-					Debug.Log(name + ": still syncing (big) " + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime*10));
+					//Debug.Log(name + ": still syncing (big) " + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime*10));
 				}
 				else if(diff > 0) {
 					if((100 - Mathf.RoundToInt(timeRemaining * 10)) > Mathf.RoundToInt(synchTime * 10)) {
@@ -176,7 +176,7 @@ namespace Assets.draco18s.artificer.items {
 						t *= 1.05f;
 					}
 					ret = true;
-					Debug.Log(name + ": still syncing (micro) " + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime * 10));
+					//Debug.Log(name + ": still syncing (micro) " + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime * 10));
 				}
 				/*if(100 - Mathf.RoundToInt(timeRemaining * 10) > Mathf.RoundToInt(synchTime *10)) {
 					t *= 0.5f;
@@ -261,6 +261,9 @@ namespace Assets.draco18s.artificer.items {
 			}
 			if((type & AidType.WEAPON) > 0) {
 				this.addReqType(RequirementType.WEAPON);
+			}
+			if((type & AidType.RANGED_WEAPON) > 0) {
+				this.addReqType(RequirementType.RANGED);
 			}
 			if((type & (AidType.LIGHT_ARMOR | AidType.MEDIUM_ARMOR | AidType.HEAVY_ARMOR | AidType.BARKSKIN | AidType.LIGHT_SHIELD | AidType.HEAVY_SHIELD)) > 0) {
 				this.addReqType(RequirementType.ARMOR);
@@ -393,8 +396,8 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public void ReadFromCopy(Industry copy) {
-			level = 0;// copy.level;
-			quantityStored = 0;// copy.quantityStored;
+			level = copy.level;
+			quantityStored = copy.quantityStored;
 			if(quantityStored == null) quantityStored = 0;
 			isSellingStores = copy.isSellingStores;
 			isConsumersHalted = copy.isConsumersHalted;
@@ -402,10 +405,10 @@ namespace Assets.draco18s.artificer.items {
 			doAutobuild = copy.doAutobuild;
 			autoBuildLevel = copy.autoBuildLevel;
 			autoBuildMagnitude = copy.autoBuildMagnitude;
-			apprentices = 0;// copy.apprentices;
-			vendors = 0;// copy.vendors;
-			timeRemaining = 0;// copy.timeRemaining;
-			halvesAndDoubles = 1;// copy.halvesAndDoubles;
+			apprentices = copy.apprentices;
+			vendors = copy.vendors;
+			timeRemaining = copy.timeRemaining;
+			halvesAndDoubles = copy.halvesAndDoubles;
 			gridPos = MathHelper.snap(copy.gridPos,24);
 		}
 	}

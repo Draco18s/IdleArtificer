@@ -263,6 +263,12 @@ namespace Assets.draco18s.artificer.quests {
 				questTimer -= t;
 				return EnumResult.CONTINUE;
 			}
+			if(questStep >= obstacles.Length || questStep < 0) {
+				Debug.Log(this.heroName);
+				foreach(QuestChallenge o in obstacles) {
+					Debug.Log("  " + o.type.name);
+				}
+			}
 			QuestChallenge ob = obstacles[questStep];
 			if(questTotalTime > 2000 || heroCurHealth <= 0) {
 				//hero dies
@@ -703,6 +709,7 @@ namespace Assets.draco18s.artificer.quests {
 			rewards = new ItemStack[2];
 			rewards[0] = (ItemStack)info.GetValue("reward_0", typeof(ItemStack));
 			rewards[1] = (ItemStack)info.GetValue("reward_1", typeof(ItemStack));
+			questComplete = questStep >= num;
 		}
 
 		private List<ChallengeLoadWrapper> fromDisk = new List<ChallengeLoadWrapper>();

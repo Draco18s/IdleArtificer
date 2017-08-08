@@ -81,6 +81,8 @@ namespace Assets.draco18s.artificer.game {
 
 		public void addItemToInventory(ItemStack stack, NotificationItem notify) {
 			addItemToInventory(stack);
+			//TODO: don't show all notifications.
+			//First, last, relics, and enough for enchantments
 			GuiManager.ShowNotification(notify);
 		}
 
@@ -101,6 +103,13 @@ namespace Assets.draco18s.artificer.game {
 					if(s.item == stack.item) {
 						if(s.enchants.Count == 0 && stack.enchants.Count == 0) {
 							s.stackSize += stack.stackSize;
+							if(!StatisticsTracker.unlockedEnchanting.isAchieved()) {
+								Enchantment ench = GameRegistry.GetEnchantmentByItem(s.item);
+								if(ench != null && s.stackSize >= ench.ingredientQuantity) {
+									StatisticsTracker.unlockedEnchanting.setAchieved();
+									GuiManager.instance.enchantTab.GetComponent<UnityEngine.UI.Button>().interactable = true;
+								}
+							}
 							return;
 						}
 						else {
@@ -221,7 +230,7 @@ namespace Assets.draco18s.artificer.game {
 
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
-			info.AddValue("SaveVersion", 6);
+			info.AddValue("SaveVersion", 7);
 			info.AddValue("money", money.ToString());
 			info.AddValue("moneyFloor", moneyFloor.ToString());
 			info.AddValue("lifetimeMoney", lifetimeMoney.ToString());
@@ -236,6 +245,7 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("questsCompleted", questsCompleted);
 			info.AddValue("skillPoints", skillPoints);
 			info.AddValue("resetLevel", resetLevel);
+			info.AddValue("researchTime", researchTime);
 
 			/*UpgradeValueWrapper wrap;
 			upgrades.TryGetValue(UpgradeType.VENDOR_SIZE, out wrap);
@@ -284,6 +294,7 @@ namespace Assets.draco18s.artificer.game {
 			}
 			info.AddValue("newQuestTimer", QuestManager.getNewQuestTimer());
 			GuildManager.writeSaveData(ref info, ref context);
+			StatisticsTracker.serializeAllStats(ref info, ref context);
 		}
 
 		private List<IndustryLoadWrapper> industriesFromDisk = new List<IndustryLoadWrapper>();
@@ -300,25 +311,25 @@ namespace Assets.draco18s.artificer.game {
 				Main.saveVersionFromDisk = 0;
 			}
 #pragma warning restore 0168
-			//TODO: uncomment this stuff
 			builtItems = new List<Industry>();
-			money = 2000000000000;// new BigInteger(info.GetString("money"));
-			moneyFloor = 1;// new BigInteger(info.GetString("moneyFloor"));
-			lifetimeMoney = money;// new BigInteger(info.GetString("lifetimeMoney"));
-			renown = 1000;// new BigInteger(info.GetString("renown"));
-			totalRenown = 1000;// new BigInteger(info.GetString("totalRenown"));
+			money = BigInteger.Parse(info.GetString("money"));
+			moneyFloor = BigInteger.Parse(info.GetString("moneyFloor"));
+			lifetimeMoney = BigInteger.Parse(info.GetString("lifetimeMoney"));
+			renown = BigInteger.Parse(info.GetString("renown"));
+			totalRenown = BigInteger.Parse(info.GetString("totalRenown"));
 
 			maxVendors = info.GetInt32("maxVendors");
-			currentVendors = 0;// info.GetInt32("currentVendors");
+			currentVendors = info.GetInt32("currentVendors");
 			maxApprentices = info.GetInt32("maxApprentices");
 			if(Main.saveVersionFromDisk >= 6) {
 				journeymen = info.GetInt32("journeymen");
 			}
-			currentApprentices = 0;// info.GetInt32("currentApprentices");
+			currentApprentices = info.GetInt32("currentApprentices");
 			totalQuestsCompleted = info.GetInt64("totalQuestsCompleted");
 			questsCompleted = info.GetInt64("questsCompleted");
 			skillPoints = info.GetInt32("skillPoints");
 			resetLevel = info.GetInt32("resetLevel");
+			researchTime = (float)info.GetDouble("researchTime");
 			//we don't actually need this
 			//UpgradeValueWrapper wrap;
 			/*int a;
@@ -354,12 +365,12 @@ namespace Assets.draco18s.artificer.game {
 			num = info.GetInt32("miscInventorySize");
 			miscInventory = new List<ItemStack>();
 			for(int o = 0; o < num; o++) {
-				//miscInventory.Add((ItemStack)info.GetValue("miscInventory_" + o, typeof(ItemStack)));
+				miscInventory.Add((ItemStack)info.GetValue("miscInventory_" + o, typeof(ItemStack)));
 			}
 			num = info.GetInt32("unidentifiedRelicsSize");
 			unidentifiedRelics = new List<ItemStack>();
 			for(int o = 0; o < num; o++) {
-				//unidentifiedRelics.Add((ItemStack)info.GetValue("unidentifiedRelics_" + o, typeof(ItemStack)));
+				unidentifiedRelics.Add((ItemStack)info.GetValue("unidentifiedRelics_" + o, typeof(ItemStack)));
 			}
 			num = info.GetInt32("builtItemsSize");
 			for(int o = 0; o < num; o++) {
@@ -372,20 +383,20 @@ namespace Assets.draco18s.artificer.game {
 			num = info.GetInt32("activeQuestsSize");
 			Debug.Log("Reading " + num + " active quests");
 			for(int o = 0; o < num; o++) {
-				//Quest temp = (Quest)info.GetValue("activeQuests_" + o, typeof(Quest));
+				Quest temp = (Quest)info.GetValue("activeQuests_" + o, typeof(Quest));
 				//quest obstacle type data from disk isn't actually available yet
-				//activeQuestsFromDisk.Add(new QuestLoadWrapper(temp));
+				activeQuestsFromDisk.Add(new QuestLoadWrapper(temp));
 			}
 			num = info.GetInt32("availableQuestsSize");
 			Debug.Log("Reading " + num + " available quests");
 			for(int o = 0; o < num; o++) {
-				//Quest temp = (Quest)info.GetValue("availableQuests_" + o, typeof(Quest));
+				Quest temp = (Quest)info.GetValue("availableQuests_" + o, typeof(Quest));
 				//quest obstacle type data from disk isn't actually available yet
-				//questsFromDisk.Add(new QuestLoadWrapper(temp));
+				questsFromDisk.Add(new QuestLoadWrapper(temp));
 			}
 			num = info.GetInt32("availableRelicsSize");
 			for(int o = 0; o < num; o++) {
-				//QuestManager.availableRelics.Add((ItemStack)info.GetValue("availableRelics_" + o, typeof(ItemStack)));
+				QuestManager.availableRelics.Add((ItemStack)info.GetValue("availableRelics_" + o, typeof(ItemStack)));
 			}
 
 			//TDOO: placeholder
@@ -396,6 +407,8 @@ namespace Assets.draco18s.artificer.game {
 
 			if(Main.saveVersionFromDisk >= 2)
 				GuildManager.readSaveData(ref info, ref context);
+			if(Main.saveVersionFromDisk >= 7)
+				StatisticsTracker.deserializeAllStats(ref info, ref context);
 		}
 
 		private class IndustryLoadWrapper {
