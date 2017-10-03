@@ -29,11 +29,18 @@ public class GuiManager : MonoBehaviour {
 	public GameObject researchTab;
 	public GameObject researchArea;
 	public GameObject researchHeader;
+	public GameObject achievementsTab;
+	public GameObject achievementsArea;
+	public GameObject achievementsHeader;
 
 	public GameObject autoBuildBar;
 	public GameObject buyVendorsArea;
 	public GameObject buyApprenticesArea;
 	public GameObject buyJourneymenArea;
+	public GameObject guildmasterArea;
+	public GameObject resetGuildWindow;
+	public GameObject skillPanel;
+
 	public GameObject tooltip;
 	public GameObject notification;
 
@@ -44,7 +51,6 @@ public class GuiManager : MonoBehaviour {
 	public Sprite[] req_icons;
 
 	private static List<NotificationItem> notificationQueue = new List<NotificationItem>();
-
 
 	void Start() {
 		instance = this;

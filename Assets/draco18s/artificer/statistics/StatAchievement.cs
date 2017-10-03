@@ -7,7 +7,11 @@ namespace Assets.draco18s.artificer.statistics {
 		public readonly string achieveName;
 		public readonly string description;
 		public readonly string achieveImage;
-
+		private int dispOrd = -1;
+		public int displayOrder {
+			get { return dispOrd;  }
+			set { }
+		}
 		public int ID {
 			get {
 				return idVal;
@@ -26,10 +30,10 @@ namespace Assets.draco18s.artificer.statistics {
 		public StatAchievement(string name) {
 			achieveName = "achieve." + name + ".name";
 			description = "achieve." + name + ".desc";
-			achieveImage = "Achievements/" + name;
+			achieveImage = "achievements/" + name;
 			UnityEngine.Object r = UnityEngine.Resources.Load(achieveImage);
 			if(r == null) {
-				achieveImage = "Achievements/Default";
+				achieveImage = "achievements/Default";
 			}
 		}
 
@@ -63,6 +67,11 @@ namespace Assets.draco18s.artificer.statistics {
 			if(this.achieved)
 				return this.dateAchieved.ToShortDateString();
 			return "";
+		}
+
+		public StatAchievement setDisplayOrder(int n) {
+			dispOrd = n;
+			return this;
 		}
 	}
 }

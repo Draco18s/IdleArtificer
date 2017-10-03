@@ -47,6 +47,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.harmHero(15, DamageType.DROWN);
 					break;
 				case EnumResult.SUCCESS:
+					theQuest.hastenQuestEnding(30);
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					ChallengeTypes.Loot.AddUncommonResource(theQuest);

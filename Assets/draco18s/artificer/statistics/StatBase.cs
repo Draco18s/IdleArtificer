@@ -8,7 +8,12 @@ namespace Assets.draco18s.artificer.statistics {
 		public readonly string statName;
 		public readonly string description;
 		public readonly bool shouldResetOnNewLevel;
-
+		protected bool shouldReadAsFloat = false;
+		private int dispOrd = -1;
+		public int displayOrder {
+			get { return dispOrd; }
+			set { }
+		}
 		public virtual int value {
 			get {
 				return statValue;
@@ -35,6 +40,9 @@ namespace Assets.draco18s.artificer.statistics {
 				}
 			}
 		}
+		public virtual string getDisplay() {
+			return "" + (shouldReadAsFloat ? floatValue : value);
+		}
 
 		protected int statValue;
 		protected int idVal = -1;
@@ -59,6 +67,7 @@ namespace Assets.draco18s.artificer.statistics {
 		}
 
 		public virtual void addValue(float v) {
+			shouldReadAsFloat = true;
 			addValue(Mathf.RoundToInt(v * 10000));
 		}
 
@@ -72,6 +81,11 @@ namespace Assets.draco18s.artificer.statistics {
 
 		public StatBase register() {
 			StatisticsTracker.register(this);
+			return this;
+		}
+
+		public StatBase setDisplayOrder(int n) {
+			dispOrd = n;
 			return this;
 		}
 	}

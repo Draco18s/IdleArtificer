@@ -67,6 +67,7 @@
      <Compile Include="Assets\RPGKit.FantasyNameGenerator\IFantasyNameGenerator.cs" />
      <Compile Include="Assets\RPGKit.FantasyNameGenerator\NameGenerator.cs" />
      <Compile Include="Assets\RPGKit.FantasyNameGenerator\Properties\AssemblyInfo.cs" />
+     <Compile Include="Assets\draco18s\artificer\game\AchievementsManager.cs" />
      <Compile Include="Assets\draco18s\artificer\game\Configuration.cs" />
      <Compile Include="Assets\draco18s\artificer\game\CraftingManager.cs" />
      <Compile Include="Assets\draco18s\artificer\game\EnchantingManager.cs" />
@@ -82,6 +83,7 @@
      <Compile Include="Assets\draco18s\artificer\init\GameRegistry.cs" />
      <Compile Include="Assets\draco18s\artificer\init\Industries.cs" />
      <Compile Include="Assets\draco18s\artificer\init\Items.cs" />
+     <Compile Include="Assets\draco18s\artificer\init\SkillList.cs" />
      <Compile Include="Assets\draco18s\artificer\init\Upgrades.cs" />
      <Compile Include="Assets\draco18s\artificer\items\Enchantment.cs" />
      <Compile Include="Assets\draco18s\artificer\items\Industry.cs" />
@@ -90,6 +92,7 @@
      <Compile Include="Assets\draco18s\artificer\items\ItemStack.cs" />
      <Compile Include="Assets\draco18s\artificer\items\RelicInfo.cs" />
      <Compile Include="Assets\draco18s\artificer\items\Scalar.cs" />
+     <Compile Include="Assets\draco18s\artificer\masters\Master.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\DamageType.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\EnumResult.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\Quest.cs" />
@@ -196,6 +199,10 @@
      <Compile Include="Assets\draco18s\artificer\ui\QuestInfo.cs" />
      <Compile Include="Assets\draco18s\artificer\ui\SelectObject.cs" />
      <Compile Include="Assets\draco18s\artificer\ui\TooltipTrigger.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\Skill.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\SkillIndustryRank.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\SkillIndustryType.cs" />
+     <Compile Include="Assets\draco18s\artificer\upgrades\SkillInteger.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\Upgrade.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeCashValue.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeClickRate.cs" />
@@ -212,6 +219,7 @@
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeTheLoots.cs" />
      <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorEffectiveness.cs" />
      <Compile Include="Assets\draco18s\config\Configuration.cs" />
+     <Compile Include="Assets\draco18s\config\Localization.cs" />
      <Compile Include="Assets\draco18s\util\ColorHelper.cs" />
      <Compile Include="Assets\draco18s\util\CostBenefitRatio.cs" />
      <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\AngleUnits.cs" />
@@ -267,6 +275,7 @@
      <None Include="Assets\Shaders\InvertShader.shader" />
      <None Include="Assets\Shaders\AlphaCutoutWithAA_UI.shader" />
      <None Include="Assets\Demigiant\DOTween\DOTween50.xml" />
+     <None Include="Assets\Resources\lang\en_US.txt" />
      <None Include="Assets\draco18s\util\Koopakiller.Numerics\Resources\Messages.xml" />
  <Reference Include="UnityEngine.UI">
  <HintPath>H:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

@@ -99,7 +99,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public int getDisplayIndex() {
-			int val = 0;
+			int val = antiquity * 10000000; //safe for 200 and within 32 bits
 			if(relicData != null) {
 				int best = 0;
 				foreach(RelicInfo ri in relicData) {

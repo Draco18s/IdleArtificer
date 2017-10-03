@@ -112,7 +112,7 @@ namespace Assets.draco18s.artificer.game {
 			if(Main.instance.player.unidentifiedRelics.Count > 0) {
 				UpgradeValueWrapper wrap;
 				Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
-				Main.instance.player.researchTime += dt * ((UpgradeFloatValue)wrap).value;
+				Main.instance.player.researchTime += dt * ((UpgradeFloatValue)wrap).value * Main.instance.player.currentGuildmaster.researchMultiplier();
 				if(Main.instance.player.researchTime >= maxResearchTime) {
 					Main.instance.player.researchTime -= maxResearchTime;
 					ItemStack s = Main.instance.player.unidentifiedRelics[rand.Next(Main.instance.player.unidentifiedRelics.Count)];
@@ -129,7 +129,7 @@ namespace Assets.draco18s.artificer.game {
 				timeLeftTxt.text = "∞";
 				progressBarMat.SetFloat("_Cutoff", 1);
 			}
-			moneyDisp.text = Main.AsCurrency(Main.instance.player.money);
+			moneyDisp.text = "$" + Main.AsCurrency(Main.instance.player.money);
 		}
 
 		public static void IncrementResearch() {
@@ -137,7 +137,7 @@ namespace Assets.draco18s.artificer.game {
 			Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap1);
 			UpgradeValueWrapper wrap2;
 			Main.instance.player.upgrades.TryGetValue(UpgradeType.CLICK_RATE, out wrap2);
-			Main.instance.player.researchTime += 50 * ((UpgradeFloatValue)wrap1).value * ((UpgradeFloatValue)wrap2).value;
+			Main.instance.player.researchTime += 50 * ((UpgradeFloatValue)wrap1).value * ((UpgradeFloatValue)wrap2).value * Main.instance.player.currentGuildmaster.researchMultiplier();
 		}
 
 		private static void ShowInfo(ItemStack stack) {
@@ -174,10 +174,14 @@ namespace Assets.draco18s.artificer.game {
 
 		private static void SellItem() {
 			Main.instance.player.miscInventory.Remove(examinedStack);
+			GameObject go;
+			relicsList.TryGetValue(examinedStack, out go);
+			Main.Destroy(go);
 			BigRational val = GetRelicValue(examinedStack);
 			Main.instance.player.AddMoney(BigRational.ToBigInt(val));
 			examinedStack = null;
 			relicInfo.gameObject.SetActive(false);
+			setupUI();
 		}
 
 		private static BigRational GetRelicValue(ItemStack examinedStack) {
@@ -191,9 +195,12 @@ namespace Assets.draco18s.artificer.game {
 			if(ri != null) {
 				BigRational b = BigRational.Pow(1.5f, ri.notoriety) * 1000;
 				b *= ((UpgradeFloatValue)wrap).value;
-				b *= Main.instance.GetSellMultiplierFull();
 				val += b;
+				if(ri.relicName.Equals("Lost")) {
+					val /= 100000;
+				}
 			}
+			val *= Main.instance.GetRelicSellMultiplier();
 			val = BigRational.Truncate(val, 6, false);
 			return val;
 		}
@@ -201,8 +208,11 @@ namespace Assets.draco18s.artificer.game {
 		private static void DiscardItem() {
 			Main.instance.player.miscInventory.Remove(examinedStack);
 			Main.instance.player.unidentifiedRelics.Add(examinedStack);
+			GameObject go;
+			relicsList.TryGetValue(examinedStack, out go);
 			examinedStack = null;
 			relicInfo.gameObject.SetActive(false);
+			setupUI();
 		}
 	}
 }

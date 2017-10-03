@@ -598,7 +598,7 @@ namespace Assets.draco18s.artificer.game {
 			availableQuests.RemoveAll(x => x.timeUntilQuestExpires <= 0);
 			GuiManager.instance.questHeader.transform.FindChild("NewQuestTime").GetComponent<Text>().text = "New Quest in " + Main.SecondsToTime((int)newQuestDelayTimer);
 			updateActiveQuestList();
-			questEquipTimer += time;
+			questEquipTimer += (time * Main.instance.player.currentGuildmaster.journeymenRateMultiplier());
 			//journeyman equip loop
 			if(questEquipTimer >= questEquipTimerMax) {
 				questEquipTimer -= questEquipTimerMax;
@@ -741,7 +741,7 @@ namespace Assets.draco18s.artificer.game {
 		public static float getNewQuestMaxTime() {
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
-			return newQuestMaxTime - ((UpgradeFloatValue)wrap).value;
+			return (newQuestMaxTime - (((UpgradeFloatValue)wrap).value)) * (1 / Main.instance.player.currentGuildmaster.newQuestRateMultiplier());
 		}
 	}
 }

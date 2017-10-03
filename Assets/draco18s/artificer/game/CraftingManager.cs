@@ -62,6 +62,7 @@ namespace Assets.draco18s.artificer.game {
 				b.onClick.AddListener(delegate { BuildIndustry(item); });
 				ItemButtonData dat = it.GetComponent<ItemButtonData>();
 				dat.connectedItem = item;
+				item.setIndustryType(Industries.IndustryTypes.getTypeOf(item));
 				i++;
 			}
 			((RectTransform)GuiManager.instance.buildingList.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 141 + 10));
@@ -72,7 +73,7 @@ namespace Assets.draco18s.artificer.game {
 		private static bool isCntrlDown;
 		private static BigInteger cachedMoney = 0;
 
-		public static void Update() {
+		public static void update() {
 			isShiftDown = Input.GetButton("Shift");
 			isCntrlDown = Input.GetButton("Control");
 			if(GuiManager.instance.craftArea.activeSelf) {
@@ -601,10 +602,7 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static void AdvanceTimer() {
-			//Industry item;
-			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
 			selectedIcon.addTimeRaw(-Main.instance.GetClickRate());
-			//item.timeRemaining -= Main.instance.GetClickRate();
 		}
 
 		public static void SellAll() {
@@ -1000,6 +998,11 @@ namespace Assets.draco18s.artificer.game {
 					info.SetInputINum(j, false);
 				}
 			}
+		}
+
+		public static void setCurrentVendorText() {
+			if(numVendors != null)
+				numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
 		}
 
 		public static List<RaycastResult> RaycastMouse() {

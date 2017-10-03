@@ -11,6 +11,8 @@ public class PrefabManager : MonoBehaviour {
 	public GameObject UPGRADE_GUI_LISTITEM;
 	public GameObject ACTIVE_QUEST_GUI_LISTITEM;
 	public GameObject INVEN_GUI_LISTITEM_SELLABALE;
+	public GameObject ACHIEVEMENT_LISTITEM;
+	public GameObject SKILL_LISTITEM;
 
 	void Start() {
 		instance = this;

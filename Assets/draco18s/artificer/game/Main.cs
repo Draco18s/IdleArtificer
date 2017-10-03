@@ -1,10 +1,12 @@
 ﻿using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.items;
+using Assets.draco18s.artificer.masters;
 using Assets.draco18s.artificer.quests;
 using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.artificer.quests.hero;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
+using Assets.draco18s.config;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
 using System;
@@ -51,11 +53,12 @@ namespace Assets.draco18s.artificer.game {
 			//money = new BigInteger(10000);
 			GuiManager.instance.mainCanvas.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.FacilityUnselected(); });
 			/* TODO: Load data from save */
-
+			Localization.initialize();
 			EnchantingManager.OneTimeSetup();
 			QuestManager.setupUI();
 			GuildManager.OneTimeSetup();
 			ResearchManager.OneTimeSetup();
+			AchievementsManager.OneTimeSetup();
 			Configuration.loadCurrentDirectory();
 
 			InfoPanel panel = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
@@ -93,12 +96,14 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.questTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.questTab, GuiManager.instance.questArea, GuiManager.instance.questHeader); });
 			GuiManager.instance.guildTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.guildTab, GuiManager.instance.guildArea, GuiManager.instance.guildHeader); });
 			GuiManager.instance.researchTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.researchTab, GuiManager.instance.researchArea, GuiManager.instance.researchHeader); });
+			GuiManager.instance.achievementsTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.achievementsTab, GuiManager.instance.achievementsArea, GuiManager.instance.achievementsHeader); });
 
 			GuiManager.instance.craftArea.GetComponent<Canvas>().enabled = true;
 			GuiManager.instance.enchantArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.questArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.guildArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.researchArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.achievementsArea.GetComponent<Canvas>().enabled = false;
 
 			btn = GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { player.reset(); });
@@ -117,7 +122,7 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyVendor(); });
 			GuiManager.instance.buyApprenticesArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyApprentice(); });
 			GuiManager.instance.buyJourneymenArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyJourneyman(); });
-
+			
 			GuiManager.instance.topPanel.transform.FindChild("SaveBtn").GetComponent<Button>().onClick.AddListener(delegate { Main.writeDataToSave(); });
 #pragma warning disable 0219
 			ObstacleType ob = ChallengeTypes.General.FESTIVAL;
@@ -167,7 +172,7 @@ namespace Assets.draco18s.artificer.game {
 				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
 				newRelic = new ItemStack(Industries.IRON_BOOTS, 1);
 				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
-				newRelic = new ItemStack(Industries.IRON_SHIELD, 1);
+				newRelic = new ItemStack(Industries.IMPROVED_CLOAK, 1);
 				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
 
 				GuiManager.instance.enchantTab.GetComponent<Button>().interactable = false;
@@ -299,11 +304,17 @@ namespace Assets.draco18s.artificer.game {
 			Profiler.BeginSample("Research Manager");
 			ResearchManager.update(deltaTime);
 			Profiler.EndSample();
+			Profiler.BeginSample("Achievements Manager");
+			AchievementsManager.update();
+			Profiler.EndSample();
 			Profiler.BeginSample("Tick Built Items");
 			bool needSynchro = false;
+
+			float industryTime = deltaTime * Main.instance.player.currentGuildmaster.industryRateMultiplier();
+
 			foreach(Industry i in player.builtItems) {
 				if(i.getTimeRemaining() > float.MinValue && !i.isProductionHalted) {
-					needSynchro = i.addTime(-deltaTime) || needSynchro;
+					needSynchro = i.addTime(-industryTime) || needSynchro;
 					//i.timeRemaining -= deltaTime;
 					if(doAutoClick) {
 						i.tickApprentices();
@@ -373,7 +384,7 @@ namespace Assets.draco18s.artificer.game {
 			}
 			Profiler.EndSample();
 			Profiler.BeginSample("Crafting Update");
-			CraftingManager.Update();
+			CraftingManager.update();
 			Profiler.EndSample();
 			if(Input.GetMouseButton(0)) {
 				mouseDownTime += Time.deltaTime;
@@ -563,12 +574,17 @@ namespace Assets.draco18s.artificer.game {
 			return player.GetSellMultiplierFull();
 		}
 
+		public BigRational GetRelicSellMultiplier() {
+			return player.GetRelicSellMultiplier();
+		}
+
 		private void switchTabImage(GameObject newTab, GameObject newArea, GameObject newHeader) {
 			GuiManager.instance.craftTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			GuiManager.instance.enchantTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			GuiManager.instance.questTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			GuiManager.instance.guildTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			GuiManager.instance.researchTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
+			GuiManager.instance.achievementsTab.GetComponent<Image>().sprite = GuiManager.instance.unselTab;
 			newTab.GetComponent<Image>().sprite = GuiManager.instance.selTab;
 
 			GuiManager.instance.craftArea.GetComponent<Canvas>().enabled = false;
@@ -576,6 +592,7 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.questArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.guildArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.researchArea.GetComponent<Canvas>().enabled = false;
+			GuiManager.instance.achievementsArea.GetComponent<Canvas>().enabled = false;
 			newArea.GetComponent<Canvas>().enabled = true;
 
 			GuiManager.instance.craftHeader.SetActive(false);
@@ -583,6 +600,7 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.questHeader.SetActive(false);
 			GuiManager.instance.guildHeader.SetActive(false);
 			GuiManager.instance.researchHeader.SetActive(false);
+			GuiManager.instance.achievementsHeader.SetActive(false);
 			newHeader.SetActive(true);
 
 			if(newTab == GuiManager.instance.craftTab) {
@@ -599,6 +617,9 @@ namespace Assets.draco18s.artificer.game {
 			}
 			if(newTab == GuiManager.instance.researchTab) {
 				ResearchManager.setupUI();
+			}
+			if(newTab == GuiManager.instance.achievementsTab) {
+				AchievementsManager.setupUI();
 			}
 			GuiManager.instance.infoPanel.transform.localPosition = new Vector3(-1465, 55, 0);
 			CraftingManager.FacilityUnselected(null);

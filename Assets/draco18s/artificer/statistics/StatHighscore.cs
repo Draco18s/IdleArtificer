@@ -15,6 +15,9 @@ namespace Assets.draco18s.artificer.statistics {
 
 			}
 		}
+		public override string getDisplay() {
+			return (shouldReadAsFloat ? statValue / 10000f : statValue) + " (Best: " + (shouldReadAsFloat ? floatValue : value) + ")";
+		}
 
 		public override float floatValue {
 			get {

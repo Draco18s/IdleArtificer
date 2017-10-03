@@ -258,7 +258,7 @@ namespace Assets.draco18s.artificer.quests {
 				timeAftercomplete += t;
 				return EnumResult.CONTINUE;
 			}
-			questTotalTime += t;
+			questTotalTime += (2.5f * t);
 			if(questTimer > 0) {
 				questTimer -= t;
 				return EnumResult.CONTINUE;
@@ -585,7 +585,6 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public void hastenQuestEnding(int v) {
-			v = 0;
 			if(doesHeroHave(AidType.MANA_LARGE) && v >= 120) {
 				v = Math.Max(v - 120, 0);
 			}

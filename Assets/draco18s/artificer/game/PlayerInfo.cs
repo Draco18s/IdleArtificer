@@ -1,5 +1,6 @@
 ﻿using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.items;
+using Assets.draco18s.artificer.masters;
 using Assets.draco18s.artificer.quests;
 using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.artificer.quests.challenge.goals;
@@ -28,16 +29,25 @@ namespace Assets.draco18s.artificer.game {
 		public BigInteger renown = 0;
 		public BigInteger totalRenown = 0;
 		public int maxVendors = 5;
-		public int currentVendors = 0;
+		private int _currentVendors;
+		public int currentVendors {
+			get { return _currentVendors; }
+			set {
+				_currentVendors = value;
+				CraftingManager.setCurrentVendorText();
+			}
+		}
 		public int maxApprentices = 0;
 		public int currentApprentices = 0;
 		public int journeymen = 0;
 		public long totalQuestsCompleted = 0;
 		public long questsCompleted = 0;
-		public int skillPoints = 0;
+		public BigInteger skillPoints = 0;
+		public BigInteger totalSkillPoints = 0;
 		public int resetLevel;
 		internal float researchTime;
 		public Dictionary<UpgradeType, UpgradeValueWrapper> upgrades = new Dictionary<UpgradeType, UpgradeValueWrapper>();
+		public Master currentGuildmaster;
 
 		//achivements
 		//upgrades
@@ -48,6 +58,7 @@ namespace Assets.draco18s.artificer.game {
 			builtItems = new List<Industry>();
 			resetLevel = 1;
 			SetDefaultUpgrades();
+			currentGuildmaster = new Master();
 		}
 
 		private void SetDefaultUpgrades() {
@@ -144,7 +155,7 @@ namespace Assets.draco18s.artificer.game {
 			v = Math.Max(v - 1, 0);
 			UpgradeValueWrapper vendorSellEffectiveness;
 			upgrades.TryGetValue(UpgradeType.VENDOR_SELL_VALUE, out vendorSellEffectiveness);
-			return ((UpgradeFloatValue)vendorSellEffectiveness).value + (0.05f * v);
+			return (((UpgradeFloatValue)vendorSellEffectiveness).value + (0.05f * v)) * currentGuildmaster.vendorSellMultiplier();
 		}
 
 		public BigRational GetSellMultiplierFull() {
@@ -153,9 +164,18 @@ namespace Assets.draco18s.artificer.game {
 			if(renown > 0) {
 				UpgradeValueWrapper wrap;
 				upgrades.TryGetValue(UpgradeType.RENOWN_MULTI, out wrap);
-				return 1 + (((BigRational)renown + (totalQuestsCompleted - questsCompleted)) * ((UpgradeFloatValue)wrap).value * ((UpgradeFloatValue)multi).value);
+				return 1 + (((BigRational)renown) * ((UpgradeFloatValue)wrap).value * ((UpgradeFloatValue)multi).value * currentGuildmaster.cashIncomeMultiplier());
 			}
-			return 1 * ((UpgradeFloatValue)multi).value;
+			return ((UpgradeFloatValue)multi).value * currentGuildmaster.cashIncomeMultiplier();
+		}
+
+		public BigRational GetRelicSellMultiplier() {
+			if(renown > 0) {
+				UpgradeValueWrapper wrap;
+				upgrades.TryGetValue(UpgradeType.RENOWN_MULTI, out wrap);
+				return 1 + (((BigRational)renown) * ((UpgradeFloatValue)wrap).value * currentGuildmaster.relicSellMultiplier());// * ((UpgradeFloatValue)multi).value);
+			}
+			return currentGuildmaster.relicSellMultiplier();// * ((UpgradeFloatValue)multi).value;
 		}
 
 		public BigInteger GetStartingCash() {
@@ -167,7 +187,7 @@ namespace Assets.draco18s.artificer.game {
 		public void reset() {
 			foreach(Industry ind in builtItems) {
 				ind.quantityStored = 0;
-				currentVendors += ind.getRawVendors();
+				currentVendors -= ind.getRawVendors();
 				ind.AdjustVendors(0);
 				ind.setTimeRemaining(0);
 				ind.level = 0;
@@ -180,18 +200,18 @@ namespace Assets.draco18s.artificer.game {
 			}
 			builtItems = new List<Industry>();
 			//Debug.Log("digits: " + digits);
-			double digitsCur = BigInteger.Log10(money / moneyFloor);
+			//double digitsCur = BigInteger.Log10(money / moneyFloor);
 			BigInteger spentRenown = totalRenown - renown;
 			Debug.Log("before:      " + lifetimeMoney);
 			totalRenown = BigInteger.CubeRoot(lifetimeMoney);
 			Debug.Log("totalRenown1: " + totalRenown);
 			totalRenown /= 10000;
 			Debug.Log("totalRenown2: " + totalRenown);
-			renown = totalRenown - spentRenown;
-			skillPoints += (int)digitsCur;
-			moneyFloor *= 2;
+			renown = totalRenown - spentRenown + questsCompleted;
+			//skillPoints += (int)digitsCur;
+			//moneyFloor *= 2;
 			money = GetStartingCash();
-			//totalQuestsCompleted;
+			totalQuestsCompleted = 0;
 			questsCompleted = 0;
 			StatisticsTracker.minQuestDifficulty.resetValue();
 			StatisticsTracker.maxQuestDifficulty.resetValue();
@@ -203,12 +223,13 @@ namespace Assets.draco18s.artificer.game {
 			if(StatisticsTracker.relicsMade.value >= 1) {
 				StatisticsTracker.maxQuestDifficulty.addValue(1);
 			}
+			GuildManager.resetAllUpgrades();
 		}
 
 		public void QuestComplete(ObstacleType goal) {
 			UpgradeValueWrapper questScalar;
 			upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out questScalar);
-			int v = Mathf.RoundToInt(goal.getRewardScalar() * ((UpgradeFloatValue)questScalar).value);
+			int v = Mathf.RoundToInt(goal.getRewardScalar() * ((UpgradeFloatValue)questScalar).value * currentGuildmaster.renownIncomeMultiplier());
 			totalQuestsCompleted += v;
 			questsCompleted += v;
 			goal.numOfTypeCompleted++;
@@ -219,8 +240,8 @@ namespace Assets.draco18s.artificer.game {
 			}
 			if(StatisticsTracker.questsCompleted.value >= 20 && !StatisticsTracker.twentiethQuestCompleted.isAchieved()) {
 				StatisticsTracker.twentiethQuestCompleted.setAchieved();
-				totalQuestsCompleted += 20;
-				questsCompleted += 20;
+				renown += 20;
+				totalRenown += 20;
 			}
 		}
 
@@ -230,7 +251,7 @@ namespace Assets.draco18s.artificer.game {
 
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
-			info.AddValue("SaveVersion", 7);
+			info.AddValue("SaveVersion", 8);
 			info.AddValue("money", money.ToString());
 			info.AddValue("moneyFloor", moneyFloor.ToString());
 			info.AddValue("lifetimeMoney", lifetimeMoney.ToString());
@@ -243,7 +264,8 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("currentApprentices", currentApprentices);
 			info.AddValue("totalQuestsCompleted", totalQuestsCompleted);
 			info.AddValue("questsCompleted", questsCompleted);
-			info.AddValue("skillPoints", skillPoints);
+			info.AddValue("skillPoints", skillPoints.ToString());
+			info.AddValue("totalSkillPoints", totalSkillPoints.ToString());
 			info.AddValue("resetLevel", resetLevel);
 			info.AddValue("researchTime", researchTime);
 
@@ -295,6 +317,7 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("newQuestTimer", QuestManager.getNewQuestTimer());
 			GuildManager.writeSaveData(ref info, ref context);
 			StatisticsTracker.serializeAllStats(ref info, ref context);
+			info.AddValue("currentGuildmaster", currentGuildmaster);
 		}
 
 		private List<IndustryLoadWrapper> industriesFromDisk = new List<IndustryLoadWrapper>();
@@ -327,7 +350,16 @@ namespace Assets.draco18s.artificer.game {
 			currentApprentices = info.GetInt32("currentApprentices");
 			totalQuestsCompleted = info.GetInt64("totalQuestsCompleted");
 			questsCompleted = info.GetInt64("questsCompleted");
-			skillPoints = info.GetInt32("skillPoints");
+
+
+			if(Main.saveVersionFromDisk < 8)
+				skillPoints = info.GetInt32("skillPoints");
+			else {
+				skillPoints = BigInteger.Parse(info.GetString("skillPoints"));
+				totalSkillPoints = BigInteger.Parse(info.GetString("totalSkillPoints"));
+			}
+
+
 			resetLevel = info.GetInt32("resetLevel");
 			researchTime = (float)info.GetDouble("researchTime");
 			//we don't actually need this
@@ -403,12 +435,19 @@ namespace Assets.draco18s.artificer.game {
 			//upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
 			//f = (float)info.GetDouble("newQuestMaxTime");
 			//((UpgradeFloatValue)wrap).value = f;
-			QuestManager.tickAllQuests(3600);
+			//QuestManager.tickAllQuests(3600);
+
+			float f = (float)info.GetDouble("newQuestTimer");
+			QuestManager.LoadTimerFromSave(f);
 
 			if(Main.saveVersionFromDisk >= 2)
 				GuildManager.readSaveData(ref info, ref context);
 			if(Main.saveVersionFromDisk >= 7)
 				StatisticsTracker.deserializeAllStats(ref info, ref context);
+			if(Main.saveVersionFromDisk >= 8)
+				currentGuildmaster = (Master)info.GetValue("currentGuildmaster", typeof(Master));
+			else
+				currentGuildmaster = new Master();
 		}
 
 		private class IndustryLoadWrapper {
@@ -430,6 +469,7 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public void FinishLoad() {
+			//renown = totalRenown = 10000000; //for testing
 			if(industriesFromDisk == null) return;
 			for(int o = 0; o < industriesFromDisk.Count; o++) {
 				Industry ind = GameRegistry.GetIndustryByID(industriesFromDisk[o].ID);

@@ -36,7 +36,9 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			if(testAttribute(opponent.AGL.tokens)) {
 				opScore += 1;
 			}
-
+			if((result + heroScore - opScore) == EnumResult.MIXED && theQuest.heroCurHealth < 30) {
+				return EnumResult.CRIT_FAIL;
+			}
 			return result + heroScore - opScore;
 		}
 
@@ -60,9 +62,10 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					if(item != null) //just in case
 						theQuest.removeItemFromInventory(item);
 					else
-						theQuest.harmHero(20, DamageType.GENERIC);
+						theQuest.harmHero(25, DamageType.GENERIC);
 					break;
 				case EnumResult.MIXED:
+					theQuest.harmHero(5, DamageType.PETRIFY); //we don't want to use up items
 					theQuest.repeatTask();
 					break;
 				case EnumResult.SUCCESS: //no real difference

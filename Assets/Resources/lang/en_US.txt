@@ -1,0 +1,61 @@
+achieve.firstEnchantment.name=First Enchantment
+achieve.firstQuestCompleted.name=First Quest Completed
+achieve.twentiethQuestCompleted.name=20 Quests Completed
+achieve.allQuestsUnlocked.name=All Quests Unlocked
+achieve.relicFromGenie.name=Wish Granted
+achieve.unlockedEnchanting.name=Unlock Enchanting
+achieve.unlockedQuesting.name=Unlock Questing
+achieve.unlockedGuild.name=Unlock Guild
+achieve.unlockedResearch.name=Unlock Research
+achieve.firstGuildmaster.name=First Guildmaster
+achieve.ASDF.name=ASDF
+
+achieve.firstEnchantment.desc=Enchant something
+achieve.firstQuestCompleted.desc=Have a hero complete a quest
+achieve.twentiethQuestCompleted.desc= 
+achieve.allQuestsUnlocked.desc=Have every quest type available
+achieve.relicFromGenie.desc=Have a genie create a relic for a hero
+achieve.unlockedEnchanting.desc=Collect enough ingredients
+achieve.unlockedQuesting.desc=Make $10,000 to start attracting heroes
+achieve.unlockedGuild.desc=Gain guild access with $20,000
+achieve.unlockedResearch.desc=Find a relic
+achieve.firstGuildmaster.desc=Elect your first Guildmaster and unlock Skills
+achieve.ASDF.desc=ASDF
+
+stat.minQuestDifficulty.name=Quest Difficulty (min)
+stat.maxQuestDifficulty.name=Quest Difficulty (max)
+stat.moneyMagnitude.name=Money Magnitude
+stat.questsCompleted.name=Successfully Compled Quests
+stat.vendorsPurchased.name=Vendors Hired
+stat.relicsMade.name=Relics Created
+stat.apprenticesPurchased.name=Apprentices Hired
+stat.journeymenPurchased.name=Journeymen Hired
+stat.ASDF.name=ASDF
+
+stat.minQuestDifficulty.desc=Current minimum quest difficulty
+stat.maxQuestDifficulty.desc=Current maximum quest difficulty
+stat.moneyMagnitude.desc=Log10(cash)
+stat.questsCompleted.desc= 
+stat.vendorsPurchased.desc= 
+stat.relicsMade.desc= 
+stat.apprenticesPurchased.desc= 
+stat.journeymenPurchased.desc= 
+stat.ASDF.desc=ASDF
+
+skill.rank_raw.name=Raw Resources
+skill.rank_refined.name=Refined Resources
+skill.rank_simple.name=Simple Products
+skill.rank_complex.name=Complex Products
+skill.rank_rare.name=Rare Products
+skill.income.name=Cash Income
+skill.guildmaster_rating.name=Guildmaster Rating
+skill.ASDF.name=ASDF
+
+skill.rank_raw.desc=Crafting items with blue indicators.
+skill.rank_refined.desc=Crafting items with cyan indicators.
+skill.rank_simple.desc=Crafting items with green indicators.
+skill.rank_complex.desc=Crafting items with yellow indicators.
+skill.rank_rare.desc=Crafting items with red indicators.
+skill.income.desc=More money is always goood
+skill.guildmaster_rating.desc=Guildmaster perks will have higher values (both positive and negative).
+skill.ASDF.desc=ASDF

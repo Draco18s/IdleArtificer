@@ -56,11 +56,15 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		}
 
 		public string relicDescription(ItemStack stack) {
-			return "Lit up the darkness";
+			if(stack.doesStackHave(RequirementType.LIGHT))
+				return "Lit up the darkness";
+			return "Aided cave exploration";
 		}
 
 		public string relicNames(ItemStack stack) {
-			return "Glowing";
+			if(stack.doesStackHave(RequirementType.LIGHT))
+				return "Glowing";
+			return "Seeking";
 		}
 
 		public int getNumTotalEncounters() {

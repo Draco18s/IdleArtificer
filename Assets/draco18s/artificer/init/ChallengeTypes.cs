@@ -190,7 +190,7 @@ namespace Assets.draco18s.artificer.init {
 
 			public static ObstacleType getRandom(Random rand) {
 				FieldInfo[] fields = typeof(Unexpected).GetFields();
-				int r = rand.Next(fields.Length + 2);
+				int r = rand.Next(fields.Length + (2 + StatisticsTracker.minQuestDifficulty.value / 2));
 				if(r < fields.Length) {
 					FieldInfo field = fields[r];
 					return (ObstacleType)field.GetValue(null);
@@ -202,10 +202,10 @@ namespace Assets.draco18s.artificer.init {
 					fields = typeof(Traps).GetFields();
 					return (ObstacleType)field.GetValue(null);
 				}
-				else if(r == fields.Length+1) { //monsters
+				else if(r >= fields.Length + 1) { //monsters
 					r = rand.Next(fields.Length);
-					if(r > 0) r = rand.Next(fields.Length); //less likely to roll thing other than bandits
-					if(r > 6) r = rand.Next(fields.Length); //less likely to roll anit-attribute monsters
+					if(r > 1) r = rand.Next(fields.Length); //less likely to roll thing other than bandits
+					if(r > 7) r = rand.Next(fields.Length); //less likely to roll anit-attribute monsters
 					FieldInfo field = fields[r];
 					fields = typeof(Monsters).GetFields();
 					return (ObstacleType)field.GetValue(null);
@@ -294,7 +294,7 @@ namespace Assets.draco18s.artificer.init {
 			private static int ResourceQuantity(Random rand, int min, int max) {
 				UpgradeValueWrapper wrap;
 				Main.instance.player.upgrades.TryGetValue(upgrades.UpgradeType.QUEST_LOOT, out wrap);
-				float f = ((UpgradeFloatValue)wrap).value;
+				float f = ((UpgradeFloatValue)wrap).value * Main.instance.player.currentGuildmaster.ingredientIncomeMultiplier();
 				min = UnityEngine.Mathf.RoundToInt(min * f);
 				max = UnityEngine.Mathf.RoundToInt(max * f);
 				return rand.Next(max - min + 1) + max;

@@ -39,6 +39,8 @@ namespace Assets.draco18s.artificer.items {
 		public readonly Scalar productType;
 		[NonSerialized]
 		public readonly Item industryItem;
+		[NonSerialized]
+		public Industries.IndustryTypesEnum industryType = Industries.IndustryTypesEnum.NONE;
 
 		public int consumeAmount = 0;
 		public int didComplete = 0;
@@ -112,8 +114,6 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public virtual BigRational GetScaledCost(int n) {
-			//BigInteger q = ((Math.Pow(productType.amount, level) * (Math.Pow(productType.amount, n) - 1)) / (productType.amount - 1)) * b;
-
 			Profiler.BeginSample("Recalc");
 			if(level == lastLevel && n == lastN) {
 				return lastTotal;
@@ -121,23 +121,15 @@ namespace Assets.draco18s.artificer.items {
 			lastN = n;
 			if(level != lastLevel) {
 				lastLevel = level;
-				//powLastLevel = BigRational.Pow(productType.amount, level);
 				powLastLevel = Math.Pow(productType.amount, level);
-				/*BigRational _b = (cost * halvesAndDoubles);
-				BigRational v = (n == 1 ? pow1 : (n == 10 ? pow10 : (n == 50 ? pow50 : BigRational.Pow(productType.amount, n))));
-				BigRational _lastTotal = (powLastLevel * (v - 1)) / (productType.amount - 1);
-				BigRational nn = ((powLastLevel * (v - 1)));
-				BigRational dd = new BigRational(productType.amount);
-				Debug.Log(nn.ToDecimalString(3) + " / " + dd.ToDecimalString(3));
-				dd -= 1;
-				Debug.Log((nn / dd).ToDecimalString(3));*/
 			}
 			Profiler.EndSample();
 			Profiler.BeginSample("Return");
 			BigRational b = (cost * halvesAndDoubles);
 			BigRational dd = new BigRational(productType.amount);
 			dd -= 1;
-			lastTotal = 0.51 + b * ((powLastLevel * ((n == 1 ? pow1 : (n == 10 ? pow10 : (n == 50 ? pow50 : BigRational.Pow(productType.amount, n)))) - 1) / (dd)));
+			//+0.51?
+			lastTotal = b * ((powLastLevel * ((n == 1 ? pow1 : (n == 10 ? pow10 : (n == 50 ? pow50 : BigRational.Pow(productType.amount, n)))) - 1) / (dd)));
 			Profiler.EndSample();
 			return lastTotal;
 		}
@@ -198,7 +190,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public void tickApprentices() {
-			timeRemaining -= apprentices * Main.instance.GetClickRate();
+			timeRemaining -= apprentices * Main.instance.GetClickRate() * Main.instance.player.currentGuildmaster.apprenticeRateMultiplier();
 		}
 
 		public void addTimeRaw(float t) {
@@ -236,11 +228,16 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public virtual BigInteger GetSellValue() {
-			BigRational sell = Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue();
+			BigRational sell = Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue() * Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType);
 			return (BigInteger)sell;
 			//BigInteger frac = (BigInteger)(Main.instance.GetSellMultiplierMicro() * valueMulti * (BigRational)GetBaseSellValue());
 			//BigInteger ret = (BigInteger)(valueMulti * (BigRational)GetBaseSellValue() * Main.instance.GetSellMultiplier()) + frac;
 			//return ret;
+		}
+
+		public Industry setIndustryType(Industries.IndustryTypesEnum type) {
+			industryType = type;
+			return this;
 		}
 
 		public Industry addReqType(RequirementType type) {

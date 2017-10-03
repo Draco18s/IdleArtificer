@@ -43,13 +43,13 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.inventory.Add(new ItemStack(Industries.POT_HEALTH, 2));
 					break;
 				case EnumResult.FAIL:
-					//theQuest.inventory.Add(new ItemStack(Industries.SWORD, 1));
+					theQuest.inventory.Add(new ItemStack(Industries.QUARTERSTAFF, 2));
 					break;
 				case EnumResult.MIXED:
 					theQuest.inventory.Add(new ItemStack(Industries.LEATHER, 2));
 					break;
 				case EnumResult.SUCCESS:
-					theQuest.inventory.Add(new ItemStack(Industries.TORCHES, 1));
+					theQuest.inventory.Add(new ItemStack(Industries.TORCHES, 2));
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					ChallengeTypes.Loot.AddRareResource(theQuest);

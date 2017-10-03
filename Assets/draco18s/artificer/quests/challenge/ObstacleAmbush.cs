@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleAmbush : ObstacleType {
-		public ObstacleAmbush() : base("ambushed", new RequireWrapper(RequirementType.DANGER_SENSE)) {
+		public ObstacleAmbush() : base("being ambushed", new RequireWrapper(RequirementType.DANGER_SENSE)) {
 
 		}
 
@@ -42,6 +42,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.harmHero(15, DamageType.GENERIC);
 					break;
 				case EnumResult.SUCCESS:
+					theQuest.harmHero(5, DamageType.GENERIC);
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, questBonus));
