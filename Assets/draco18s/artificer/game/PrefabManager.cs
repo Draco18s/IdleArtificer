@@ -12,6 +12,7 @@ public class PrefabManager : MonoBehaviour {
 	public GameObject ACTIVE_QUEST_GUI_LISTITEM;
 	public GameObject INVEN_GUI_LISTITEM_SELLABALE;
 	public GameObject ACHIEVEMENT_LISTITEM;
+	public GameObject ACHIEVEMENT_MULTI_LISTITEM;
 	public GameObject SKILL_LISTITEM;
 
 	void Start() {

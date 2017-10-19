@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using Assets.draco18s.artificer.quests;
 
 namespace Assets.draco18s.artificer.items {
 	[Serializable]
@@ -150,6 +151,18 @@ namespace Assets.draco18s.artificer.items {
 				}
 			}
 			return f;
+		}
+
+		public void onUsedDuringQuest(Quest quest) {
+			item.onUsedDuringQuest(quest, this);
+		}
+
+		public void onSoldByPlayer() {
+			item.onSoldByPlayer(this);
+		}
+
+		public bool isSpecial() {
+			return item.isSpecial();
 		}
 
 		public ItemStack split(int v) {

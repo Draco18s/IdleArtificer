@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalBeheadHydra : ObstacleType, IQuestGoal, IMonsterChallenge {
+	public class GoalBeheadHydra : ObstacleType, IQuestGoal, IMonsterChallenge {
 		protected int dragonMaxHealth;
 		public GoalBeheadHydra() : base("beheading a hydra", new RequireWrapper(RequirementType.FREE_MOVEMENT),new RequireWrapper(RequirementType.VORPAL)) {
 			dragonMaxHealth = 800;

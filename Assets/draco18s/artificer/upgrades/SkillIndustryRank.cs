@@ -15,7 +15,7 @@ namespace Assets.draco18s.artificer.upgrades {
 		public double getMultiplier(Scalar type) {
 			if(rankType == type)
 				return ranks * multiplier;
-			return 1;
+			return 0;
 		}
 	}
 }

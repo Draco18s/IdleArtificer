@@ -30,6 +30,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 				case EnumResult.CRIT_FAIL:
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.AMBUSH, 0));
 					QuestManager.availableQuests.Add(Quest.GenerateNewQuest(ChallengeTypes.Goals.DEFEND_VILLAGE, theQuest.heroName));
+					QuestManager.updateLists();
 					break;
 				case EnumResult.FAIL:
 					theQuest.repeatTask();
@@ -41,10 +42,12 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 				case EnumResult.SUCCESS:
 					ChallengeTypes.Loot.AddUncommonResource(theQuest);
 					QuestManager.availableQuests.Add(Quest.GenerateNewQuest(ChallengeTypes.Goals.DEFEND_VILLAGE, theQuest.heroName));
+					QuestManager.updateLists();
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					ChallengeTypes.Loot.AddRareResource(theQuest);
 					QuestManager.availableQuests.Add(Quest.GenerateNewQuest(ChallengeTypes.Goals.DEFEND_VILLAGE, theQuest.heroName));
+					QuestManager.updateLists();
 					break;
 			}
 		}

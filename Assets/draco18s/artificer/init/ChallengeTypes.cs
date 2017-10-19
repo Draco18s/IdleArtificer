@@ -56,16 +56,18 @@ namespace Assets.draco18s.artificer.init {
 			#region very advanced
 			//all require some kind of enchantment
 			public static ObstacleType FREE_SLAVES = new GoalFreeSlaves().setRewardScalar(12);//firm resolve
-			//public static ObstacleType SKELETON_INFESTATION = new GoalSkeletons().setRewardScalar(8);//disruption
+			public static ObstacleType SKELETON_INFESTATION = new GoalSkeletons().setRewardScalar(8);//disruption
 			public static ObstacleType LITCH = new GoalKillLitch().setRewardScalar(12);//spell resist
 			public static ObstacleType GORGON = new GoalSlayGorgon().setRewardScalar(12);//mirrored
 			public static ObstacleType HYDRA = new GoalBeheadHydra().setRewardScalar(12);//vorpal, free move
 			public static ObstacleType EVIL_BARD = new GoalEvilBard().setRewardScalar(12);//negCha pot, mind-shield
+			public static ObstacleType ATLANTIS = new GoalFindAtlantis().setRewardScalar(15);//water breathing, freedom of movement
 			#endregion
 
 			public static class Sub {
 				public static ObstacleType MUMMY = new GoalExploreTomb_Mummy();
 				public static ObstacleType SKELETONS = new GoalExploreTomb_Skeletons();
+				public static ObstacleType FALLEN_HERO = new GoalFallenHero();
 			}
 
 			public static ObstacleType getRandom(Random rand) {
@@ -85,8 +87,8 @@ namespace Assets.draco18s.artificer.init {
 
 		public static class Initial {
 			public static ObstacleType AT_HOME = new ObstacleHome();
-			public static ObstacleType TOWN_OUTSKIRTS = new ObstacleOutskirts();
 			public static ObstacleType BUY_EQUIPMENT = new ObstacleBuyEquipment("starting");
+			public static ObstacleType TOWN_OUTSKIRTS = new ObstacleOutskirts();
 			public static ObstacleType DECYPHER_MAP = new ObstacleDecypherMap();
 			public static ObstacleType CHURCHYARD = new ObstacleChurchyard();
 			public static ObstacleType EXPLORE_TOWN = new ObstacleExploreTown();
@@ -123,16 +125,16 @@ namespace Assets.draco18s.artificer.init {
 			}
 		}
 		public static class Travel {
-			public static ObstacleType MOUNTAIN_PATH = new ObstacleMountainPath();
+			public static ObstacleType MOUNTAIN_PATH = new ObstacleMountainPath(); //damage
 			public static ObstacleType HICH_RIDE = new ObstacleHitchRide();
 			public static ObstacleType SAIL_SEAS = new ObstacleSailFriendlySeas();
 			public static ObstacleType OPEN_ROAD = new ObstacleOpenRoad();
 			public static ObstacleType GOTO_TOWN = new ObstacleTravelToTown();
-			public static ObstacleType DARK_FOREST = new ObstacleDarkWoods();
+			public static ObstacleType DARK_FOREST = new ObstacleDarkWoods(); //damage
 			public static ObstacleType RIVER = new ObstacleRiver();
 			public static ObstacleType SWAMP = new ObstacleSwamp();
 			public static ObstacleType WATER_TRANSPORT = new ObstacleWaterTransport();
-			public static ObstacleType WEATHER = new ObstacleBadWeather();
+			public static ObstacleType WEATHER = new ObstacleBadWeather(); //damage
 
 			public static ObstacleType getRandom(Random rand) {
 				FieldInfo[] fields = typeof(Travel).GetFields();
@@ -142,14 +144,14 @@ namespace Assets.draco18s.artificer.init {
 			}
 		}
 		public static class Unexpected {
-			public static ObstacleType AMBUSH = new ObstacleAmbush();
+			public static ObstacleType AMBUSH = new ObstacleAmbush();//damage
 			public static ObstacleType LOST = new ObstacleLost();
-			public static ObstacleType THIEF = new ObstacleThief();
+			public static ObstacleType THIEF = new ObstacleThief();//damage
 			public static ObstacleType MADE_MESS = new ObstacleCleanMess();
-			public static ObstacleType QUICKSAND = new ObstacleQuicksand();
+			public static ObstacleType QUICKSAND = new ObstacleQuicksand();//damage
 			public static ObstacleType STEAL_STUFF = new ObstcaleStealSupplies();
 			public static ObstacleType PERSUED = new ObstaclePersued();
-			public static ObstacleType HEROIC_DUEL = new ObstacleHeroDuel();
+			public static ObstacleType HEROIC_DUEL = new ObstacleHeroDuel();//damage
 			public static ObstacleType BEGGAR = new ObstacleBeggar();
 
 			public static class Sub {
@@ -172,20 +174,29 @@ namespace Assets.draco18s.artificer.init {
 				public static ObstacleType MAGIC_TRAP_UNHOLY = new ObstacleMagicTrap(DamageType.UNHOLY);
 			}
 			public static class Monsters {
-				public static ObstacleType BANDIT = new ObstacleMonster("bandit", DamageType.GENERIC, RequirementType.WEAPON);
-				public static ObstacleType BRIGAND = new ObstacleMonster("brigand", DamageType.ARROWS, RequirementType.WEAPON);
+				public static ObstacleType BANDIT = new ObstacleMonster("a bandit", DamageType.GENERIC, RequirementType.WEAPON);
+				public static ObstacleType BRIGAND = new ObstacleMonster("a brigand", DamageType.ARROWS, RequirementType.WEAPON);
 
-				public static ObstacleType HELLHOUND = new ObstacleMonster("hellhound",DamageType.FIRE, RequirementType.COLD_DAMAGE);
-				public static ObstacleType OOZE = new ObstacleMonster("ooze", DamageType.ACID, RequirementType.FIRE_DAMAGE);
-				public static ObstacleType WINTERWOLF = new ObstacleMonster("winterwolf", DamageType.COLD, RequirementType.POISON_DAMAGE);
-				public static ObstacleType ANIMANT_PLANT = new ObstacleMonster("animated plant", DamageType.POISON, RequirementType.ACID_DAMAGE);
-				public static ObstacleType UNDEAD = new ObstacleMonster("undead", DamageType.UNHOLY, RequirementType.HOLY_DAMAGE);
-				public static ObstacleType ARCHON = new ObstacleMonster("archon", DamageType.HOLY, RequirementType.UNHOLY_DAMAGE);
+				public static ObstacleType HELLHOUND = new ObstacleMonster("a hellhound",DamageType.FIRE, RequirementType.COLD_DAMAGE);
+				public static ObstacleType OOZE = new ObstacleMonster("an ooze", DamageType.ACID, RequirementType.FIRE_DAMAGE);
+				public static ObstacleType WINTERWOLF = new ObstacleMonster("a winterwolf", DamageType.COLD, RequirementType.POISON_DAMAGE);
+				public static ObstacleType ANIMANT_PLANT = new ObstacleMonster("an animated plant", DamageType.POISON, RequirementType.ACID_DAMAGE);
+				public static ObstacleType UNDEAD = new ObstacleMonster("the undead", DamageType.UNHOLY, RequirementType.HOLY_DAMAGE);
+				public static ObstacleType ARCHON = new ObstacleMonster("an archon", DamageType.HOLY, RequirementType.UNHOLY_DAMAGE);
 
-				public static ObstacleType NYMPH = new ObstacleMonster("nymph", DamageType.GENERIC, RequirementType.UGLINESS);
-				public static ObstacleType VIPER = new ObstacleMonster("sand viper", DamageType.POISON, RequirementType.CLUMSINESS);
-				public static ObstacleType TROLL = new ObstacleMonster("troll", DamageType.GENERIC, RequirementType.WEAKNESS);
-				public static ObstacleType SPIDER = new ObstacleMonster("giant spider", DamageType.POISON, RequirementType.STUPIDITY);
+				public static ObstacleType NYMPH = new ObstacleMonster("a nymph", DamageType.GENERIC, RequirementType.UGLINESS);
+				public static ObstacleType VIPER = new ObstacleMonster("a sand viper", DamageType.POISON, RequirementType.CLUMSINESS);
+				public static ObstacleType TROLL = new ObstacleMonster("a troll", DamageType.GENERIC, RequirementType.WEAKNESS);
+				public static ObstacleType SPIDER = new ObstacleMonster("a giant spider", DamageType.POISON, RequirementType.STUPIDITY);
+			}
+
+			public static ObstacleType getRandomMonster(Random rand) {
+				FieldInfo[] fields = fields = typeof(Monsters).GetFields();
+				int r = rand.Next(fields.Length);
+				if(r > 1) r = rand.Next(fields.Length); //less likely to roll thing other than bandits
+				if(r > 7) r = rand.Next(fields.Length); //less likely to roll anit-attribute monsters
+				FieldInfo field = fields[r];
+				return (ObstacleType)field.GetValue(null);
 			}
 
 			public static ObstacleType getRandom(Random rand) {
@@ -196,18 +207,18 @@ namespace Assets.draco18s.artificer.init {
 					return (ObstacleType)field.GetValue(null);
 				}
 				else if(r == fields.Length) { //traps
+					fields = typeof(Traps).GetFields();
 					r = rand.Next(fields.Length);
 					if(r >= fields.Length-6) r = rand.Next(fields.Length); //less likely to roll magic
 					FieldInfo field = fields[r];
-					fields = typeof(Traps).GetFields();
 					return (ObstacleType)field.GetValue(null);
 				}
 				else if(r >= fields.Length + 1) { //monsters
+					fields = typeof(Monsters).GetFields();
 					r = rand.Next(fields.Length);
 					if(r > 1) r = rand.Next(fields.Length); //less likely to roll thing other than bandits
 					if(r > 7) r = rand.Next(fields.Length); //less likely to roll anit-attribute monsters
 					FieldInfo field = fields[r];
-					fields = typeof(Monsters).GetFields();
 					return (ObstacleType)field.GetValue(null);
 				}
 				return null;
@@ -263,32 +274,32 @@ namespace Assets.draco18s.artificer.init {
 				Item i = Items.getRandom(theQuest.questRand, 0, 10);
 				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
-				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
+				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				Main.instance.player.addItemToInventory(new ItemStack(i, s), theQuest, true);
 			}
 
 			public static void AddUncommonResource(Quest theQuest) {
 				Item i = Items.getRandom(theQuest.questRand, 10, 22);
 				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
-				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
+				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				Main.instance.player.addItemToInventory(new ItemStack(i, s), theQuest, true);
 			}
 
 			public static void AddRareResource(Quest theQuest) {
 				Item i = Items.getRandom(theQuest.questRand, 22, 32);
 				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
-				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
+				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				Main.instance.player.addItemToInventory(new ItemStack(i, s), theQuest, true);
 			}
 
 			public static void AddResource(Quest theQuest, Items.ItemType type) {
 				Item i = Items.getRandomType(theQuest.questRand, type);
 				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
-				Main.instance.player.addItemToInventory(new ItemStack(i, s), notify);
+				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
+				Main.instance.player.addItemToInventory(new ItemStack(i, s), theQuest, true);
 			}
 
 			private static int ResourceQuantity(Random rand, int min, int max) {
@@ -327,8 +338,8 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static void AddStack(Quest theQuest, ItemStack stack) {
-				NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(stack.item.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + stack.item.name));
-				Main.instance.player.addItemToInventory(stack, notify);
+				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(stack.item.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + stack.item.name));
+				Main.instance.player.addItemToInventory(stack, theQuest, true);
 			}
 		}
 		public static class Scenario {

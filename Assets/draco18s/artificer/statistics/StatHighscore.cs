@@ -41,6 +41,10 @@ namespace Assets.draco18s.artificer.statistics {
 			if(statValue > bestValue) bestValue = statValue;
 		}
 
+		public void setBestValue(int v) {
+			bestValue = v;
+		}
+
 		public override void resetValue() {
 			if(statValue > bestValue) bestValue = statValue;
 			statValue = initialValue;

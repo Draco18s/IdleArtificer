@@ -55,7 +55,7 @@ namespace Assets.draco18s.artificer.init {
 		//shield
 		public static Enchantment MIRRORED = new Enchantment("Mirrored", Items.MOON_SLIVER, 200, ItemEquipType.SHIELD, RequirementType.MIRRORED);
 		public static Enchantment GLOWING = new Enchantment("Glowing", Items.FIRE_OPAL, 200, ItemEquipType.SHIELD, RequirementType.LIGHT);
-		public static Enchantment THORNS = new Enchantment("Thorns", Items.TANGLED_ROSE, 200, ItemEquipType.SHIELD, 0);
+		public static Enchantment THORNS = new Enchantment("Thorns", Items.TANGLED_ROSE, 200, ItemEquipType.SHIELD, 0).setStacksTo(10);
 		public static Enchantment ARROW_CATCH = new Enchantment("Arrow Catching", Items.LOADSTONE, 200, ItemEquipType.SHIELD, RequirementType.ARROW_CATCHING).setEffectiveness(0.5f);
 
 		//boots

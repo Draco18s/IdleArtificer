@@ -227,9 +227,9 @@ namespace Assets.draco18s.artificer.items {
 			return level + bonusLevel;
 		}
 
-		public virtual BigInteger GetSellValue() {
-			BigRational sell = Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue() * Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType);
-			return (BigInteger)sell;
+		public virtual BigRational GetSellValue() {
+			BigRational sell = Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue() * Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType) * SkillList.getScalarTypeMulti(productType);
+			return sell;
 			//BigInteger frac = (BigInteger)(Main.instance.GetSellMultiplierMicro() * valueMulti * (BigRational)GetBaseSellValue());
 			//BigInteger ret = (BigInteger)(valueMulti * (BigRational)GetBaseSellValue() * Main.instance.GetSellMultiplier()) + frac;
 			//return ret;

@@ -20,6 +20,17 @@ namespace Assets.draco18s.artificer.ui {
 				trig = button.gameObject.AddComponent<TooltipTrigger>();
 			trig.AddHover(callback, redrawOnUpdate);
 		}
+		public static void AddHover(this Toggle button, OnHoverDelegate callback) {
+			AddHover(button, callback, true);
+		}
+		public static void AddHover(this Toggle button, OnHoverDelegate callback, bool redrawOnUpdate) {
+			TooltipTrigger trig = button.gameObject.GetComponent<TooltipTrigger>();
+			if(trig == null)
+				trig = button.gameObject.AddComponent<TooltipTrigger>();
+			trig.AddHover(callback, redrawOnUpdate);
+			//EventTrigger trig = button.gameObject.GetComponent<EventTrigger>();
+			//trig.OnPointerEnter.
+		}
 
 		public static void RemoveAllEvents(this Button button) {
 			TooltipTrigger trig = button.gameObject.GetComponent<TooltipTrigger>();
@@ -102,6 +113,8 @@ namespace Assets.draco18s.artificer.ui {
 					callback();
 				}
 			}
+			if(!eventData.pointerPress.activeSelf)
+				StopHover();
 		}
 
 		internal void AddRightClick(ButtonExtensions.OnClickDelegate callback) {

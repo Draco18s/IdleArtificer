@@ -1,4 +1,5 @@
 ﻿using Assets.draco18s.artificer.game;
+using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
@@ -32,7 +33,7 @@ namespace Assets.draco18s.artificer.upgrades {
 			v -= (v % 3);
 			v /= 3;
 			v = Math.Max(v - 1, 0);
-			float b = 0.05f * v;
+			float b = 0.05f * v * (float)(1 + SkillList.VendorEffectiveness.getMultiplier());
 			return "Increases the price vendors sell items by " + (increaseAmt * 100) + "%.\nThe base value is "+((b+1)*100)+"%, currently it is " + ((((UpgradeFloatValue)wrap).value+b) * 100) + "%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + increaseAmt + b) * 100) + "%";
 			//return "Increases the price vendors sell items at.";
 		}

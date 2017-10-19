@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalBuildHome : ObstacleType, IQuestGoal {
+	public class GoalBuildHome : ObstacleType, IQuestGoal {
 		public GoalBuildHome() : base("building a house", new RequireWrapper(RequirementType.TOOLS), new RequireWrapper(RequirementType.WOOD), new RequireWrapper(RequirementType.LEATHER)) {
 
 		}

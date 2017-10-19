@@ -29,6 +29,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.harmHero(5, DamageType.STARVE); //minor damage
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 					theQuest.hastenQuestEnding(60);

@@ -42,10 +42,16 @@ namespace Assets.draco18s.artificer.game {
 						hasFoundMatch = true;
 					}
 					break;
+				case RuntimePlatform.WebGLPlayer:
+					currentDirectory = Application.persistentDataPath;
+					if(!currentDirectory.EndsWith("/"))
+						currentDirectory += "/";
+					currentDirectory += "RuntimeData/";
+					hasFoundMatch = true;
+					break;
 				case RuntimePlatform.OSXDashboardPlayer: //<path to the dashboard widget bundle>
 				//case RuntimePlatform.WindowsWebPlayer: 
 				//case RuntimePlatform.OSXWebPlayer:
-				case RuntimePlatform.WebGLPlayer: //not supported at the moment
 				default:
 					hasFoundMatch = false;
 					break;

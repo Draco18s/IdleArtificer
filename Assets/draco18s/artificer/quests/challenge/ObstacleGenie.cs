@@ -64,7 +64,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					item = Items.getRandom(theQuest.questRand);
 					Enchantment ench = GameRegistry.GetEnchantmentByItem(item);
 					//Debug.Log("Trying... " + ench.name);
-
+					if(ench == null) continue;
 					if(newRelic.enchants.Count > 0) {
 						bool maxed = false;
 						if(newRelic.enchants.Contains(ench)) {

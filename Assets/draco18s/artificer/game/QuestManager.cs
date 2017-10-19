@@ -476,7 +476,7 @@ namespace Assets.draco18s.artificer.game {
 							//go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num];
 						}
 					}
-					float per = (float)q.heroCurHealth / q.heroMaxHealth;
+					float per = ((float)q.heroCurHealth) / q.heroMaxHealth;
 					float ext = 0;
 					Image img = info.HPBar.GetComponent<Image>();
 					ext = img.material.GetFloat("_Cutoff");
@@ -558,7 +558,7 @@ namespace Assets.draco18s.artificer.game {
 			while(newQuestDelayTimer <= 0) {
 				newQuestDelayTimer += getNewQuestMaxTime();
 				Quest q = Quest.GenerateNewQuest();
-				q.timeUntilQuestExpires = 18000; //5 hours
+				//q.timeUntilQuestExpires = 18000; //5 hours
 				availableQuests.Add(q);
 			}
 			foreach(Quest q in availableQuests) {
@@ -672,7 +672,7 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static ItemStack makeRelic(ItemStack stack, IRelicMaker ob, int scalar, string hero) {
-			IRelicMaker maker = (IRelicMaker)ob;
+			IRelicMaker maker = ob;
 			if(stack.relicData == null) {
 				stack.relicData = new List<RelicInfo>();
 			}
@@ -742,6 +742,12 @@ namespace Assets.draco18s.artificer.game {
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
 			return (newQuestMaxTime - (((UpgradeFloatValue)wrap).value)) * (1 / Main.instance.player.currentGuildmaster.newQuestRateMultiplier());
+		}
+
+		public static float getEquipRate() {
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(UpgradeType.JOURNEYMAN_RATE, out wrap);
+			return questEquipTimerMax - ((UpgradeFloatValue)wrap).value;
 		}
 	}
 }

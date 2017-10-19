@@ -31,13 +31,17 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				ItemStack rangedStack = theQuest.getHeroItemWith(AidType.RANGED_WEAPON);
 				int dmg = ((IMonsterChallenge)type).getRangedDamage(result, theQuest, ref questBonus, rangedStack);
 				if(rangedStack != null) {
-					//TODO: account for stacking
 					if(rangedStack.doesStackHave(Enchantments.ENHANCEMENT)) {
-						dmg += 5;
+						foreach(Enchantment en in rangedStack.enchants) {
+							if(en == Enchantments.ENHANCEMENT)
+								dmg += 5;
+						}
 					}
-					rangedStack.stackSize--;
+					if(rangedStack.item.isConsumable && rangedStack.stackSize > 0) {
+						rangedStack.stackSize--;
+					}
+					dmg = (int)Math.Round(rangedStack.getEffectiveness(RequirementType.RANGED) * dmg);
 				}
-				dmg = (int)Math.Round(rangedStack.getEffectiveness(RequirementType.RANGED) * dmg);
 				monsterHealth -= dmg;
 			}
 			int hpBefore = theQuest.heroCurHealth;
@@ -46,18 +50,31 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			if(type is IMonsterChallenge) {
 				ItemStack meleeStack = theQuest.getHeroItemWith(AidType.WEAPON);
 				int dmg = ((IMonsterChallenge)type).getDamageDealtToMonster(result, theQuest, ref questBonus, meleeStack);
-				if(meleeStack.doesStackHave(Enchantments.ENHANCEMENT)) {
-					dmg += 5;
-				}
-				if(meleeStack.doesStackHave(Enchantments.KEEN)) {
-					if(theQuest.testLuck(5) == 0) {
-						dmg *= 2;
+				if(meleeStack != null) {
+					if(meleeStack.doesStackHave(Enchantments.ENHANCEMENT)) {
+						foreach(Enchantment en in meleeStack.enchants) {
+							if(en == Enchantments.ENHANCEMENT)
+								dmg += 5;
+						}
 					}
+					if(meleeStack.doesStackHave(Enchantments.KEEN)) {
+						if(theQuest.testLuck(5) == 0) {
+							dmg *= 2;
+						}
+					}
+					if(meleeStack.item.isConsumable && meleeStack.stackSize > 0) {
+						meleeStack.stackSize--;
+					}
+					dmg = (int)Math.Round(meleeStack.getEffectiveness(RequirementType.WEAPON) * dmg);
 				}
-				dmg = (int)Math.Round(meleeStack.getEffectiveness(RequirementType.WEAPON) * dmg);
-				bool hasThorns = theQuest.getHeroItemWith(Enchantments.THORNS) != null;
-				if(tookDamage && hasThorns) {
-					dmg += 5;
+				ItemStack thornStack = theQuest.getHeroItemWith(Enchantments.THORNS);
+				if(tookDamage && thornStack != null) {
+					int c = 0;
+					foreach(Enchantment en in thornStack.enchants) {
+						if(en == Enchantments.THORNS)
+							c++;
+					}
+					dmg += (c * 5) / 2;
 				}
 				monsterHealth -= dmg;
 				if(monsterHealth > 0) {

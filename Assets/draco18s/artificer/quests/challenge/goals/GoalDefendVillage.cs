@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalDefendVillage : ObstacleType, IQuestGoal {
+	public class GoalDefendVillage : ObstacleType, IQuestGoal {
 		public GoalDefendVillage() : base("defending village", new RequireWrapper(RequirementType.ARMOR), new RequireWrapper(RequirementType.ARMOR), new RequireWrapper(RequirementType.WEAPON), new RequireWrapper(RequirementType.WEAPON)) {
 
 		}

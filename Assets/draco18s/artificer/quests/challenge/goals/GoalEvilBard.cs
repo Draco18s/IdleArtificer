@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalEvilBard : ObstacleType, IQuestGoal, IMonsterChallenge {
+	public class GoalEvilBard : ObstacleType, IQuestGoal, IMonsterChallenge {
 		protected int bardHealth;
 
 		public GoalEvilBard() : base("fighting an evil bard", new RequireWrapper(RequirementType.UGLINESS), new RequireWrapper(RequirementType.MIND_SHIELD)) {

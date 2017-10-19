@@ -1,4 +1,5 @@
 ﻿using Assets.draco18s.artificer.init;
+using Assets.draco18s.artificer.quests.requirement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	class ObstacleLostLagoon : ObstacleType {
-		public ObstacleLostLagoon() : base("exploring an island") {
+		public ObstacleLostLagoon() : base("exploring an island", new RequireWrapper(RequirementType.INTELLIGENCE)) {
 
 		}
 
@@ -15,7 +16,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 
 			result += theQuest.testLuck(3) + 1;
 
-			if(theQuest.testIntelligence(questBonus)) {
+			if(fails == 0 || theQuest.testIntelligence(questBonus)) {
 				result += 1;
 			}
 

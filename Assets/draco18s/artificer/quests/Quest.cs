@@ -30,6 +30,11 @@ namespace Assets.draco18s.artificer.quests {
 			return GenerateNewQuest(ChallengeTypes.Goals.getRandom(rand), heroName);
 		}
 
+		public static Quest GenerateNewQuest(ObstacleType withGoal) {
+			FantasyName[] names = fantasyNameGenerator.GetFantasyNames(1);
+			return GenerateNewQuest(withGoal, names[0].FirstName + " " + names[0].Land);
+		}
+
 		public static Quest GenerateNewQuest(ObstacleType withGoal, string heroName) {
 			//TODO: moar detail
 			List<QuestChallenge> arr = new List<QuestChallenge>();
@@ -51,7 +56,12 @@ namespace Assets.draco18s.artificer.quests {
 					}
 				}
 				else {
-					arr.Add(new QuestChallenge(ChallengeTypes.General.getRandom(rand), 0));
+					if(n % 4 == 2) {
+						arr.Add(new QuestChallenge(ChallengeTypes.Travel.getRandom(rand), 0));
+					}
+					else {
+						arr.Add(new QuestChallenge(ChallengeTypes.General.getRandom(rand), 0));
+					}
 				}
 			}
 			//end
@@ -70,7 +80,7 @@ namespace Assets.draco18s.artificer.quests {
 			//Name debugging
 			//string debugName = names[0].FirstName + " " + names[0].LastName + " " + names[0].Postfix;
 			//Debug.Log(debugName);
-
+			q.timeUntilQuestExpires = 18000; //5 hours
 			return q;
 		}
 
@@ -88,6 +98,7 @@ namespace Assets.draco18s.artificer.quests {
 		public readonly List<ItemStack> inventory;
 		public readonly ItemStack[] rewards;
 
+		public Dictionary<string, object> miscData;
 		public int heroCurHealth;
 		public bool questComplete = false;
 		public float timeUntilQuestExpires;
@@ -270,9 +281,30 @@ namespace Assets.draco18s.artificer.quests {
 				}
 			}
 			QuestChallenge ob = obstacles[questStep];
+
+			while(questTotalTime > 2000 && doesHeroHave(RequirementType.MANA)) {
+				if(doesHeroHave(AidType.MANA_LARGE)) {
+					questTotalTime -= 120;
+				}
+				else if(doesHeroHave(AidType.MANA_MEDIUM)) {
+					questTotalTime -= 90;
+				}
+				else if(doesHeroHave(AidType.MANA_SMALL)) {
+					questTotalTime -= 60;
+				}
+				else if(doesHeroHave(AidType.MANA_TINY)) {
+					questTotalTime -= 30;
+				}
+			}
 			if(questTotalTime > 2000 || heroCurHealth <= 0) {
 				//hero dies
-				Debug.Log("FAIL " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+				Debug.Log("FAIL " + heroName + " " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+				object corwrap;
+				int cor = 0;
+				if(miscData != null && miscData.TryGetValue("corruption", out corwrap)) {
+					cor = (int)corwrap;
+					Debug.Log("Corrupted: " + doesHeroHave(RequirementType.SPELL_RESIST) + ", "  + cor);
+				}
 				//Debug.Log("     " + obstacles[questStep-1].type.name);
 				return EnumResult.FAIL;
 			}
@@ -294,6 +326,7 @@ namespace Assets.draco18s.artificer.quests {
 					if(stack.item.hasReqType(rw.req) && stack.stackSize > 0) {
 						if(stack.item.isConsumable)
 							stack.stackSize--;
+						stack.onUsedDuringQuest(this);
 						goto ObsList;
 					}
 					if(stack.item.hasReqType(rw.alt) && stack.stackSize > 0) {
@@ -310,6 +343,7 @@ namespace Assets.draco18s.artificer.quests {
 					//decrement used alt-type stack, as it was used
 					if(altStack.item.isConsumable)
 						altStack.stackSize--;
+					altStack.onUsedDuringQuest(this);
 					partials++;
 				}
 				//go here if success
@@ -332,9 +366,9 @@ namespace Assets.draco18s.artificer.quests {
 
 
 			if(questStep >= obstacles.Length) {
-				if(result < EnumResult.MIXED) {
+				if(result < EnumResult.MIXED && ob.type is IQuestGoal) {
 					//rare ending
-					Debug.Log("FAILURE " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+					Debug.Log("QUEST FAILURE " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
 					return EnumResult.FAIL;
 				}
 				Debug.Log("SUCCESS " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
@@ -375,7 +409,6 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public void harmHero(int amt, DamageType damage) {
-			amt = 0;
 			if(amt <= 0) return;
 			if(!damage.getBypassesArmor()) {
 				float reduction = 0;
@@ -500,6 +533,7 @@ namespace Assets.draco18s.artificer.quests {
 					}
 					else {
 						stack.numTimesUsedOnQuest++;
+						stack.onUsedDuringQuest(this);
 						if(_obstacles[this.questStep] is IQuestGoal) {
 							stack.numTimesUsedOnQuest += 2;
 						}
@@ -547,6 +581,7 @@ namespace Assets.draco18s.artificer.quests {
 					}
 					else {
 						stack.numTimesUsedOnQuest++;
+						stack.onUsedDuringQuest(this);
 						if(_obstacles[this.questStep] is IQuestGoal) {
 							stack.numTimesUsedOnQuest+=2;
 						}
@@ -675,6 +710,9 @@ namespace Assets.draco18s.artificer.quests {
 			info.AddValue("numQuestsBefore", numQuestsBefore);
 			info.AddValue("reward_0", rewards[0]);
 			info.AddValue("reward_1", rewards[1]);
+			info.AddValue("hasMiscData", miscData != null);
+			if(miscData != null)
+				info.AddValue("miscData", miscData, typeof(Dictionary<string, object>));
 		}
 
 		public Quest(SerializationInfo info, StreamingContext context) {
@@ -709,6 +747,11 @@ namespace Assets.draco18s.artificer.quests {
 			rewards[0] = (ItemStack)info.GetValue("reward_0", typeof(ItemStack));
 			rewards[1] = (ItemStack)info.GetValue("reward_1", typeof(ItemStack));
 			questComplete = questStep >= num;
+			if(Main.saveVersionFromDisk >= 9) {
+				if(info.GetBoolean("hasMiscData")) {
+					miscData = (Dictionary<string, object>)info.GetValue("miscData", typeof(Dictionary<string, object>));
+				}
+			}
 		}
 
 		private List<ChallengeLoadWrapper> fromDisk = new List<ChallengeLoadWrapper>();

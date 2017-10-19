@@ -30,6 +30,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 					QuestManager.availableQuests.Add(Quest.GenerateNewQuest(ChallengeTypes.Goals.REPAIR_DAMN,theQuest.heroName));
+					QuestManager.updateLists();
 					/*theQuest.hastenQuestEnding(240);
 					theQuest.repeatTask();*/
 					break;

@@ -1,6 +1,9 @@
 ﻿using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.quests.requirement;
 using System.Collections.Generic;
+using Assets.draco18s.artificer.quests;
+using System;
+using Assets.draco18s.artificer.game;
 
 namespace Assets.draco18s.artificer.items {
 	public class Item {
@@ -48,11 +51,11 @@ namespace Assets.draco18s.artificer.items {
 			return questSize;
 		}
 
-		public bool hasReqType(RequirementType type) {
+		public virtual bool hasReqType(RequirementType type) {
 			return (reqProperties & type) > 0;
 		}
 
-		public bool hasAidType(AidType type) {
+		public virtual bool hasAidType(AidType type) {
 			return (aidProperties & type) > 0;
 		}
 
@@ -60,7 +63,7 @@ namespace Assets.draco18s.artificer.items {
 			return reqProperties;
 		}
 
-		public float getEffectiveness() {
+		public virtual float getEffectiveness() {
 			return effectivenessMultiplier;
 		}
 
@@ -97,6 +100,18 @@ namespace Assets.draco18s.artificer.items {
 		public Item setEffectiveness(float val) {
 			effectivenessMultiplier = val;
 			return this;
+		}
+
+		public virtual void onUsedDuringQuest(Quest quest, ItemStack itemStack) {
+		}
+
+		public virtual void onSoldByPlayer(ItemStack itemStack) {
+			if(isSpecial())
+				QuestManager.availableRelics.Add(itemStack);
+		}
+
+		public virtual bool isSpecial() {
+			return false;
 		}
 	}
 }

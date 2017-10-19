@@ -21,6 +21,7 @@ namespace Assets.draco18s.artificer.game {
 	class GuildManager {
 		private static Text moneyDisp;
 		private static Text renownDisp;
+		private static Text skillDisp;
 		private static Text newRenownDisp;
 		private static Text numVend1;
 		private static Text numVend2;
@@ -57,6 +58,7 @@ namespace Assets.draco18s.artificer.game {
 
 				GuiManager.ShowTooltip(p, "Renown from cash on hand: " + Main.AsCurrency(renown) + RENOWN_SYMBOL + "\nRenown from completed quests: " + Main.AsCurrency(Main.instance.player.questsCompleted) + RENOWN_SYMBOL, 5f);
 			});
+			skillDisp = GuiManager.instance.guildHeader.transform.FindChild("SkillPts").GetChild(0).GetComponent<Text>();
 			cashList = GuiManager.instance.guildArea.transform.FindChild("CashUpgrades").GetChild(0).GetChild(0);
 			renownList = GuiManager.instance.guildArea.transform.FindChild("RenownUpgrades").GetChild(0).GetChild(0);
 			buyVendTxt = GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
@@ -149,13 +151,14 @@ namespace Assets.draco18s.artificer.game {
 				}
 			});
 
-			availableMasters[0] = Master.createRandomMaster(15 + SkillList.GuildmasterRating.getMultiplier());
-			availableMasters[1] = Master.createRandomMaster(15 + SkillList.GuildmasterRating.getMultiplier());
-			availableMasters[2] = Master.createRandomMaster(15 + SkillList.GuildmasterRating.getMultiplier());
+			int pts = 15 + SkillList.GuildmasterRating.getMultiplier();
+			availableMasters[0] = Master.createRandomMaster(pts);
+			availableMasters[1] = Master.createRandomMaster(pts);
+			availableMasters[2] = Master.createRandomMaster(pts);
 
 			for(int j = 1; j < availableMasters.Length+1; j++) {
 				Transform gmb = GuiManager.instance.resetGuildWindow.transform.GetChild(1).FindChild("Guildmaster" + j);
-				int q = j;
+				int q = j-1;
 				gmb.GetComponent<Button>().onClick.AddListener(delegate { electGuildmaster(availableMasters[q]); });
 			}
 
@@ -174,7 +177,7 @@ namespace Assets.draco18s.artificer.game {
 				t1.GetComponent<Button>().onClick.AddListener(delegate {
 					doBuySkill(sk);
 				});
-				t1.GetChild(0).GetComponent<Text>().text = Main.AsCurrency((BigInteger)sk.getCost(1)) + " pts";
+				t1.GetChild(0).GetComponent<Text>().text = Main.AsCurrency(sk.getCost(1)) + " pts";
 				i++;
 			}
 			((RectTransform)skillListParent).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 110 + 10));
@@ -184,7 +187,13 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void doBuySkill(Skill sk) {
-			throw new NotImplementedException();
+			if((BigInteger)sk.getCost(1) <= Main.instance.player.skillPoints) {
+				Main.instance.player.skillPoints -= (BigInteger)sk.getCost(1);
+				sk.increaseRank(1);
+				sk.guiItem.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
+				sk.guiItem.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(sk.getCost(1)) + " pts";
+				skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
+			}
 		}
 
 		private static void closeNewGuildmaster() {
@@ -194,11 +203,11 @@ namespace Assets.draco18s.artificer.game {
 		private static void electGuildmaster(Master master) {
 			Main.instance.player.reset();
 			BigInteger renown = Main.instance.player.totalRenown;
+			Main.instance.player.skillPoints += renown / 10000;
+			Main.instance.player.totalSkillPoints += renown / 10000;
+			Main.instance.player.currentGuildmaster = master;
 			Main.instance.player.totalRenown = 0;
 			Main.instance.player.renown = 0;
-			Main.instance.player.skillPoints += renown / 1000;
-			Main.instance.player.totalSkillPoints += renown / 1000;
-			Main.instance.player.currentGuildmaster = master;
 
 			List<ItemStack> allRelics = new List<ItemStack>();
 			allRelics.AddRange(QuestManager.availableRelics);
@@ -209,7 +218,9 @@ namespace Assets.draco18s.artificer.game {
 				if(stack.relicData != null) allRelics.Add(stack);
 			}
 			Main.instance.player.miscInventory.Clear();
-
+			List<ItemStack> specialItems = new List<ItemStack>();
+			specialItems.AddRange(allRelics.FindAll(x => x.isSpecial()));
+			allRelics.RemoveAll(x => x.isSpecial());
 			allRelics.Sort((a, b) => {
 				int besta = 0;
 				int vala = a.antiquity * 10;
@@ -227,24 +238,34 @@ namespace Assets.draco18s.artificer.game {
 				bestb += valb;
 				return bestb.CompareTo(besta);
 			});
-
-			allRelics.RemoveRange(10, allRelics.Count);
-
+			allRelics.RemoveRange(Math.Min(10, allRelics.Count-1), allRelics.Count - Math.Min(10, allRelics.Count - 1));
+			allRelics.AddRange(specialItems);
+			int best = 0;
 			foreach(ItemStack stack in allRelics) {
-				stack.antiquity++;
+				best = ++stack.antiquity;
+				if(stack.antiquity >= 50) {
+					StatisticsTracker.impressiveAntiquity.setAchieved();
+				}
 				stack.isIDedByPlayer = false;
 				stack.relicData = null;
 				QuestManager.availableRelics.Add(QuestManager.makeRelic(stack, new AntiquityRelics(), 1, "Unknown"));
 			}
+			StatisticsTracker.relicAntiquity.resetValue();
+			StatisticsTracker.relicAntiquity.setValue(best);
 
-			availableMasters[0] = Master.createRandomMaster(15 + SkillList.GuildmasterRating.getMultiplier());
-			availableMasters[1] = Master.createRandomMaster(15 + SkillList.GuildmasterRating.getMultiplier());
-			availableMasters[2] = Master.createRandomMaster(15 + SkillList.GuildmasterRating.getMultiplier());
+			int pts = 15 + SkillList.GuildmasterRating.getMultiplier();
+			availableMasters[0] = Master.createRandomMaster(pts);
+			availableMasters[1] = Master.createRandomMaster(pts);
+			availableMasters[2] = Master.createRandomMaster(pts);
 
 			GuiManager.instance.guildmasterArea.transform.FindChild("OwnedTxt").GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
 			if(!StatisticsTracker.firstGuildmaster.isAchieved()) {
 				StatisticsTracker.firstGuildmaster.setAchieved();
 			}
+			closeNewGuildmaster();
+			GuiManager.instance.guildArea.transform.FindChild("SkillPanel").FindChild("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
+			skillDisp.transform.parent.gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
+			skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
 		}
 
 		public static void setupUI() {
@@ -258,7 +279,9 @@ namespace Assets.draco18s.artificer.game {
 			}
 			GuiManager.instance.guildmasterArea.transform.FindChild("BuyOne").GetComponent<Button>().interactable = Main.instance.player.totalRenown >= 100000;
 			GuiManager.instance.guildmasterArea.transform.FindChild("OwnedTxt").GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
-			GuiManager.instance.guildArea.transform.FindChild("SkillPanel").GetChild(1).gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
+			GuiManager.instance.guildArea.transform.FindChild("SkillPanel").FindChild("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
+			skillDisp.transform.parent.gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
+			skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
 		}
 
 		public static void update() {
@@ -268,9 +291,9 @@ namespace Assets.draco18s.artificer.game {
 			BigInteger totalRenown = BigInteger.CubeRoot(Main.instance.player.lifetimeMoney);
 			totalRenown /= 10000;
 			BigInteger renown = totalRenown - spentRenown + Main.instance.player.questsCompleted;*/
-			BigInteger renown = Main.instance.getCachedNewRenown() + Main.instance.player.questsCompleted;
+			BigInteger renown = Main.instance.getCachedNewRenown() + Main.instance.player.questsCompleted;// + Main.instance.player.totalRenown - spentRenown;
 
-			newRenownDisp.text = Main.AsCurrency(Main.instance.player.renown + renown)+ RENOWN_SYMBOL;//𐍈☼
+			newRenownDisp.text = Main.AsCurrency(renown + Main.instance.player.renown) + RENOWN_SYMBOL;//𐍈☼
 
 			moneyDisp.text = "$" + Main.AsCurrency(Main.instance.player.money);
 
@@ -282,12 +305,16 @@ namespace Assets.draco18s.artificer.game {
 			buyVendTxt.text = "+1 ($" + Main.AsCurrency(getVendorCost()) + ")";
 			buyAppTxt.text = "+1 (" + Main.AsCurrency(getApprenticeCost()) + RENOWN_SYMBOL + ")";
 			buyJourTxt.text = "+1 (" + Main.AsCurrency(getJourneymenCost()) + RENOWN_SYMBOL + ")";
-			UpgradeValueWrapper wrap;
-			Main.instance.player.upgrades.TryGetValue(UpgradeType.JOURNEYMAN_RATE, out wrap);
-			joureffTxt.text = (2 * Main.instance.player.journeymen) + " Items / " + Main.SecondsToTime(ResearchManager.maxResearchTime / ((UpgradeFloatValue)wrap).value);
-
-			vendeffTxt.text = Mathf.RoundToInt(Main.instance.player.GetVendorValue() * 100) + "%";
-			appeffTxt.text = Main.instance.GetClickRate() + "sec / sec";
+			joureffTxt.text = (2 * Main.instance.player.journeymen) + " Items / " + Main.SecondsToTime(QuestManager.getEquipRate() / Main.instance.player.currentGuildmaster.journeymenRateMultiplier());
+			
+			vendeffTxt.text = (Main.instance.player.GetVendorValue() * 100).ToDecimalString(0) + "%";
+			if(Main.instance.player.currentGuildmaster.apprenticeRateMultiplier() != 1) {
+				float v = Mathf.Round(Main.instance.GetClickRate() * Main.instance.player.currentGuildmaster.apprenticeRateMultiplier() * 100) / 100f;
+				appeffTxt.text = Main.instance.GetClickRate() + "sec / sec, (app: " + v + "sec)";
+			}
+			else {
+				appeffTxt.text = Main.instance.GetClickRate() + "sec / sec";
+			}
 			BigInteger mon = Main.instance.player.money;
 			BigInteger diff = BigInteger.Abs((lastMoney - mon));
 			if(!hasListChanged && diff >= (0.005 * (BigRational)mon)) {
@@ -466,6 +493,7 @@ namespace Assets.draco18s.artificer.game {
 			if(Main.instance.player.renown >= cost) {
 				Main.instance.player.renown -= cost;
 				Main.instance.player.maxApprentices += 1;
+				StatisticsTracker.apprenticesPurchased.addValue(1);
 			}
 		}
 
@@ -474,6 +502,7 @@ namespace Assets.draco18s.artificer.game {
 			if(Main.instance.player.renown >= cost) {
 				Main.instance.player.renown -= cost;
 				Main.instance.player.journeymen += 1;
+				StatisticsTracker.journeymenPurchased.addValue(1);
 			}
 		}
 

@@ -32,14 +32,15 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.getRandomMonster(theQuest.questRand),questBonus));
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 				case EnumResult.FAIL:
 					theQuest.addTime(30);
-					theQuest.harmHero(30, DamageType.GENERIC);
+					theQuest.harmHero(20, DamageType.GENERIC);
 					break;
 				case EnumResult.MIXED:
-					theQuest.harmHero(15, DamageType.GENERIC);
+					theQuest.harmHero(10, DamageType.GENERIC);
 					break;
 				case EnumResult.SUCCESS:
 					theQuest.harmHero(5, DamageType.GENERIC);

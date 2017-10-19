@@ -48,6 +48,8 @@ public class GuiManager : MonoBehaviour {
 	public Sprite inner_item_bg;
 	public Sprite selTab;
 	public Sprite unselTab;
+	public Sprite checkOn;
+	public Sprite checkOff;
 	public Sprite[] req_icons;
 
 	private static List<NotificationItem> notificationQueue = new List<NotificationItem>();

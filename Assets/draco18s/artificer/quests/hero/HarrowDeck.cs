@@ -48,10 +48,10 @@ namespace Assets.draco18s.artificer.quests.hero {
 			mind = new Fortune(pullCard(), 0);
 			body = new Fortune(pullCard(), 0);
 			spirit = new Fortune(pullCard(), 4);
-			STR = new Fortune(pullCard(), 8);
-			AGL = new Fortune(pullCard(), 8);
-			INT = new Fortune(pullCard(), 8);
-			CHA = new Fortune(pullCard(), 8);
+			STR = new Fortune(pullCard(), 7);
+			AGL = new Fortune(pullCard(), 7);
+			INT = new Fortune(pullCard(), 7);
+			CHA = new Fortune(pullCard(), 7);
 			resolve(this);
 		}
 
@@ -362,7 +362,7 @@ namespace Assets.draco18s.artificer.quests.hero {
 			int n = f.card.getValue();
 			//UnityEngine.Debug.Log("    " + s + n);
 			switch(n) {
-				case 1:
+				case 0:
 					switch(s) {
 						case Suit.HAMMER_STR:
 						case Suit.TOME_INT:
@@ -380,16 +380,16 @@ namespace Assets.draco18s.artificer.quests.hero {
 							break;
 					}
 					break;
-				case 2:
+				case 1:
 					stealGive(deck, attr, 1, 1);
 					break;
-				case 3:
+				case 2:
 					stealGive(deck, attr, 2, 1);
 					break;
-				case 4:
+				case 3:
 					stealGive(deck, attr, 3, 1);
 					break;
-				case 5: //steal from hammers&keys or tomes&crowns
+				case 4: //steal from hammers&keys or tomes&crowns
 					bool getHammerKey = false;
 					switch(s) {
 						case Suit.HAMMER_STR:
@@ -418,7 +418,7 @@ namespace Assets.draco18s.artificer.quests.hero {
 						}
 					}
 					break;
-				case 6:
+				case 5:
 					//UnityEngine.Debug.Log("    !" + attr);
 					//UnityEngine.Debug.Log("    [" + deck.STR.tokens + "," + deck.AGL.tokens + "," + deck.INT.tokens + "," + deck.CHA.tokens + "]");
 					List<Fortune> arr = new List<Fortune>();
@@ -480,7 +480,7 @@ namespace Assets.draco18s.artificer.quests.hero {
 							break;
 					}
 					break;
-				case 7: //give to hammer&key or tome&crown
+				case 6: //give to hammer&key or tome&crown
 					bool getHammerKey2 = false;
 					switch(s) {
 						case Suit.HAMMER_STR:
@@ -509,12 +509,14 @@ namespace Assets.draco18s.artificer.quests.hero {
 						}
 					}
 					break;
-				case 8:
+				case 7:
 					stealGive(deck, attr, 1, -1);
 					break;
-				case 9:
+				case 8:
 					stealGive(deck, attr, 2, -1);
 					break;
+				case 9:
+					throw new NotImplementedException();
 			}
 		}
 

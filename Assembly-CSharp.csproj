@@ -167,6 +167,7 @@
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb_Mummy.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb_Skeletons.cs" />
+     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindAtlantis.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindCows.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindMcGuffin.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFreeSlaves.cs" />
@@ -181,6 +182,7 @@
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalReachSummit.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRepairDam.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSettleTown.cs" />
+     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSkeletons.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSlayGorgon.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSphynxRiddles.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalTargetPractice.cs" />
@@ -188,8 +190,10 @@
      <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IQuestGoal.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\hero\HarrowDeck.cs" />
      <Compile Include="Assets\draco18s\artificer\quests\requirement\RequirementType.cs" />
+     <Compile Include="Assets\draco18s\artificer\statistics\IStat.cs" />
      <Compile Include="Assets\draco18s\artificer\statistics\StatAchievement.cs" />
      <Compile Include="Assets\draco18s\artificer\statistics\StatBase.cs" />
+     <Compile Include="Assets\draco18s\artificer\statistics\StatBint.cs" />
      <Compile Include="Assets\draco18s\artificer\statistics\StatHighscore.cs" />
      <Compile Include="Assets\draco18s\artificer\statistics\StatResetable.cs" />
      <Compile Include="Assets\draco18s\artificer\statistics\StatisticsTracker.cs" />

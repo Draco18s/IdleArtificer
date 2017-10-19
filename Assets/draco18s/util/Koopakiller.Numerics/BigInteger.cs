@@ -1330,9 +1330,9 @@ namespace Koopakiller.Numerics
         /// <param name="radix">Die Basis des Zahlensystems. Diese muss größer gleich 2 und kleiner gleich DigitSet.Length sein.</param>
         /// <returns>Eine Zeichenfolge welche zur angegebenen Basis den Wert dieser Instanz repräsentiert.</returns>
         
-        public string ToString(uint radix)
+        public string ToString(uint radix, bool commaSeparated)
         {
-            return this.ToString(radix, DigitSet);
+            return this.ToString(radix, DigitSet, commaSeparated);
         }
         /// <summary>
         /// Gibt den Wert dieser Instanz in einem bestimmten Zahlensystem zurück.
@@ -1341,7 +1341,7 @@ namespace Koopakiller.Numerics
         /// <param name="digits">Die zu verwendenden Zeichen in der zu erzegenden Zeichenfolge. Dieses Ziffernset darf keine doppelten Zeichen enthalten. Beim abgleich wird nicht auf die Groß- und Kleinschreibung geachtet.</param>
         /// <returns>Eine Zeichenfolge welche zur angegebenen Basis den Wert dieser Instanz repräsentiert.</returns>
         
-        public string ToString(uint radix, string digits)
+        public string ToString(uint radix, string digits, bool commaSeparated)
         {
             switch (this.SpecialValue)
             {
@@ -1375,8 +1375,8 @@ namespace Koopakiller.Numerics
                     BigInteger quotient = new BigInteger();
                     BigInteger remainder = new BigInteger();
                     ulong biRadix = radix;
-                    // BigInteger biRadix = radix;
-
+					// BigInteger biRadix = radix;
+					int i = 0;
                     while (a.data.Length >= 1 && !a.IsZero)
                     {
                         // DivideByte (ref a, ref biRadix, ref quotient, ref remainder);
@@ -1384,11 +1384,15 @@ namespace Koopakiller.Numerics
 
                         result = digits[(int)remainder.data[0]] + result;
 
-                        a = quotient;
+						a = quotient;
+
+						if(commaSeparated && ++i == 3 && a.data.Length >= 1 && !a.IsZero) {
+							result = "," + result;
+							i = 0;
+						}
                     }
                     if (this.IsNegative)
                         result = "-" + result;
-
 
                     return result;
             }
@@ -2121,7 +2125,7 @@ namespace Koopakiller.Numerics
         /// </summary>
         public override string ToString()
         {
-            return this.ToString(10);
+            return this.ToString(10,false);
         }
 
         /// <summary>
@@ -2224,7 +2228,7 @@ namespace Koopakiller.Numerics
         /// <returns>Die dezimale Darstellung des gespeicherten Wertes.</returns>
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            return this.ToString(10);
+            return this.ToString(10,false);
         }
 
         #endregion

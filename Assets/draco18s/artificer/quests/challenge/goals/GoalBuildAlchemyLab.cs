@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalAlchemyLab : ObstacleType, IQuestGoal {
+	public class GoalAlchemyLab : ObstacleType, IQuestGoal {
 		public GoalAlchemyLab() : base("running a lab", new RequireWrapper(RequirementType.HEALING), new RequireWrapper(RequirementType.MANA), new RequireWrapper(RequirementType.POISON_DAMAGE), new RequireWrapper(RequirementType.HERB)) {
 
 		}

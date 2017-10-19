@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalClearRatInfestation : ObstacleType, IQuestGoal {
+	public class GoalClearRatInfestation : ObstacleType, IQuestGoal {
 		public GoalClearRatInfestation() : base("exterminating rats", new RequireWrapper(RequirementType.POISON_DAMAGE, RequirementType.WEAKNESS)) {
 
 		}

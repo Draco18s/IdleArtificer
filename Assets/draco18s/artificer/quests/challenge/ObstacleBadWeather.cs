@@ -31,8 +31,9 @@ namespace Assets.draco18s.artificer.quests.challenge {
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
 			theQuest.hastenQuestEnding(60);
+			theQuest.harmHero(5, DamageType.GENERIC);
 			switch(result) {
-				case EnumResult.CRIT_FAIL: //set upon by a thief
+				case EnumResult.CRIT_FAIL: //repeat task
 					theQuest.repeatTask();
 					break;
 				case EnumResult.FAIL: //still stuck, but making progress

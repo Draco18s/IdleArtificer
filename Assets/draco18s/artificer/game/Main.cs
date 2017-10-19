@@ -12,6 +12,7 @@ using Koopakiller.Numerics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -52,7 +53,6 @@ namespace Assets.draco18s.artificer.game {
 			player = new PlayerInfo();
 			//money = new BigInteger(10000);
 			GuiManager.instance.mainCanvas.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.FacilityUnselected(); });
-			/* TODO: Load data from save */
 			Localization.initialize();
 			EnchantingManager.OneTimeSetup();
 			QuestManager.setupUI();
@@ -66,13 +66,15 @@ namespace Assets.draco18s.artificer.game {
 			panel.ProduceToggle.onValueChanged.AddListener(delegate { CraftingManager.ToggleAllowProduction(); });
 			panel.SellToggle.onValueChanged.AddListener(delegate { CraftingManager.ToggleSellStores(); });
 			panel.BuildToggle.onValueChanged.AddListener(delegate { CraftingManager.ToggleAutoBuild(); });
-
+			
 			Button btn;
 			GuiManager.instance.infoPanel.transform.FindChild("Output").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.AdvanceTimer(); });
 			btn = GuiManager.instance.infoPanel.transform.FindChild("SellAll").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { CraftingManager.SellAll(); });
 			//string veryLong = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra tincidunt mi, sed volutpat est elementum id. Etiam eleifend arcu vitae sem efficitur, ut congue massa ultricies. Ut facilisis, leo id tincidunt viverra, sem metus accumsan neque, ac tristique erat quam id lacus. Vivamus quis augue eros. Maecenas non laoreet ligula. Nunc id tellus consectetur ipsum volutpat convallis nec a arcu. Phasellus fermentum sapien eget porttitor convallis.";
-			btn.AddHover(delegate (Vector3 p) { GuiManager.ShowTooltip(GuiManager.instance.infoPanel.transform.FindChild("SellAll").transform.position + Vector3.right * 45, "Sell all " + AsCurrency(CraftingManager.GetQuantity()) + " " + CraftingManager.GetName() + " for $" + AsCurrency(CraftingManager.SellAllValue())); });
+			btn.AddHover(delegate (Vector3 p) {
+				GuiManager.ShowTooltip(GuiManager.instance.infoPanel.transform.FindChild("SellAll").transform.position + Vector3.right * 45, "Sell all " + AsCurrency(CraftingManager.GetQuantity()) + " " + CraftingManager.GetName() + " for $" + AsCurrency(CraftingManager.SellAllValue()));
+			});
 
 			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
 			info.transform.FindChild("Input1").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(1); });
@@ -113,18 +115,30 @@ namespace Assets.draco18s.artificer.game {
 				totalRenown /= 10000;
 				BigInteger renown = totalRenown - spentRenown + Main.instance.player.questsCompleted;*/
 				BigInteger renown = getCachedNewRenown() + Main.instance.player.questsCompleted;
-				GuiManager.ShowTooltip(GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").transform.position, "You will gain " + Main.AsCurrency(Main.instance.player.renown + renown) + " Renown if you reset now.", 2.3f);
+				GuiManager.ShowTooltip(GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").transform.position, "You will gain " + Main.AsCurrency(renown) + " Renown if you reset now.", 2.3f);
 			});
 			btn = GuiManager.instance.craftHeader.transform.FindChild("SyncBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { CraftingManager.SynchronizeInustries(); });
-			GuiManager.instance.craftHeader.transform.FindChild("AutoToggle").GetComponent<Toggle>().onValueChanged.AddListener(delegate { debugAutoBuild = !debugAutoBuild; });
+			Toggle tog = GuiManager.instance.craftHeader.transform.FindChild("AutoToggle").GetComponent<Toggle>();
+			tog.onValueChanged.AddListener(delegate { debugAutoBuild = !debugAutoBuild; });
+			tog.AddHover(delegate (Vector3 pos) {
+				GuiManager.ShowTooltip(tog.transform.position + Vector3.right * 50, "Builds industries in order of best cost:benefit ratio, up to the specified autobuild limits.", 3);
+			}, false);
 
 			GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyVendor(); });
 			GuiManager.instance.buyApprenticesArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyApprentice(); });
 			GuiManager.instance.buyJourneymenArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyJourneyman(); });
 			
-			GuiManager.instance.topPanel.transform.FindChild("SaveBtn").GetComponent<Button>().onClick.AddListener(delegate { Main.writeDataToSave(); });
+			GuiManager.instance.topPanel.transform.FindChild("SaveBtn").GetComponent<Button>().onClick.AddListener(delegate {
+				if(Application.platform == RuntimePlatform.WebGLPlayer) {
+					DataAccess.Save(player);
+				}
+				else {
+					writeDataToSave();
+				}
+			});
 #pragma warning disable 0219
+			//make sure these static class references have been created
 			ObstacleType ob = ChallengeTypes.General.FESTIVAL;
 			ob = ChallengeTypes.Goals.ALCHEMY_LAB;
 			ob = ChallengeTypes.Goals.Sub.MUMMY;
@@ -138,8 +152,15 @@ namespace Assets.draco18s.artificer.game {
 			ob = ChallengeTypes.Unexpected.Sub.GENIE;
 			ob = ChallengeTypes.Unexpected.Traps.MAGIC_TRAP_ACID;
 			ob = ChallengeTypes.Unexpected.Monsters.ANIMANT_PLANT;
+			Item it11 = Items.SpecialItems.POWER_STONE;
 #pragma warning restore 0219
-			bool saveExists = readDataFromSave();
+			bool saveExists = false;
+			if(Application.platform == RuntimePlatform.WebGLPlayer) {
+				saveExists = DataAccess.Load();
+			}
+			else {
+				saveExists = readDataFromSave();
+			}
 			instance.player.FinishLoad();
 
 			if(!saveExists) {
@@ -158,7 +179,7 @@ namespace Assets.draco18s.artificer.game {
 					Enchantment ench = GameRegistry.GetEnchantmentByItem(item);
 					if(ench != null)
 						Debug.Log(ench.name);
-					else {
+					else if(item != Items.FOURFOIL) {
 						//Debug.Log("Null enchant! " + item.name);
 						throw new Exception("Null enchantment for " + item.name);
 					}
@@ -174,11 +195,48 @@ namespace Assets.draco18s.artificer.game {
 				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
 				newRelic = new ItemStack(Industries.IMPROVED_CLOAK, 1);
 				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+				newRelic = new ItemStack(Items.SpecialItems.POWER_STONE, 1);
+				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
 
 				GuiManager.instance.enchantTab.GetComponent<Button>().interactable = false;
 				GuiManager.instance.guildTab.GetComponent<Button>().interactable = false;
 				GuiManager.instance.questTab.GetComponent<Button>().interactable = false;
 				GuiManager.instance.researchTab.GetComponent<Button>().interactable = false;
+			}
+			else {
+				//fixes screwups with the cursed stone
+				ItemStack badStack = null;
+				bool hasCursedStone = false;
+				foreach(ItemStack stack in player.miscInventory) {
+					if(stack.item == Items.SpecialItems.POWER_STONE && stack.relicData == null) {
+						badStack = stack;
+					}
+					else if(stack.item == Items.SpecialItems.POWER_STONE) {
+						hasCursedStone = true;
+					}
+				}
+				if(badStack != null)
+					player.miscInventory.Remove(badStack);
+				foreach(ItemStack stack in QuestManager.availableRelics) {
+					if(stack.item == Items.SpecialItems.POWER_STONE && !hasCursedStone) {
+						hasCursedStone = true;
+					}
+					else if(stack.item == Items.SpecialItems.POWER_STONE && hasCursedStone) {
+						badStack = stack;
+					}
+				}
+				if(badStack != null)
+					QuestManager.availableRelics.Remove(badStack);
+				if(!hasCursedStone) {
+					ItemStack newRelic = new ItemStack(Items.SpecialItems.POWER_STONE, 1);
+					QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+				}
+			}
+
+			IEnumerator<StatAchievement> list = StatisticsTracker.getAchievementsList();
+			while(list.MoveNext()) {
+				StatAchievement ac = list.Current;
+				ac.determineImage();
 			}
 
 			if(!StatisticsTracker.unlockedEnchanting.isAchieved()) GuiManager.instance.enchantTab.GetComponent<Button>().interactable = false;
@@ -188,17 +246,35 @@ namespace Assets.draco18s.artificer.game {
 
 			CraftingManager.setupUI();
 			GuildManager.update();
+			long nl = long.Parse(DateTime.Now.ToString("yyMMddHHmm"));
+			long ll = StatisticsTracker.lastDailyLogin.value * 5;
+			if(ll > 0) {
+				DateTime nowLogin = DateTime.ParseExact(nl.ToString(), "yyMMddHHmm", CultureInfo.InvariantCulture);
+				DateTime lastLogin = DateTime.ParseExact(ll.ToString(), "yyMMddHHmm", CultureInfo.InvariantCulture);
+				if((nowLogin - lastLogin) >= TimeSpan.FromHours(23)) {
+					if((nowLogin - lastLogin) > TimeSpan.FromHours(48)) {
+						StatisticsTracker.sequentialDaysPlayed.resetValue();
+					}
+					//DAILY BONUS
+					StatisticsTracker.sequentialDaysPlayed.addValue(1);
+					StatisticsTracker.lastDailyLogin.setValue((int)(nl / 5));
+				}
+			}
+			else {
+				StatisticsTracker.sequentialDaysPlayed.resetValue();
+				StatisticsTracker.sequentialDaysPlayed.addValue(1);
+				StatisticsTracker.lastDailyLogin.setValue((int)(nl / 5));
+			}
 		}
 
-		private float TimeSinceLastRequest = 0;
+		private float TimeSinceLastRequest = 20;
 		private BigInteger CachedNewRenown = 0;
 		public BigInteger getCachedNewRenown() {
 			if(TimeSinceLastRequest >= 10) {
 				TimeSinceLastRequest -= 10;
-				BigInteger spentRenown = Main.instance.player.totalRenown - Main.instance.player.renown;
-				BigInteger totalRenown = BigInteger.CubeRoot(Main.instance.player.lifetimeMoney);
-				totalRenown /= 10000;
-				CachedNewRenown = totalRenown - spentRenown;
+				BigInteger newRenown = BigInteger.CubeRoot(StatisticsTracker.lifetimeMoney.value);
+				newRenown /= 10000;
+				CachedNewRenown = newRenown;
 			}
 			return CachedNewRenown;
 		}
@@ -208,6 +284,7 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static bool readDataFromSave() {
+			//GuiManager.ShowNotification(new NotificationItem("Loading...", "", GuiManager.instance.checkOn));
 			string path2 = Configuration.currentDirectory + "Save/savedata.dat"; //"E:\\Users\\Major\\Desktop\\savedata.dat";
 			System.Object readFromDisk;
 
@@ -219,18 +296,21 @@ namespace Assets.draco18s.artificer.game {
 					instance.player = (PlayerInfo)readFromDisk;
 				}
 				catch(SerializationException e) {
-					Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
+					GuiManager.ShowNotification(new NotificationItem("Failed to load", e.Message, GuiManager.instance.checkOff));
+					//Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
 					throw;
 				}
 				finally {
 					fs.Close();
 				}
+				//GuiManager.ShowNotification(new NotificationItem("Loaded data!", "", GuiManager.instance.checkOn));
 				return true;
 			}
 			return false;
 		}
 
 		public static void writeDataToSave() {
+			//GuiManager.ShowNotification(new NotificationItem("Saving...", "", GuiManager.instance.checkOn));
 			string path2 = Configuration.currentDirectory + "Save/savedata.dat";
 			if(File.Exists(path2)) {
 				File.Delete(path2);
@@ -242,34 +322,24 @@ namespace Assets.draco18s.artificer.game {
 				formatter.Serialize(s, instance.player);
 			}
 			catch(SerializationException e) {
-				Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+				DataAccess.PlatformSafeMessage("Failed to save: " + e.Message);
+				//Assets.draco18s.util.DataAccess l;
+				//GuiManager.ShowNotification(new NotificationItem("Failed to save", e.Message, GuiManager.instance.checkOff));
+				//Console.WriteLine("Failed to serialize. Reason: " + e.Message);
 				throw;
 			}
 			finally {
 				s.Close();
 			}
+			GuiManager.ShowNotification(new NotificationItem("Game saved!", "", GuiManager.instance.checkOn));
+		}
 
-			/*IFormatterConverter converter = new FormatterConverter();
-			SerializationInfo info = new SerializationInfo(typeof(ItemStack), converter);
-			StreamingContext context = default(StreamingContext);
-			instance.player.GetObjectData(info, context);
+		public static bool readDataFromCookie() {
 
-			string path2 = Configuration.currentDirectory + "Save/savedata.dat";
-			if(File.Exists(path2)) {
-				File.Delete(path2);
-			}
-			FileStream fs = new FileStream(path2, FileMode.OpenOrCreate);
-			//BinaryFormatter formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.File));
-			try {
-				fs.Write(info);
-			}
-			catch(SerializationException e) {
-				Console.WriteLine("Failed to serialize. Reason: " + e.Message);
-				throw;
-			}
-			finally {
-				fs.Close();
-			}*/
+			return false;
+		}
+		public static void writeDataToCookie() {
+
 		}
 
 		internal static int BitNum(long v) {
@@ -309,9 +379,8 @@ namespace Assets.draco18s.artificer.game {
 			Profiler.EndSample();
 			Profiler.BeginSample("Tick Built Items");
 			bool needSynchro = false;
-
+			
 			float industryTime = deltaTime * Main.instance.player.currentGuildmaster.industryRateMultiplier();
-
 			foreach(Industry i in player.builtItems) {
 				if(i.getTimeRemaining() > float.MinValue && !i.isProductionHalted) {
 					needSynchro = i.addTime(-industryTime) || needSynchro;
@@ -537,7 +606,7 @@ namespace Assets.draco18s.artificer.game {
 			foreach(FieldInfo field in fields) {
 				Industry ind = (Industry)field.GetValue(null);
 				BigInteger o = ((ind.output * ind.getTotalLevel()) - ind.consumeAmount);
-				outval += ind.GetSellValue() * (o >= 0 ? o : 0);
+				outval += (BigInteger)(ind.GetSellValue() * (o >= 0 ? o : 0));
 			}
 			return outval;
 		}
@@ -566,7 +635,7 @@ namespace Assets.draco18s.artificer.game {
 			return player.GetVendorSize();
 		}
 
-		public float GetVendorValue() {
+		public BigRational GetVendorValue() {
 			return player.GetVendorValue();
 		}
 
@@ -648,12 +717,40 @@ namespace Assets.draco18s.artificer.game {
 			return output;
 		}
 
+		public static string AsCurrency(BigRational cost) {
+			return AsCurrency(cost, 9);
+		}
+
+		public static string AsCurrency(BigRational cost, int maxDigits) {
+			return AsCurrency(cost, maxDigits, false);
+		}
+
 		public static string AsCurrency(BigInteger cost) {
 			return AsCurrency(cost, 9);
 		}
 
+		public static string AsCurrency(object cost) {
+			if(cost is int || cost is float)
+				return AsCurrency((int)cost, 9);
+			if(cost is BigInteger || cost is BigRational)
+				return AsCurrency((BigInteger)cost, 9);
+			return cost.ToString();
+		}
+
+		public static string AsCurrency(object cost, int maxDigits) {
+			if(cost is int || cost is float)
+				return AsCurrency((int)cost, maxDigits);
+			if(cost is BigInteger || cost is BigRational)
+				return AsCurrency((BigInteger)cost, maxDigits);
+			return cost.ToString();
+		}
+
 		public static string AsCurrency(BigInteger cost, int maxDigits) {
-			return AsCurrency(cost, 9, false);
+			return AsCurrency(cost, maxDigits, false);
+		}
+
+		public static string AsCurrency(BigRational valIn, int maxDigits, bool skipDecimal) {
+			return AsCurrency((BigInteger)valIn, maxDigits, skipDecimal);
 		}
 
 		public static string AsCurrency(BigInteger val, int maxDigits, bool skipDecimal) {

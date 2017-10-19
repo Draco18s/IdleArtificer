@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalCombatTraining : ObstacleType, IQuestGoal {
+	public class GoalCombatTraining : ObstacleType, IQuestGoal {
 		public GoalCombatTraining() : base("training for a fight", new RequireWrapper(RequirementType.WEAPON, RequirementType.ARMOR)) {
 
 		}
@@ -52,6 +52,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 				case EnumResult.CRIT_SUCCESS:
 					ChallengeTypes.Loot.AddCommonResource(theQuest);
 					QuestManager.availableQuests.Add(Quest.GenerateNewQuest(theQuest.heroName));
+					QuestManager.updateLists();
 					break;
 			}
 		}

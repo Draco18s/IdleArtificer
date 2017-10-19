@@ -14,10 +14,10 @@ namespace Assets.draco18s.artificer.masters {
 		private static int[] weights = { 5, 3, 1, -2 };
 		public static Master createRandomMaster(int points) {
 			Master newMaster = new Master();
-			int a = rand.Next(11);
-			int b = rand.Next(11);
-			int c = rand.Next(11);
-			int d = rand.Next(11);
+			int a = rand.Next(12);
+			int b = rand.Next(12);
+			int c = rand.Next(12);
+			int d = rand.Next(12);
 
 			adjustStat(newMaster, a, weights[0], points);
 			adjustStat(newMaster, b, weights[1], points);
@@ -42,32 +42,35 @@ namespace Assets.draco18s.artificer.masters {
 					newMaster.renown += (float)Math.Round(amt) / 100f * 0.1f;
 					break;
 				case 2:
-					newMaster.ingredient += (float)Math.Round(amt * 210) / 100f;
+					newMaster.ingredient += (float)Math.Round(amt * 21) / 100f;
 					break;
 				case 3:
 					newMaster.relic += (float)Math.Round(amt * 2.1) / 100f * 0.1f;
 					break;
 				case 4:
 					int ty = rand.Next(7) + 1;
-					newMaster.industry[ty] += (float)Math.Round(amt * 2.1) / 100f;
+					newMaster.industry[ty] += (float)Math.Round(amt * 10.5) / 100f;
 					break;
 				case 5:
 					newMaster.industryRate += (float)Math.Round(amt) / 100f;
 					break;
 				case 6:
-					newMaster.quest += (float)Math.Round(amt) / 100f * 0.2f;
+					newMaster.quest += (float)Math.Round(amt) / 100f;
 					break;
 				case 7:
-					newMaster.vendors += (float)Math.Round(amt) / 100f * 0.1f;
+					newMaster.vendors += (float)Math.Round(amt * 7 / 3) / 100f;
 					break;
 				case 8:
 					newMaster.apprentice += (float)Math.Round(amt) / 100f;
 					break;
 				case 9:
-					newMaster.journeymen += (float)Math.Round(amt) / 100f;
+					newMaster.journeymen += (float)Math.Round(amt * 7 / 3) / 100f;
 					break;
 				case 10:
 					newMaster.research += (float)Math.Round(amt * 3.15) / 100f;
+					break;
+				case 11:
+					newMaster.click += (float)Math.Round(amt * 7) / 100f;
 					break;
 			}
 		}
@@ -76,7 +79,7 @@ namespace Assets.draco18s.artificer.masters {
 			string s = "";
 			switch(stat) {
 				case 0:
-					s = (newMaster.cash > 1 ? "+" : "") + Mathf.RoundToInt((newMaster.cash - 1) * 100) + "% cash (non-relic sources)";
+					s = (newMaster.cash > 1 ? "+" : "") + Mathf.RoundToInt((newMaster.cash - 1) * 100) + "% cash from industries";
 					break;
 				case 1:
 					s = (newMaster.renown > 1 ? "+" : "") + (Mathf.RoundToInt((newMaster.renown - 1) * 1000) / 10f) + "% renown from quests";
@@ -103,7 +106,7 @@ namespace Assets.draco18s.artificer.masters {
 					s = (newMaster.quest > 1 ? "+" : "") + Mathf.RoundToInt((newMaster.quest - 1) * 100) + "% faster quests";
 					break;
 				case 7:
-					s = (newMaster.vendors > 1 ? "+" : "") + (Mathf.RoundToInt((newMaster.vendors - 1) * 1000) / 10f) + "% vendor effectiveness";
+					s = (newMaster.vendors > 0 ? "+" : "") + (Mathf.RoundToInt((newMaster.vendors) * 100)) + "% vendor effectiveness";
 					break;
 				case 8:
 					s = (newMaster.apprentice > 1 ? "+" : "") + Mathf.RoundToInt((newMaster.apprentice - 1) * 100) + "% apprentice effectivenss";
@@ -113,6 +116,9 @@ namespace Assets.draco18s.artificer.masters {
 					break;
 				case 10:
 					s = (newMaster.research > 1 ? "+" : "") + Mathf.RoundToInt((newMaster.research - 1) * 100) + "% research speed";
+					break;
+				case 11:
+					s = "Click speed" + (newMaster.click > 0 ? " increased " : " reduced ") + "by " + Math.Abs(newMaster.click) + "s";
 					break;
 			}
 			return s;
@@ -125,10 +131,11 @@ namespace Assets.draco18s.artificer.masters {
 		protected float[] industry = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };//
 		protected float industryRate = 1;//
 		protected float quest = 1;//
-		protected float vendors = 1;//
+		protected float vendors = 0;//
 		protected float apprentice = 1;//
 		protected float journeymen = 1;//
 		protected float research = 1;//
+		protected float click;
 
 		protected string displayString;
 
@@ -148,13 +155,14 @@ namespace Assets.draco18s.artificer.masters {
 			if(relic < 1) relic = 1 / (Math.Abs(relic - 1) + 1);
 			if(industryRate < 1) industryRate = 1 / (Math.Abs(industryRate - 1) + 1);
 			if(quest < 1) quest = 1 / (Math.Abs(quest - 1) + 1);
-			if(vendors < 1) vendors = 1 / (Math.Abs(vendors - 1) + 1);
+			//if(vendors < 1) vendors = 1 / (Math.Abs(vendors - 1) + 1);
 			if(apprentice < 1) apprentice = 1 / (Math.Abs(apprentice - 1) + 1);
 			if(journeymen < 1) journeymen = 1 / (Math.Abs(journeymen - 1) + 1);
 			if(research < 1) research = 1 / (Math.Abs(research - 1) + 1);
 			for(int i = 0; i < industry.Length; i++) {
 				if(industry[i] < 1) industry[i] = 1 / (Math.Abs(industry[i] - 1) + 1);
 			}
+			//if(click < 1) click = 1 / (Math.Abs(click - 1) + 1);
 		}
 		public float cashIncomeMultiplier() {
 			return cash;
@@ -189,6 +197,9 @@ namespace Assets.draco18s.artificer.masters {
 		public float journeymenRateMultiplier() {
 			return journeymen;
 		}
+		public float clickRateMultiplier() {
+			return click;
+		}
 
 		public string getDisplay() {
 			return displayString;
@@ -208,6 +219,7 @@ namespace Assets.draco18s.artificer.masters {
 			for(int i = 0; i < industry.Length; i++) {
 				info.AddValue("industry_"+i, industry[i]);
 			}
+			info.AddValue("click", click);
 		}
 
 		public Master(SerializationInfo info, StreamingContext context) {
@@ -224,6 +236,7 @@ namespace Assets.draco18s.artificer.masters {
 			for(int i = 0; i < industry.Length; i++) {
 				industry[i] = (float)info.GetDouble("industry_" + i);
 			}
+			click = (float)info.GetDouble("click");
 		}
 	}
 }

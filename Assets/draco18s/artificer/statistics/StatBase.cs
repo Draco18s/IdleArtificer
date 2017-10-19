@@ -4,16 +4,19 @@ using System.Xml.Linq;
 using UnityEngine;
 
 namespace Assets.draco18s.artificer.statistics {
-	public class StatBase {
-		public readonly string statName;
-		public readonly string description;
+	public class StatBase : IStat {
+		private string _statName;
+		private string _description;
+		public string statName {
+			get { return _statName; }
+			set { _statName = value; }
+		}
+		public string description {
+			get { return _description; }
+			set { _description = value; }
+		}
 		public readonly bool shouldResetOnNewLevel;
 		protected bool shouldReadAsFloat = false;
-		private int dispOrd = -1;
-		public int displayOrder {
-			get { return dispOrd; }
-			set { }
-		}
 		public virtual int value {
 			get {
 				return statValue;
@@ -40,6 +43,15 @@ namespace Assets.draco18s.artificer.statistics {
 				}
 			}
 		}
+
+		public object serializedValue {
+			get {
+				return value;
+			}
+		}
+
+		public bool isHidden { get; set; }
+
 		public virtual string getDisplay() {
 			return "" + (shouldReadAsFloat ? floatValue : value);
 		}
@@ -75,8 +87,18 @@ namespace Assets.draco18s.artificer.statistics {
 			statValue = v;
 		}
 
+		public virtual void setValue(object v) {
+			if(v is int)
+				statValue = (int)v;
+		}
+
 		public virtual void resetValue() {
 			statValue = 0;
+		}
+
+		public StatBase setHidden() {
+			isHidden = true;
+			return this;
 		}
 
 		public StatBase register() {
@@ -84,9 +106,14 @@ namespace Assets.draco18s.artificer.statistics {
 			return this;
 		}
 
-		public StatBase setDisplayOrder(int n) {
-			dispOrd = n;
-			return this;
+		public bool isGreaterThan(object v) {
+			if(v is int) {
+				return value >= (int)v;
+			}
+			if(v is float) {
+				return floatValue >= (float)v;
+			}
+			return false;
 		}
 	}
 }

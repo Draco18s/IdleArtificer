@@ -78,20 +78,26 @@ namespace Assets.draco18s.artificer.game {
 			isCntrlDown = Input.GetButton("Control");
 			if(GuiManager.instance.craftArea.activeSelf) {
 				Profiler.BeginSample("Check buildable");
-				if(BigInteger.Abs(cachedMoney - Main.instance.player.money) > (BigRational)Main.instance.player.money * 0.05) {
+				if(hasListChanged || BigInteger.Abs(cachedMoney - Main.instance.player.money) > (BigRational)Main.instance.player.money * 0.05) {
+					hasListChanged = false;
 					cachedMoney = Main.instance.player.money;
 					BigRational c;
+					int i = 0;
 					foreach(GameObject bt in buildButtons) {
 						ItemButtonData dat = bt.GetComponent<ItemButtonData>();
 						c = dat.connectedItem.GetScaledCost();
-						bt.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency((BigInteger)c);
+						bt.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(c);
 						if(c > Main.instance.player.money) {
 							dat.GetComponent<Button>().interactable = false;
 						}
 						else {
 							dat.GetComponent<Button>().interactable = true;
 						}
+						bt.SetActive(dat.connectedItem.level == 0);
+						bt.transform.localPosition = new Vector3(6, i * -141 - 5, 0);
+						i += dat.connectedItem.level == 0 ? 1 : 0;
 					}
+					((RectTransform)GuiManager.instance.buildingList.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 141 + 10));
 				}
 				Profiler.EndSample();
 				if(Input.GetButtonDown("Cancel")) {
@@ -203,11 +209,13 @@ namespace Assets.draco18s.artificer.game {
 				}
 			}
 		}
+
 		public static void BuildIndustry(Industry item) {
 			BuildIndustry(item, false, false);
 		}
 
 		public static void BuildIndustry(Industry item, bool fromSave, bool skip) {
+			hasListChanged = true;
 			//FacilityUnselected(selectedIcon);
 			if(skip || fromSave || Main.instance.player.money >= item.GetScaledCost()) {
 				if(!fromSave && !skip) {
@@ -327,7 +335,7 @@ namespace Assets.draco18s.artificer.game {
 				Main.instance.mouseDownTime += 1;
 				Transform tBtn = GuiManager.instance.buildingList.transform.FindChild(item.name.ToUpper());
 				if(tBtn != null) {
-					tBtn.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency((BigInteger)item.GetScaledCost());
+					tBtn.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.GetScaledCost());
 				}
 			}
 		}
@@ -602,20 +610,22 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static void AdvanceTimer() {
+			StatisticsTracker.numClicks.addValue(1);
 			selectedIcon.addTimeRaw(-Main.instance.GetClickRate());
 		}
 
 		public static void SellAll() {
 			//Industry item;
 			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			Main.instance.player.AddMoney(selectedIcon.GetSellValue() * selectedIcon.quantityStored);
+			Main.instance.player.AddMoney((BigInteger)(selectedIcon.GetSellValue() * selectedIcon.quantityStored));
 			selectedIcon.quantityStored = 0;
 		}
 
 		public static BigInteger SellAllValue() {
 			//Industry item;
 			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			return (selectedIcon.GetSellValue() * selectedIcon.quantityStored);
+			//Debug.Log(selectedIcon.GetSellValue() + " * " + selectedIcon.quantityStored + " = " + selectedIcon.GetSellValue() * selectedIcon.quantityStored);
+			return ((BigInteger)(selectedIcon.GetSellValue() * selectedIcon.quantityStored));
 		}
 
 		public static BigInteger GetQuantity() {
@@ -641,10 +651,10 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static BigInteger ValueSoldByVendors(Industry item) {
-			BigInteger num = NumberSoldByVendors(item);
+			BigRational num = NumberSoldByVendors(item);
 			num *= item.GetSellValue();
-			num = (BigInteger)((BigRational)num * Main.instance.GetVendorValue());
-			return num;
+			num = (BigInteger)(num * Main.instance.GetVendorValue());
+			return (BigInteger)num;
 		}
 
 		public static BigInteger NumberSoldByVendors(Industry item) {
@@ -659,8 +669,8 @@ namespace Assets.draco18s.artificer.game {
 				}
 			}
 			else {
-				if(item.output * item.level < item.getVendors() * Main.instance.GetVendorSize())
-					num = item.output * item.level;
+				if((item.output * item.level) - item.consumeAmount < item.getVendors() * Main.instance.GetVendorSize())
+					num = (item.output * item.level) - item.consumeAmount;
 				else
 					num = item.getVendors() * Main.instance.GetVendorSize();
 			}
@@ -694,7 +704,7 @@ namespace Assets.draco18s.artificer.game {
 				selectedIcon.level+=buyNum;
 				Transform tBtn = GuiManager.instance.buildingList.transform.FindChild(selectedIcon.name.ToUpper());
 				if(tBtn != null) {
-					tBtn.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency((BigInteger)selectedIcon.GetScaledCost());
+					tBtn.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(selectedIcon.GetScaledCost());
 				}
 			}
 			GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
@@ -783,6 +793,7 @@ namespace Assets.draco18s.artificer.game {
 
 		private static int lastLevel = 0;
 		private static int lastNum = 0;
+		private static bool hasListChanged;
 
 		public static void UpdateIcon() {
 			Vector3 newpos;
@@ -950,8 +961,8 @@ namespace Assets.draco18s.artificer.game {
 			}
 			Profiler.EndSample();
 			if(lastNum != n || lastLevel != selectedIcon.level) {
-				//Debug.Log(Main.AsCurrency((BigInteger)item.GetScaledCost(1), 6));
-				//Debug.Log(Main.AsCurrency((BigInteger)item.GetScaledCost(), 6));
+				//Debug.Log(Main.AsCurrency(item.GetScaledCost(1), 6));
+				//Debug.Log(Main.AsCurrency(item.GetScaledCost(), 6));
 				//Debug.Log(spendCost);
 				info.Upgrade.text = "+" + n + " ($" + Main.AsCurrency(spendCost, 6) + ")";
 				info.Downgrade.text = "-" + n;

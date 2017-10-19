@@ -10,7 +10,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 	class ObstacleMonster : ObstacleType,IMonsterChallenge {
 		DamageType atkDamage;
 		RequirementType weakTo;
-		public ObstacleMonster(string name, DamageType monsterAttackType, RequirementType monsterWeakness) : base("fighting a monster", name, new RequireWrapper(monsterAttackType.getImmunityType()), new RequireWrapper(monsterWeakness)) {
+		public ObstacleMonster(string name, DamageType monsterAttackType, RequirementType monsterWeakness) : base("fighting " + name, name, new RequireWrapper(monsterAttackType.getImmunityType()), new RequireWrapper(monsterWeakness)) {
 			atkDamage = monsterAttackType;
 			weakTo = monsterWeakness;
 		}

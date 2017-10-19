@@ -44,6 +44,12 @@ namespace Assets.draco18s.artificer.init {
 		public static Item FOURFOIL = new Item("fourfoil").setRandomSize(1, 1).setConsumable(true).addAidType(AidType.RETRY_FAILURE).setStackSizeForQuest(1);
 		//new, won't drop yet
 
+
+
+		public static class SpecialItems {
+			public static Item POWER_STONE = new ItemPowerStone().addAidType(AidType.RETRY_FAILURE).setStackSizeForQuest(1).setConsumable(false);
+		}
+
 		public static Item getRandom(Random rand) {
 			FieldInfo[] fields = typeof(Items).GetFields();
 			return getRandom(rand, 0, fields.Length);

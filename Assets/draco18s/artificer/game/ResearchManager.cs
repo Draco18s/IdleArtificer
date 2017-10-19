@@ -1,4 +1,6 @@
-﻿using Assets.draco18s.artificer.items;
+﻿using Assets.draco18s.artificer.init;
+using Assets.draco18s.artificer.items;
+using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
 using Assets.draco18s.artificer.upgrades;
 using Assets.draco18s.util;
@@ -49,9 +51,10 @@ namespace Assets.draco18s.artificer.game {
 		public static void setupUI() {
 			int i = 0;
 			foreach(ItemStack stack in Main.instance.player.miscInventory) {
+				//Debug.Log("i: " + i);
+				//Debug.Log(stack.item.name);
 				if(stack.relicData != null) {
-					//Debug.Log("i: " + i);
-					//Debug.Log(stack.item.name);
+					//Debug.Log("Relic data");
 					GameObject go;
 					relicsList.TryGetValue(stack, out go);
 					if(go == null) {
@@ -112,7 +115,8 @@ namespace Assets.draco18s.artificer.game {
 			if(Main.instance.player.unidentifiedRelics.Count > 0) {
 				UpgradeValueWrapper wrap;
 				Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
-				Main.instance.player.researchTime += dt * ((UpgradeFloatValue)wrap).value * Main.instance.player.currentGuildmaster.researchMultiplier();
+				float multi = ((UpgradeFloatValue)wrap).value * Main.instance.player.currentGuildmaster.researchMultiplier() * (float)(1 + SkillList.ResearchRate.getMultiplier());
+				Main.instance.player.researchTime += dt * multi;
 				if(Main.instance.player.researchTime >= maxResearchTime) {
 					Main.instance.player.researchTime -= maxResearchTime;
 					ItemStack s = Main.instance.player.unidentifiedRelics[rand.Next(Main.instance.player.unidentifiedRelics.Count)];
@@ -122,7 +126,7 @@ namespace Assets.draco18s.artificer.game {
 					relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
 					setupUI();
 				}
-				timeLeftTxt.text = Main.SecondsToTime((maxResearchTime - Main.instance.player.researchTime) / ((UpgradeFloatValue)wrap).value);
+				timeLeftTxt.text = Main.SecondsToTime((maxResearchTime - Main.instance.player.researchTime) / ((UpgradeFloatValue)wrap).value * multi);
 				progressBarMat.SetFloat("_Cutoff", 1-Main.instance.player.researchTime / maxResearchTime);
 			}
 			else {
@@ -133,11 +137,10 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static void IncrementResearch() {
+			StatisticsTracker.numClicks.addValue(1);
 			UpgradeValueWrapper wrap1;
 			Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap1);
-			UpgradeValueWrapper wrap2;
-			Main.instance.player.upgrades.TryGetValue(UpgradeType.CLICK_RATE, out wrap2);
-			Main.instance.player.researchTime += 50 * ((UpgradeFloatValue)wrap1).value * ((UpgradeFloatValue)wrap2).value * Main.instance.player.currentGuildmaster.researchMultiplier();
+			Main.instance.player.researchTime += 50 * ((UpgradeFloatValue)wrap1).value * Main.instance.GetClickRate() * Main.instance.player.currentGuildmaster.researchMultiplier();
 		}
 
 		private static void ShowInfo(ItemStack stack) {
@@ -179,6 +182,7 @@ namespace Assets.draco18s.artificer.game {
 			Main.Destroy(go);
 			BigRational val = GetRelicValue(examinedStack);
 			Main.instance.player.AddMoney(BigRational.ToBigInt(val));
+			examinedStack.onSoldByPlayer();
 			examinedStack = null;
 			relicInfo.gameObject.SetActive(false);
 			setupUI();

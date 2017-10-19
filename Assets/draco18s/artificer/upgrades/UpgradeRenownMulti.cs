@@ -1,4 +1,5 @@
 ﻿using Assets.draco18s.artificer.game;
+using Assets.draco18s.artificer.init;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
 using System;
@@ -30,7 +31,8 @@ namespace Assets.draco18s.artificer.upgrades {
 		public override string getTooltip() {
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
-			return "Increases the effectiveness of renown on your cash income.\nThe base value is 2% extra income per renown, currently it is " + (((UpgradeFloatValue)wrap).value*100) + "%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + amount) *100) +"%";
+			double baseval = (((UpgradeFloatValue)wrap).value + SkillList.RenownMulti.getMultiplier()) * 100;
+			return "Increases the effectiveness of renown on your cash income.\nThe base value is 2% extra income per renown, currently it is " + Math.Round(baseval) + "%, and with this upgrade it would be " + Math.Round(baseval + (amount *100)) +"%";
 		}
 
 		public override string getIconName() {
