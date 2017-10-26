@@ -69,7 +69,11 @@ namespace Assets.draco18s.artificer.quests {
 
 			//TODO: make reward items scale
 			QuestChallenge[] list = arr.ToArray();
-			Quest q = new Quest(list[list.Length-1].type.numOfTypeCompleted, rand.Next(), list);
+			long v;
+			if(!Main.instance.player.questTypeCompletion.TryGetValue(list[list.Length - 1].type, out v)) {
+				v = 0;
+			}
+			Quest q = new Quest(v, rand.Next(), list);
 			Item i = Items.getRandom(rand, 0, 4);
 			q.rewards[0] = new ItemStack(i, rand.Next(i.maxStackSize - i.minStackSize) + i.minStackSize);
 			i = Items.getRandom(rand, 4, 7);
@@ -133,43 +137,12 @@ namespace Assets.draco18s.artificer.quests {
 			INT = deck.INT.tokens;
 			CHA = deck.CHA.tokens;
 			if(challenges.Length > 0) {
-				long kr = 1;
 				List<long> reqList = new List<long>();
-				for(int ki = 0; ki < 6 && kr > 0; ki++) {
-					kr = (long)challenges[0].getReq(ki);
-					if(kr != 0)
-						reqList.Add(kr);
+				if(Upgrades.Renown.QUEST_REQS.getIsPurchased()) {
+					getBetterRequirements(ref reqList, challenges);
 				}
-				kr = 1;
-				for(int ki = 0; ki < 6 && kr > 0; ki++) {
-					kr = (long)challenges[challenges.Length - 1].getReq(ki);
-					if(kr != 0)
-						reqList.Add(kr);
-				}
-				if(challenges.Length > 12) {
-					bool foundReq = false;
-					int count = 0;
-					do {
-						int r = questRand.Next(challenges.Length - 4) + 2;
-						kr = 1;
-						//Debug.Log(seed + " (" + count + ")    > " + challenges[r].type.desc);
-						for(int ki = 0; ki < 6 && kr > 0; ki++) {
-							kr = (long)challenges[r].getReq(ki);
-							if(kr != 0) {
-								foundReq = true;
-								reqList.Add(kr);
-							}
-						}
-						count++;
-					} while(!foundReq && count < 3);
-				}
-				if(reqList.Count > 6) {
-					while(reqList.Count > 6) {
-						reqList.RemoveAt(0);
-						if((reqList.Count > 6)) {
-							reqList.RemoveAt(reqList.Count - 1);
-						}
-					};
+				else {
+					getBasicRequirements(ref reqList, challenges);
 				}
 				knownRequirements = new long[6];
 				for(int ki = 0; ki < 6 && ki < reqList.Count; ki++) {
@@ -186,6 +159,85 @@ namespace Assets.draco18s.artificer.quests {
 			}
 			rewards = new ItemStack[2];
 			//Debug.Log(challenges[challenges.Length - 1].type.name);
+		}
+
+		private void getBasicRequirements(ref List<long> reqList, QuestChallenge[] challenges) {
+			long kr = 1;
+			for(int ki = 0; ki < 6 && kr > 0; ki++) {
+				kr = (long)challenges[0].getReq(ki);
+				if(kr != 0)
+					reqList.Add(kr);
+			}
+			kr = 1;
+			for(int ki = 0; ki < 6 && kr > 0; ki++) {
+				kr = (long)challenges[challenges.Length - 1].getReq(ki);
+				if(kr != 0)
+					reqList.Add(kr);
+			}
+			if(challenges.Length > 12) {
+				bool foundReq = false;
+				int count = 0;
+				do {
+					int r = questRand.Next(challenges.Length - 4) + 2;
+					kr = 1;
+					//Debug.Log(seed + " (" + count + ")    > " + challenges[r].type.desc);
+					for(int ki = 0; ki < 6 && kr > 0; ki++) {
+						kr = (long)challenges[r].getReq(ki);
+						if(kr != 0) {
+							foundReq = true;
+							reqList.Add(kr);
+						}
+					}
+					count++;
+				} while(!foundReq && count < 3);
+			}
+			if(reqList.Count > 6) {
+				while(reqList.Count > 6) {
+					reqList.RemoveAt(0);
+					if((reqList.Count > 6)) {
+						reqList.RemoveAt(reqList.Count - 1);
+					}
+				};
+			}
+		}
+
+		private class IntWrapper {
+			public long KRval;
+			public int count;
+		}
+		private void getBetterRequirements(ref List<long> reqList, QuestChallenge[] challenges) {
+			long kr = 1;
+			Dictionary<long, IntWrapper> counts = new Dictionary<long, IntWrapper>();
+			int q = 0;
+			foreach(QuestChallenge chall in challenges) {
+				kr = 1;
+				for(int ki = 0; ki < 6 && kr > 0; ki++) {
+					kr = (long)chall.getReq(ki);
+					if(kr != 0) {
+						IntWrapper v;
+						if(!counts.TryGetValue(kr, out v)) {
+							v = new IntWrapper();
+							v.KRval = kr;
+							v.count = 0;
+							counts.Add(kr, v);
+						}
+						v.count++;
+					}
+				}
+				q++;
+			}
+			List<IntWrapper> wrappers = new List<IntWrapper>();
+			foreach(IntWrapper count in counts.Values) {
+				if(count.count > 1)
+					wrappers.Add(count);
+			}
+			wrappers.Sort((x, y) => y.count.CompareTo(x.count));
+			for(int i = 0; i < 6 && i < wrappers.Count; i++) {
+				reqList.Add(wrappers[i].KRval);
+			}
+			if(reqList.Count < 3) {
+				getBasicRequirements(ref reqList, challenges);
+			}
 		}
 
 		public long getReq(int r) {
@@ -269,7 +321,7 @@ namespace Assets.draco18s.artificer.quests {
 				timeAftercomplete += t;
 				return EnumResult.CONTINUE;
 			}
-			questTotalTime += (2.5f * t);
+			questTotalTime += (1.5f * t);
 			if(questTimer > 0) {
 				questTimer -= t;
 				return EnumResult.CONTINUE;
@@ -282,23 +334,26 @@ namespace Assets.draco18s.artificer.quests {
 			}
 			QuestChallenge ob = obstacles[questStep];
 
-			while(questTotalTime > 2000 && doesHeroHave(RequirementType.MANA)) {
+			while(questTotalTime > questMaxTime() && doesHeroHave(RequirementType.MANA)) {
 				if(doesHeroHave(AidType.MANA_LARGE)) {
-					questTotalTime -= 120;
+					questTotalTime -= 240;
 				}
 				else if(doesHeroHave(AidType.MANA_MEDIUM)) {
-					questTotalTime -= 90;
+					questTotalTime -= 180;
 				}
 				else if(doesHeroHave(AidType.MANA_SMALL)) {
-					questTotalTime -= 60;
+					questTotalTime -= 120;
 				}
 				else if(doesHeroHave(AidType.MANA_TINY)) {
-					questTotalTime -= 30;
+					questTotalTime -= 60;
+				}
+				else {
+					break;
 				}
 			}
-			if(questTotalTime > 2000 || heroCurHealth <= 0) {
+			if(questTotalTime > questMaxTime() || heroCurHealth <= 0) {
 				//hero dies
-				Debug.Log("FAIL " + heroName + " " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+				Debug.Log("FAIL " + heroName + ": " + ob.type.name + " | " + questTotalTime + ", " + heroCurHealth);
 				object corwrap;
 				int cor = 0;
 				if(miscData != null && miscData.TryGetValue("corruption", out corwrap)) {
@@ -377,6 +432,10 @@ namespace Assets.draco18s.artificer.quests {
 			return EnumResult.CONTINUE;
 		}
 
+		private float questMaxTime() {
+			return 2000 + (float)SkillList.ClickRate.getMultiplier();
+		}
+
 		public ItemStack determineRelic() {
 			List<ItemStack> candidates = new List<ItemStack>();
 			foreach(ItemStack stack in inventory) {
@@ -403,8 +462,12 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public void addSubTask(QuestChallenge newTask) {
+			addSubTask(newTask, false);
+		}
+
+		public void addSubTask(QuestChallenge newTask, bool immediate) {
 			List<QuestChallenge> list = obstacles.ToList<QuestChallenge>();
-			list.Insert(questStep+1, newTask);
+			list.Insert(questStep+(immediate?0:1), newTask);
 			_obstacles = list.ToArray();
 		}
 
@@ -620,18 +683,6 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public void hastenQuestEnding(int v) {
-			if(doesHeroHave(AidType.MANA_LARGE) && v >= 120) {
-				v = Math.Max(v - 120, 0);
-			}
-			else if(doesHeroHave(AidType.MANA_MEDIUM) && v >= 90) {
-				v = Math.Max(v - 90, 0);
-			}
-			else if(doesHeroHave(AidType.MANA_SMALL) && v >= 60) {
-				v = Math.Max(v - 60, 0);
-			}
-			else if(doesHeroHave(AidType.MANA_TINY) && v >= 30) {
-				v = Math.Max(v - 30, 0);
-			}
 			questTotalTime += v;
 		}
 
@@ -653,7 +704,7 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public float QuestTimeLeft() {
-			return 2000-questTotalTime;
+			return questMaxTime()-questTotalTime;
 		}
 
 		public float GetCompletion() {
@@ -678,7 +729,7 @@ namespace Assets.draco18s.artificer.quests {
 			if(heroCurHealth <= 0) {
 				return "bleeding out";
 			}
-			if(questTotalTime > 2000) {
+			if(questTotalTime > questMaxTime()) {
 				return "wallowing in defeat";
 			}
 			return _obstacles[questStep].type.desc;
@@ -728,6 +779,7 @@ namespace Assets.draco18s.artificer.quests {
 			questTotalTime = (float)info.GetDouble("questTotalTime");
 			questStep = info.GetInt32("questStep");
 			int num = info.GetInt32("numObstacles");
+			questComplete = questStep >= num;
 			_obstacles = new QuestChallenge[num];
 			for(int o = 0; o < num; o++) {
 				QuestChallenge temp = (QuestChallenge)info.GetValue("obs_" + o, typeof(QuestChallenge));
@@ -746,7 +798,6 @@ namespace Assets.draco18s.artificer.quests {
 			rewards = new ItemStack[2];
 			rewards[0] = (ItemStack)info.GetValue("reward_0", typeof(ItemStack));
 			rewards[1] = (ItemStack)info.GetValue("reward_1", typeof(ItemStack));
-			questComplete = questStep >= num;
 			if(Main.saveVersionFromDisk >= 9) {
 				if(info.GetBoolean("hasMiscData")) {
 					miscData = (Dictionary<string, object>)info.GetValue("miscData", typeof(Dictionary<string, object>));

@@ -8,7 +8,7 @@ using Assets.draco18s.artificer.game;
 using Assets.draco18s.artificer.init;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	internal class GoalKillDragon : ObstacleType, IQuestGoal, IMonsterChallenge {
+	public class GoalKillDragon : ObstacleType, IQuestGoal, IMonsterChallenge {
 		protected int dragonMaxHealth;
 		private static FantasyNameSettings fantasyNameSettings = new FantasyNameSettings(Classes.Warrior, Race.Dragon, true, true, Gender.Male);
 		private static IFantasyNameGenerator fantasyNameGenerator = FantasyNameGenerator.FromSettingsInfo(fantasyNameSettings);

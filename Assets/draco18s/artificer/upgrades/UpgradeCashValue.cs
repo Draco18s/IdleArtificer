@@ -30,7 +30,7 @@ namespace Assets.draco18s.artificer.upgrades {
 		public override string getTooltip() {
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
-			return "Increases the amount of cash gained from items given to quests by " + (amount * 100) + "%.\nThe base value is 0%, currently it is " + (((UpgradeFloatValue)wrap).value * 100) + "%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + amount) * 100) + "%";
+			return "Increases the amount of cash gained from items given to quests by " + (amount * 100) + "%.\nThe base value is 0%, currently it is " + (((UpgradeFloatValue)wrap).value * 100) + "%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + amount) * 100) + "%.\nDoes not apply to enchanted items, relics, or ingredients.";
 			//return "Increases the amount of cash gained from items given to quests by " + (amount * 100) + "%, the base value is 0%, and with this upgrade it would be " + ((((UpgradeFloatValue)wrap).value + amount) * 100) + "%";
 		}
 

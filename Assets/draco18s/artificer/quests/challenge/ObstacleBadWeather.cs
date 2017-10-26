@@ -44,7 +44,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				case EnumResult.SUCCESS:
 					break;
 				case EnumResult.CRIT_SUCCESS: //make up for lost time
-					theQuest.hastenQuestEnding(-120);
+					theQuest.hastenQuestEnding(-180);
 					break;
 			}
 		}

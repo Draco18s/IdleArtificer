@@ -19,6 +19,7 @@ namespace Assets.draco18s.artificer.init {
 		public static class Goals {
 			#region easy
 			//wood, leather, armor, weapon, torches--all basic stuff
+			public static ObstacleType DELIVERY = new GoalDelivery().setRewardScalar(1).setReqScalar(0.2f);//nothing at all (just don't get theft'd)
 			public static ObstacleType FIND_COWS = new GoalFindCows().setRewardScalar(1).setReqScalar(0.5f);//mana
 			public static ObstacleType REPAIR_DAMN = new GoalRepairDam().setRewardScalar(1).setReqScalar(1.5f);//wood
 			public static ObstacleType SCARY_CAVE = new GoalExploreCave().setRewardScalar(1).setReqScalar(0.75f);//torches
@@ -35,6 +36,7 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType ALCHEMY_LAB = new GoalAlchemyLab().setRewardScalar(2).setReqScalar(1.5f);//herb + healing + mana + poison
 			public static ObstacleType TOWN_INFRASTRUCTURE = new GoalUpgradeTown().setRewardScalar(2).setReqScalar(2f);//wood + iron
 			public static ObstacleType GUARD_TEMPLE = new GoalGuardTemple().setRewardScalar(2).setReqScalar(0.75f);//armor + detection
+			public static ObstacleType WOLF_PACK = new GoalWolves().setRewardScalar(2);//poison, weapon, armor
 			#endregion
 
 			#region semi-advanced
@@ -48,7 +50,8 @@ namespace Assets.draco18s.artificer.init {
 
 			#region advanced
 			//require high-level potions
-			public static ObstacleType CLIMB_MOUNTAIN = new GoalReachSummit().setRewardScalar(8);
+			public static ObstacleType MAYOR = new GoalRunForOffice().setRewardScalar(4).setReqScalar(2f);//cha + firm resolve
+			public static ObstacleType CLIMB_MOUNTAIN = new GoalReachSummit().setRewardScalar(8); //endurance + featherfall
 			public static ObstacleType SETTLE_TOWN = new GoalSettleTown().setRewardScalar(8).setReqScalar(16);//tons o' resources
 			public static ObstacleType EXPLORE_TOMB = new GoalExploreTomb().setRewardScalar(8).setReqScalar(1.5f);//danger sense + fire damage
 			public static ObstacleType DRAGON = new GoalKillDragon().setRewardScalar(8).setReqScalar(1.5f);//fire immunity + cold damage
@@ -56,7 +59,7 @@ namespace Assets.draco18s.artificer.init {
 			#region very advanced
 			//all require some kind of enchantment
 			public static ObstacleType FREE_SLAVES = new GoalFreeSlaves().setRewardScalar(12);//firm resolve
-			public static ObstacleType SKELETON_INFESTATION = new GoalSkeletons().setRewardScalar(8);//disruption
+			public static ObstacleType SKELETON_INFESTATION = new GoalSkeletons().setRewardScalar(12);//disruption
 			public static ObstacleType LITCH = new GoalKillLitch().setRewardScalar(12);//spell resist
 			public static ObstacleType GORGON = new GoalSlayGorgon().setRewardScalar(12);//mirrored
 			public static ObstacleType HYDRA = new GoalBeheadHydra().setRewardScalar(12);//vorpal, free move
@@ -64,10 +67,14 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType ATLANTIS = new GoalFindAtlantis().setRewardScalar(15);//water breathing, freedom of movement
 			#endregion
 
+			public static class Bonus {
+				public static ObstacleType FALLEN_HERO = new GoalFallenHero().setRewardScalar(12);
+				public static ObstacleType KRAKEN = new GoalKillKraken().setRewardScalar(21);
+			}
+
 			public static class Sub {
 				public static ObstacleType MUMMY = new GoalExploreTomb_Mummy();
 				public static ObstacleType SKELETONS = new GoalExploreTomb_Skeletons();
-				public static ObstacleType FALLEN_HERO = new GoalFallenHero();
 			}
 
 			public static ObstacleType getRandom(Random rand) {
@@ -287,7 +294,7 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static void AddRareResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 22, 32);
+				Item i = Items.getRandom(theQuest.questRand, 22, 33);
 				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
 				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
@@ -366,6 +373,7 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType UNEVENTFUL = new ObstacleUneventful();
 			public static ObstacleType WILDERNESS = new ObstacleWilderness();
 			public static ObstacleType NIGHT_WATCH = new ObstacleNightWatch();
+			public static ObstacleType PRIEST = new ObstaclePriest();
 
 			public static ObstacleType getRandom(Random rand) {
 				FieldInfo[] fields = typeof(General).GetFields();

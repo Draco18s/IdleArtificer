@@ -43,9 +43,10 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				case EnumResult.MIXED:
 					break;
 				case EnumResult.SUCCESS:
-					theQuest.hastenQuestEnding(-120);
+					theQuest.hastenQuestEnding(-180);
 					break;
 				case EnumResult.CRIT_SUCCESS:
+					theQuest.hastenQuestEnding(-240);
 					ChallengeTypes.Loot.AddRareResource(theQuest);
 					break;
 			}

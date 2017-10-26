@@ -1,6 +1,8 @@
-﻿using Assets.draco18s.artificer.init;
+﻿using Assets.draco18s.artificer.game;
+using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.quests.requirement;
+using Assets.draco18s.artificer.statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +35,29 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.hastenQuestEnding(-30);
+
+			if(result <= EnumResult.FAIL) {
+				long v = 0;
+				if(!Main.instance.player.questTypeCompletion.TryGetValue(ChallengeTypes.Goals.Bonus.KRAKEN, out v)) {
+					v = 0;
+				}
+				if(v == 0 && StatisticsTracker.maxQuestDifficulty.value >= 15) {
+					Quest q = Quest.GenerateNewQuest(ChallengeTypes.Goals.Bonus.KRAKEN);
+					QuestManager.availableQuests.Add(q);
+					QuestManager.updateLists();
+				}
+				else {
+					if(result == EnumResult.CRIT_FAIL)
+						theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Scenario.Pirates.SAIL_PIRATE_WATERS, 0));
+					else
+						theQuest.repeatTask();
+				}
+				return;
+			}
+
 			switch(result) {
-				case EnumResult.CRIT_FAIL: //TODO: captured by pirates
+				case EnumResult.CRIT_FAIL:
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Scenario.Pirates.SAIL_PIRATE_WATERS, 0));
 					break;
 				case EnumResult.FAIL:

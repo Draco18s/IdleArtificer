@@ -32,6 +32,7 @@ namespace Assets.draco18s.artificer.init {
 		public static Item FIRE_OPAL = new Item("fire_opal").setRandomSize(4, 6).setDisallowedForQuests();//
 		public static Item LOADSTONE = new Item("loadstone").setRandomSize(4, 6).setDisallowedForQuests();//
 
+		public static Item GOLD_APPLE = new Item("golden_apple").setRandomSize(2, 5).setConsumable(true).addAidType(AidType.HEALING_MEDIUM).setStackSizeForQuest(1);
 		public static Item CYCLOPS_EYE = new Item("eye_of_cyclops").setRandomSize(1, 1).setDisallowedForQuests();//
 		public static Item DRAGON_TEARS = new Item("dragon_tears").setRandomSize(3, 6).setDisallowedForQuests();//
 		public static Item GOLDEN_SILK = new Item("golden_silk").setRandomSize(3, 6).setDisallowedForQuests();//
@@ -45,9 +46,9 @@ namespace Assets.draco18s.artificer.init {
 		//new, won't drop yet
 
 
-
 		public static class SpecialItems {
 			public static Item POWER_STONE = new ItemPowerStone().addAidType(AidType.RETRY_FAILURE).setStackSizeForQuest(1).setConsumable(false);
+			public static Item MISC_GOODS = new ItemGoods().setStackSizeForQuest(1).setConsumable(false);
 		}
 
 		public static Item getRandom(Random rand) {
@@ -62,7 +63,7 @@ namespace Assets.draco18s.artificer.init {
 			return item;
 		}
 
-		private static Item[] herbs = { GLOWING_FUNGS, WOLFSBANE, CORLY_ROOT, TANGLED_ROSE };
+		private static Item[] herbs = { GLOWING_FUNGS, WOLFSBANE, CORLY_ROOT, TANGLED_ROSE, GOLD_APPLE };
 		private static Item[] gems = { DIAMONDS, TOPAZ, BLACK_PEARLS, FIRE_OPAL, LOADSTONE, GLASS_LENS };
 		private static Item[] animal = { ROOSTER_TEETH, ROYAL_JELLY, VENOM, DRAGON_SCALES, UNICORN_HAIR, SLIME_GOO, CYCLOPS_EYE, GRYPHON_TECTRICES, MANOWAR };
 

@@ -27,7 +27,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
 			switch(result) {
-				case EnumResult.CRIT_FAIL:
+				case EnumResult.CRIT_FAIL: //not possible
 					theQuest.addTime(60);
 					break;
 				case EnumResult.FAIL:

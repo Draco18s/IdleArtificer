@@ -24,19 +24,19 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
-			theQuest.hastenQuestEnding(60);
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 				case EnumResult.FAIL: //meander about a bit
-					theQuest.hastenQuestEnding(30);
+					theQuest.hastenQuestEnding(60);
 					break;
 				case EnumResult.MIXED:
+					theQuest.hastenQuestEnding(30);
 					break;
 				case EnumResult.SUCCESS:
 					ChallengeTypes.Loot.AddUncommonResource(theQuest);
 					break;
 				case EnumResult.CRIT_SUCCESS: //make up for lost time
-					theQuest.hastenQuestEnding(-60);
+					theQuest.hastenQuestEnding(-180);
 					break;
 			}
 		}

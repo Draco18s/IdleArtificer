@@ -1,4 +1,5 @@
 ﻿using Assets.draco18s.artificer.items;
+using Assets.draco18s.artificer.items.enchants;
 using Assets.draco18s.artificer.quests.requirement;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,8 @@ namespace Assets.draco18s.artificer.init {
 		public static Enchantment SPELL_RESIST = new Enchantment("Spell Resistance", Items.MUMMY_WRAPPING, 200, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.SPELL_RESIST);
 		public static Enchantment BLESSED = new Enchantment("Blessed", Industries.HOLY_SYMBOL.industryItem, 25000, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.UNHOLY_IMMUNE);
 		public static Enchantment UNBLESSED = new Enchantment("Unblessed", Industries.UNHOLY_SYMBOL.industryItem, 25000, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.HOLY_IMMUNE);
-		
+		public static Enchantment RESTORATION = new EnchantmentLeech("Restoration", Items.GOLD_APPLE, 200, ItemEquipType.CLOAK | ItemEquipType.SHIELD | ItemEquipType.BOOTS, RequirementType.HEALING);
+
 		//weapon
 		public static Enchantment BRIGHT = new Enchantment("Bright", Items.STARDUST, 200, ItemEquipType.RING | ItemEquipType.WEAPON, RequirementType.LIGHT);
 		public static Enchantment ENHANCEMENT = new Enchantment("Enhancement", Items.DIAMONDS, 200, ItemEquipType.WEAPON | ItemEquipType.RANGED | ItemEquipType.ARMOR | ItemEquipType.SHIELD, 0).setStacksTo(5);
@@ -34,7 +36,7 @@ namespace Assets.draco18s.artificer.init {
 		public static Enchantment VORPAL = new Enchantment("Vorpal", Items.OBSIDIAN_SHARD, 200, ItemEquipType.WEAPON, RequirementType.VORPAL);
 		public static Enchantment KEEN = new Enchantment("Keen", Items.TOPAZ, 200, ItemEquipType.WEAPON, 0);
 		public static Enchantment BRILIANT_ENERGY = new Enchantment("Briliant Energy", Items.RED_MERCURY, 200, ItemEquipType.WEAPON, RequirementType.BRILIANT_ENERGY);
-
+		
 		//ranged
 		public static Enchantment PERFECT_AIM = new Enchantment("Perfect Aim", Items.GLASS_LENS, 200, ItemEquipType.RANGED, 0);
 
@@ -60,6 +62,7 @@ namespace Assets.draco18s.artificer.init {
 
 		//boots
 		public static Enchantment STRONG = new Enchantment("Strong", Industries.POT_STRENGTH.industryItem, 25000, ItemEquipType.BOOTS, RequirementType.STRENGTH);
-		public static Enchantment AGILE = new Enchantment("Agile", Industries.POT_AGILITY.industryItem, 25000, ItemEquipType.ARMOR, RequirementType.AGILITY);
+		public static Enchantment AGILE = new Enchantment("Agile", Industries.POT_AGILITY.industryItem, 25000, ItemEquipType.BOOTS, RequirementType.AGILITY);
+		public static Enchantment HASTE = new EnchantmentHaste("Hasty", Industries.BLOOD_MOSS.industryItem, 25000, ItemEquipType.BOOTS);
 	}
 }

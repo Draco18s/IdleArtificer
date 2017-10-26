@@ -23,6 +23,9 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 					result += 1;
 				}
 			}
+			if(theQuest.doesHeroHave(RequirementType.PERFECT_AIM)) {
+				result += 1;
+			}
 			if(result > EnumResult.CRIT_SUCCESS) result = EnumResult.CRIT_SUCCESS;
 			return result;
 		}

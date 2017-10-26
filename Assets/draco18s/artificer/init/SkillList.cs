@@ -23,6 +23,7 @@ namespace Assets.draco18s.artificer.init {
 		public static SkillIndustryRank SimpleType = (SkillIndustryRank)new SkillIndustryRank("rank_simple", 0.25, 1, 1.25, Scalar._2_SIMPLE).register();
 		public static SkillIndustryRank ComplexType = (SkillIndustryRank)new SkillIndustryRank("rank_complex", 0.25, 1, 1.25, Scalar._3_COMPLEX).register();
 		public static SkillIndustryRank RareType = (SkillIndustryRank)new SkillIndustryRank("rank_rare", 0.25, 1, 1.25, Scalar._4_RARE).register();
+		public static Skill QuestTime = new Skill("QuestTime", 60, 10, 1.2).register();
 
 		public static void register(Skill s) {
 			allSkills.Add(s);

@@ -32,6 +32,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					b = 2;
+					theQuest.hastenQuestEnding(-60);
 					break;
 			}
 			theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Initial.EXPLORE_TOWN, b+ questBonus));

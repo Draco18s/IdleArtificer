@@ -93,6 +93,7 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade QUEST_MULTI2 =			new UpgradeQuestRenown	(25000, 1.5f, "QUEST_MULTI2");
 			public static Upgrade INCOME2 =					new UpgradeIncome		(50000, 5, "INCOME2");
 			public static Upgrade RENOWN_MULTI2 =			new UpgradeRenownMulti	(75000, 0.01f, "RENOWN_MULTI2");
+			public static Upgrade QUEST_REQS =				new UpgradeQuestReqs    (100000, "QUEST_REQS");
 			//repeat:
 			public static Upgrade CLICK_RATE2 =				new UpgradeClickRate	(100000, 0.25f, "CLICK_RATE2");
 			public static Upgrade JOURNEYMAN_RATE3 =		new UpgradeJourneymanRate(250000, 600, "JOURNEYMAN_RATE3");

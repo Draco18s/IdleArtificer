@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.4.0f3</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -69,6 +71,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentHaste.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentLeech.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\item\ItemGoods.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDelivery.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillKraken.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRunForOffice.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalWolves.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IDescriptorData.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstaclePriest.cs" />
+    <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeQuestReqs.cs" />
     <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyName.cs" />
     <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyNameGenerator.cs" />
     <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyNameSettings.cs" />
@@ -229,7 +241,6 @@
     <Compile Include="Assets\draco18s\artificer\ui\NotificationItem.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\QuestInfo.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\SelectObject.cs" />
-    <Compile Include="Assets\draco18s\artificer\ui\TestTrigger.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\TooltipTrigger.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\Skill.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\SkillIndustryRank.cs" />

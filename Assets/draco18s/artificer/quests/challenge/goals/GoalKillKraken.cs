@@ -6,31 +6,27 @@ using RPGKit.FantasyNameGenerator;
 using RPGKit.FantasyNameGenerator.Generators;
 using Assets.draco18s.artificer.game;
 using Assets.draco18s.artificer.init;
+using Assets.draco18s.artificer.statistics;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	internal class GoalFallenHero : ObstacleType, IQuestGoal, IMonsterChallenge, IDescriptorData {
-		protected int fallenHeroMaxHealth;
-
-		public GoalFallenHero() : base("slaying the fallen hero", new RequireWrapper(RequirementType.WEAPON), new RequireWrapper(RequirementType.HOLY_DAMAGE), new RequireWrapper(RequirementType.WEAKNESS)) {
-			fallenHeroMaxHealth = 1000;
+	public class GoalKillKraken : ObstacleType, IQuestGoal, IMonsterChallenge {
+		protected int dragonMaxHealth;
+		//private static FantasyNameSettings fantasyNameSettings = new FantasyNameSettings(Classes.Warrior, Race.Dragon, true, true, Gender.Male);
+		//private static IFantasyNameGenerator fantasyNameGenerator = FantasyNameGenerator.FromSettingsInfo(fantasyNameSettings);
+		public GoalKillKraken() : base("fighting a kraken", new RequireWrapper(RequirementType.ACID_IMMUNE), new RequireWrapper(RequirementType.FIRE_DAMAGE), new RequireWrapper(RequirementType.WATER_BREATH)) {
+			dragonMaxHealth = 1250;
 		}
 
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
 			EnumResult result;// = EnumResult.CRIT_FAIL;
-			if(fails > 0) {
-				result = EnumResult.FAIL;
-				if(fails > 1) {
-					result = EnumResult.CRIT_FAIL;
-				}
-			}
-			else result = EnumResult.MIXED;
+			result = EnumResult.MIXED - fails;
 
-			int mod = questBonus + (theQuest.doesHeroHave(RequirementType.WEAKNESS,false) ? 4 : 0);
+			int mod = questBonus + (theQuest.doesHeroHave(AidType.WEAPON) ? 2 : 0);
 
 			if(theQuest.testStrength(mod)) {
 				result += 1;
 			}
-			if(theQuest.testStrength(mod)) {
+			if(theQuest.testStrength(mod-2)) {
 				result += 1;
 			}
 
@@ -40,7 +36,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.harmHero(30, DamageType.UNHOLY);
+					theQuest.harmHero(30, DamageType.ACID);
 					theQuest.harmHero(10, DamageType.GENERIC);
 					break;
 				case EnumResult.FAIL:
@@ -59,13 +55,13 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 
 		public int getRangedDamage(EnumResult result, Quest theQuest, ref int questBonus, ItemStack rangedItem) {
 			int bonus = 0;
-			if(rangedItem != null && rangedItem.doesStackHave(RequirementType.HOLY_DAMAGE)) {
+			if(rangedItem != null && rangedItem.doesStackHave(RequirementType.COLD_DAMAGE)) {
 				bonus += 10;
 			}
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 				case EnumResult.FAIL:
-					theQuest.harmHero(10, DamageType.UNHOLY);
+					theQuest.harmHero(10, DamageType.ACID);
 					break;
 				case EnumResult.MIXED:
 					return 5 + questBonus * 1;
@@ -78,43 +74,46 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		}
 
 		public string relicNames(ItemStack stack) {
-			return "Redeamer";
+			if(stack.item.hasAidType(AidType.WEAPON))
+				return "Kraken Breaker";
+			return "Kraken Ward";
 		}
 
 		public string relicDescription(ItemStack stack) {
-			return "Aided a hero in slaying the fallen hero {0}";
-		}
-
-		public string getDescValue() {
-			return "fallenHeroName";
+			//FantasyName[] names = fantasyNameGenerator.GetFantasyNames(1);
+			//string dragonName = names[0].FirstName + " " + names[0].LastName + " " + names[0].Postfix;
+			return "Aided a hero in slaying the kraken";
 		}
 
 		public int getNumTotalEncounters() {
-			return 19;
+			return 9;
 		}
 
 		public int getDamageDealtToMonster(EnumResult result, Quest theQuest, ref int questBonus, ItemStack meleeItem) {
-			int bonus = 0;
-			if(meleeItem != null && meleeItem.doesStackHave(RequirementType.HOLY_DAMAGE)) {
-				bonus += 10;
-			}
 			switch(result) {
 				case EnumResult.MIXED:
 					return 25 + questBonus * 1;
 				case EnumResult.SUCCESS:
-					return 50 + questBonus * 2 + bonus;
+					return 50 + questBonus * 2;
 				case EnumResult.CRIT_SUCCESS:
-					return 100 + questBonus * 5 + bonus;
+					return 100 + questBonus * 5;
 			}
 			return 0;
 		}
 
 		public int getMonsterTotalHealth() {
-			return fallenHeroMaxHealth;
+			return dragonMaxHealth;
 		}
 
 		public void getLootDrops(EnumResult result, Quest theQuest, ref int questBonus) {
-			
+			StatisticsTracker.defeatKraken.setAchieved();
+			Item i = Items.DRAGON_SCALES;
+			int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
+			ChallengeTypes.Loot.AddStack(theQuest, new ItemStack(i, s));
+			i = Items.SLIME_GOO;
+			s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
+			ChallengeTypes.Loot.AddStack(theQuest, new ItemStack(i, s));
+			ChallengeTypes.Loot.AddRareResource(theQuest);
 		}
 	}
 }

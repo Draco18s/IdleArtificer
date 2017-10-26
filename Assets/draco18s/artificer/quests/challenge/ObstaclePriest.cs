@@ -10,51 +10,49 @@ using System.Text;
 using UnityEngine;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleGenie : ObstacleType,IRelicMaker {
-		public ObstacleGenie() : base("talking to a genie") {
-			setRewardScalar(12);
+	public class ObstaclePriest : ObstacleType {
+		public ObstaclePriest() : base("talking with a priest", new RequireWrapper(RequirementType.UNHOLY_IMMUNE, RequirementType.CHARISMA)) {
+
 		}
 
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
-			EnumResult result = EnumResult.FAIL + theQuest.testLuck(2);
-
-			int mod = questBonus + (theQuest.doesHeroHave(RequirementType.CHARISMA)?2:0);
-
-			if(theQuest.testCharisma(mod)) {
-				result += 1;
+			if(theQuest.heroCurHealth < 60) {
+				return EnumResult.FAIL;
 			}
-			if(theQuest.testCharisma(0)) {
-				result += 1;
+			if(theQuest.QuestTimeLeft() < 600) {
+				return EnumResult.MIXED;
 			}
-
-			return result;
+			int mod = (partials > 0 ? 2 : 0);
+			if(fails > 0 || !theQuest.testCharisma(questBonus + mod)) {
+				return EnumResult.SUCCESS;
+			}
+			return EnumResult.CRIT_SUCCESS;
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.hastenQuestEnding(-30);
 			switch(result) {
-				case EnumResult.CRIT_FAIL:
+				case EnumResult.CRIT_FAIL: //not possible
+					theQuest.addTime(60);
+					break;
 				case EnumResult.FAIL:
-					theQuest.harmHero(10, DamageType.HOLY);
-					theQuest.harmHero(10, DamageType.PETRIFY);
-					theQuest.hastenQuestEnding(60);
+					theQuest.heroCurHealth += 15;
 					break;
 				case EnumResult.MIXED:
-					ChallengeTypes.Loot.AddUncommonResource(theQuest);
+					theQuest.hastenQuestEnding(-90);
 					break;
 				case EnumResult.SUCCESS:
-					ChallengeTypes.Loot.AddRareResource(theQuest);
+					theQuest.raiseCharisma(1);
 					break;
 				case EnumResult.CRIT_SUCCESS:
-					enchantRandomItem(theQuest);
+					Bless(theQuest);
 					break;
 			}
 		}
 
-		private void enchantRandomItem(Quest theQuest) {
+		private void Bless(Quest theQuest) {
 			ItemStack newRelic = theQuest.determineRelic();
 			if(newRelic != null) {
-				//Debug.Log("Genie is enchanting an item");
-				newRelic = QuestManager.makeRelic(newRelic, this, theQuest.heroName);
 				//Debug.Log("Enchanting a(n) " + newRelic.item.name);
 				Item item;// = Items.getRandom(theQuest.questRand);
 				bool ret = true;
@@ -77,12 +75,10 @@ namespace Assets.draco18s.artificer.quests.challenge {
 							maxed = count >= ench.maxConcurrent;
 						}
 						if(maxed || newRelic.relicData == null || newRelic.relicData.Count < newRelic.enchants.Count) {
-							Debug.Log("This item is maxed out already. Weird.");
 							goto baditem;
 						}
 					}
 					else if((newRelic.item.equipType & ench.enchantSlotRestriction) > 0) {
-						//Debug.Log("Applied!");
 						newRelic.applyEnchantment(ench);
 						ret = false;
 					}
@@ -93,13 +89,6 @@ namespace Assets.draco18s.artificer.quests.challenge {
 
 				if(!theQuest.inventory.Contains(newRelic))
 					theQuest.inventory.Add(newRelic);
-				//allRelics.Add(newRelic);
-				//availableRelics.Add(newRelic);
-				StatisticsTracker.relicsMade.addValue(1);
-				StatisticsTracker.relicFromGenie.setAchieved();
-				//if(StatisticsTracker.relicsMade.value == 1) {
-				//	StatisticsTracker.maxQuestDifficulty.addValue(1);
-				//}
 				return;
 				baditem:
 				ChallengeTypes.Loot.AddRareResource(theQuest);
@@ -109,14 +98,6 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				ChallengeTypes.Loot.AddRareResource(theQuest);
 				ChallengeTypes.Loot.AddRareResource(theQuest);
 			}
-		}
-
-		public string relicDescription(ItemStack stack) {
-			return "Enchanted by a genie";
-		}
-
-		public string relicNames(ItemStack stack) {
-			return "Wished";
 		}
 	}
 }

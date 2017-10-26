@@ -20,6 +20,7 @@ namespace Assets.draco18s.artificer.game {
 	[Serializable]
 	public class PlayerInfo : ISerializable {
 		public readonly Dictionary<GameObject, Industry> itemData = new Dictionary<GameObject, Industry>();
+		public readonly Dictionary<ObstacleType, long> questTypeCompletion = new Dictionary<ObstacleType, long>();
 		public readonly List<ItemStack> miscInventory = new List<ItemStack>();
 		public readonly List<ItemStack> unidentifiedRelics = new List<ItemStack>();
 		public List<Industry> builtItems;
@@ -242,7 +243,15 @@ namespace Assets.draco18s.artificer.game {
 			int v = Mathf.RoundToInt(goal.getRewardScalar() * ((UpgradeFloatValue)questScalar).value * currentGuildmaster.renownIncomeMultiplier());
 			totalQuestsCompleted += v;
 			questsCompleted += v;
-			goal.numOfTypeCompleted++;
+			//goal.numOfTypeCompleted++;
+			long c = 0;
+			if(Main.instance.player.questTypeCompletion.ContainsKey(goal)) {
+				Main.instance.player.questTypeCompletion.TryGetValue(goal, out c);
+				Main.instance.player.questTypeCompletion.Remove(goal);
+			}
+			c++;
+			Main.instance.player.questTypeCompletion.Add(goal, c);
+
 			StatisticsTracker.questsCompleted.addValue(1);
 			if(!StatisticsTracker.firstQuestCompleted.isAchieved()) {
 				StatisticsTracker.firstQuestCompleted.setAchieved();
@@ -262,7 +271,7 @@ namespace Assets.draco18s.artificer.game {
 
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
-			info.AddValue("SaveVersion", 9);
+			info.AddValue("SaveVersion", 10);
 			info.AddValue("money", money.ToString());
 			info.AddValue("moneyFloor", moneyFloor.ToString());
 			//info.AddValue("lifetimeMoney", StatisticsTracker.lifetimeMoney.ToString());
@@ -307,6 +316,7 @@ namespace Assets.draco18s.artificer.game {
 			for(int i = 0; i < QuestManager.availableRelics.Count; i++) {
 				info.AddValue("availableRelics_" + i, QuestManager.availableRelics[i], typeof(ItemStack));
 			}
+			info.AddValue("questTypeCompletion", questTypeCompletion, typeof(Dictionary<ObstacleType, long>));
 			info.AddValue("newQuestTimer", QuestManager.getNewQuestTimer());
 			GuildManager.writeSaveData(ref info, ref context);
 			StatisticsTracker.serializeAllStats(ref info, ref context);
@@ -393,7 +403,9 @@ namespace Assets.draco18s.artificer.game {
 			for(int o = 0; o < num; o++) {
 				QuestManager.availableRelics.Add((ItemStack)info.GetValue("availableRelics_" + o, typeof(ItemStack)));
 			}
-
+			if(Main.saveVersionFromDisk >= 10) {
+				questTypeCompletion = (Dictionary<ObstacleType, long>)info.GetValue("questTypeCompletion", typeof(Dictionary<ObstacleType, long>));
+			}
 			float f = (float)info.GetDouble("newQuestTimer");
 			QuestManager.LoadTimerFromSave(f);
 

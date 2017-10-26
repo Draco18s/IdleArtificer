@@ -14,7 +14,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		public readonly RequireWrapper[] requirements;
 		protected int questDifficultyScalar = 1;
 		protected float questRequirementScalar = 1;
-		public int numOfTypeCompleted = 0;
+		//public int numOfTypeCompleted = 0;
 
 		public ObstacleType(string desc, params RequireWrapper[] reqs) {
 			this.desc = desc;

@@ -46,6 +46,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				case EnumResult.SUCCESS:
 					break;
 				case EnumResult.CRIT_SUCCESS:
+					theQuest.hastenQuestEnding(-90);
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Loot.getRandom(theQuest.questRand), 1));
 					break;
 			}

@@ -155,6 +155,9 @@ namespace Assets.draco18s.artificer.items {
 
 		public void onUsedDuringQuest(Quest quest) {
 			item.onUsedDuringQuest(quest, this);
+			foreach(Enchantment ench in enchants) {
+				ench.onUsedDuringQuest(quest, this);
+			}
 		}
 
 		public void onSoldByPlayer() {

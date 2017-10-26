@@ -1,5 +1,7 @@
-﻿using Assets.draco18s.artificer.init;
+﻿using Assets.draco18s.artificer.game;
+using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.quests.requirement;
+using Assets.draco18s.artificer.statistics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,17 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			EnumResult result;
 			if(fails > 0) result = EnumResult.CRIT_FAIL;
 			else result = EnumResult.MIXED;
+
+			long v = 0;
+			if(!Main.instance.player.questTypeCompletion.TryGetValue(ChallengeTypes.Goals.Bonus.KRAKEN, out v)) {
+				v = 0;
+			}
+			if(v == 0 && StatisticsTracker.maxQuestDifficulty.value >= 15) {
+				Quest q = Quest.GenerateNewQuest(ChallengeTypes.Goals.Bonus.KRAKEN);
+				QuestManager.availableQuests.Add(q);
+				QuestManager.updateLists();
+				return EnumResult.CRIT_FAIL;
+			}
 
 			if(result == EnumResult.CRIT_FAIL) {
 				if(theQuest.testAgility(questBonus) || theQuest.testStrength(questBonus)) {

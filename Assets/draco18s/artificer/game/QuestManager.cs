@@ -338,7 +338,7 @@ namespace Assets.draco18s.artificer.game {
 							}
 						}
 					}
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored) + " / " + total;
+					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored, 4, true) + " / " + Main.AsCurrency(total, 4, true);
 					//bool haveEnough = ind.quantityStored >= total;
 					
 					i++;
@@ -553,13 +553,16 @@ namespace Assets.draco18s.artificer.game {
 					}
 				}
 			}
-			activeQuests.Where(x => !x.isActive()).ToList().ForEach(x => Main.Destroy(x.guiItem));
+			activeQuests.Where(x => !x.isActive()).ToList().ForEach(x => des(x));
 			activeQuests.RemoveAll(x => !x.isActive());
-			while(newQuestDelayTimer <= 0) {
+			while(newQuestDelayTimer <= 0 && availableQuests.Count < 10) {
 				newQuestDelayTimer += getNewQuestMaxTime();
 				Quest q = Quest.GenerateNewQuest();
 				//q.timeUntilQuestExpires = 18000; //5 hours
 				availableQuests.Add(q);
+			}
+			if(newQuestDelayTimer <= 0) {
+				newQuestDelayTimer = 1;
 			}
 			foreach(Quest q in availableQuests) {
 				q.timeUntilQuestExpires -= time;
@@ -657,6 +660,23 @@ namespace Assets.draco18s.artificer.game {
 			}
 		}
 
+		private static void des(Quest x) {
+			Main.Destroy(x.guiItem);
+		}
+		public static ItemStack makeRelic(ItemStack stack, ObstacleType ob, string otherData, string hero) {
+			if(ob is IRelicMaker) {
+				IRelicMaker maker = (IRelicMaker)ob;
+				if(stack.relicData == null) {
+					stack.relicData = new List<RelicInfo>();
+				}
+				RelicInfo info = new RelicInfo(hero, maker.relicNames(stack), string.Format(maker.relicDescription(stack),otherData), ob.getRewardScalar());
+				Debug.Log(info);
+				stack.relicData.Add(info);
+				stack.isIDedByPlayer = false;
+			}
+			return stack;
+		}
+
 		public static ItemStack makeRelic(ItemStack stack, ObstacleType ob, string hero) {
 			if(ob is IRelicMaker) {
 				IRelicMaker maker = (IRelicMaker)ob;
@@ -697,23 +717,25 @@ namespace Assets.draco18s.artificer.game {
 					Debug.Log(q.obstacles[j].type.name + ":"  + ((q.obstacles[j].type is IRelicMaker)?" is a RelicMaker":" is not"));
 				} while(j >= 0 && !(q.obstacles[j].type is IRelicMaker));
 				Debug.Log("    " + q.obstacles[j].type.name);
-				return makeRelic(stack, q.obstacles[j].type, q.heroName);
+				if(q.obstacles[j].type is IDescriptorData) {
+					object namewrap;
+					q.miscData.TryGetValue(((IDescriptorData)q.obstacles[j].type).getDescValue(), out namewrap);
+					return makeRelic(stack, q.obstacles[j].type, (string)namewrap, q.heroName);
+				}
+				else {
+					return makeRelic(stack, q.obstacles[j].type, q.heroName);
+				}
 			}
 			else {
-				return makeRelic(stack, q.obstacles[j].type, q.heroName);
-			}
-			/*QuestChallenge ob = q.obstacles.Last();
-			if(ob.type is IQuestGoal) {
-				IQuestGoal goal = (IQuestGoal)ob.type;
-				if(stack.relicData == null) {
-					stack.relicData = new List<RelicInfo>();
+				if(q.obstacles[j].type is IDescriptorData) {
+					object namewrap;
+					q.miscData.TryGetValue(((IDescriptorData)q.obstacles[j].type).getDescValue(), out namewrap);
+					return makeRelic(stack, q.obstacles[j].type, (string)namewrap, q.heroName);
 				}
-				RelicInfo info = new RelicInfo(goal.relicNames(stack), goal.relicDescription(stack), ob.type.getRewardScalar());
-				Debug.Log(info);
-				stack.relicData.Add(info);
-				stack.isIDedByPlayer = true;// false;
+				else {
+					return makeRelic(stack, q.obstacles[j].type, q.heroName);
+				}
 			}
-			return stack;*/
 		}
 
 		public static ItemStack getRandomTreasure(Quest theQuest) {

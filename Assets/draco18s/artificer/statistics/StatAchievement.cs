@@ -21,7 +21,14 @@ namespace Assets.draco18s.artificer.statistics {
 		protected bool achieved;
 		protected DateTime dateAchieved = new DateTime(2016, 1, 1);
 		protected int idVal = -1;
-		public bool isHidden = false;
+		protected bool secret = false;
+		protected bool _hidden;
+		public bool isHidden {
+			get {
+				if(secret && achieved) return true;
+				return _hidden;
+			}
+		}
 
 		public StatAchievement(string name) {
 			achieveName = "achieve." + name + ".name";
@@ -45,8 +52,14 @@ namespace Assets.draco18s.artificer.statistics {
 			return this;
 		}
 
+		public virtual StatAchievement setSecret() {
+			secret = true;
+			_hidden = true;
+			return this;
+		}
+
 		public virtual StatAchievement setHidden() {
-			isHidden = true;
+			_hidden = true;
 			return this;
 		}
 

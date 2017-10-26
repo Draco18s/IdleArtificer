@@ -29,7 +29,12 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		public void OnAttempt(EnumResult result, Quest theQuest) {
 			if(type is IMonsterChallenge) {
 				ItemStack rangedStack = theQuest.getHeroItemWith(AidType.RANGED_WEAPON);
-				int dmg = ((IMonsterChallenge)type).getRangedDamage(result, theQuest, ref questBonus, rangedStack);
+				int mod = 0;
+				if(rangedStack != null) {
+					mod = rangedStack.doesStackHave(RequirementType.PERFECT_AIM) && result < EnumResult.CRIT_SUCCESS ? 1 : 0;
+					//if(mod + result > EnumResult.CRIT_SUCCESS) mod = 0;
+				}
+				int dmg = ((IMonsterChallenge)type).getRangedDamage(result+mod, theQuest, ref questBonus, rangedStack);
 				if(rangedStack != null) {
 					if(rangedStack.doesStackHave(Enchantments.ENHANCEMENT)) {
 						foreach(Enchantment en in rangedStack.enchants) {
@@ -41,13 +46,14 @@ namespace Assets.draco18s.artificer.quests.challenge {
 						rangedStack.stackSize--;
 					}
 					dmg = (int)Math.Round(rangedStack.getEffectiveness(RequirementType.RANGED) * dmg);
+					rangedStack.onUsedDuringQuest(theQuest);
 				}
 				monsterHealth -= dmg;
 			}
 			int hpBefore = theQuest.heroCurHealth;
 			type.OnAttempt(result, theQuest, ref questBonus);
-			bool tookDamage = hpBefore != theQuest.heroCurHealth;
 			if(type is IMonsterChallenge) {
+				bool tookDamage = hpBefore != theQuest.heroCurHealth;
 				ItemStack meleeStack = theQuest.getHeroItemWith(AidType.WEAPON);
 				int dmg = ((IMonsterChallenge)type).getDamageDealtToMonster(result, theQuest, ref questBonus, meleeStack);
 				if(meleeStack != null) {
@@ -66,6 +72,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 						meleeStack.stackSize--;
 					}
 					dmg = (int)Math.Round(meleeStack.getEffectiveness(RequirementType.WEAPON) * dmg);
+					meleeStack.onUsedDuringQuest(theQuest);
 				}
 				ItemStack thornStack = theQuest.getHeroItemWith(Enchantments.THORNS);
 				if(tookDamage && thornStack != null) {
@@ -75,6 +82,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 							c++;
 					}
 					dmg += (c * 5) / 2;
+					thornStack.onUsedDuringQuest(theQuest);
 				}
 				monsterHealth -= dmg;
 				if(monsterHealth > 0) {
@@ -83,6 +91,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				else {
 					((IMonsterChallenge)type).getLootDrops(result, theQuest, ref questBonus);
 				}
+				theQuest.addTime(-50); //combats should be fast
 			}
 		}
 

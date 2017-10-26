@@ -2,6 +2,7 @@
 using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.quests;
 using Assets.draco18s.artificer.quests.challenge;
+using Assets.draco18s.artificer.quests.challenge.goals;
 using Assets.draco18s.artificer.quests.requirement;
 using Assets.draco18s.artificer.statistics;
 using System;
@@ -13,12 +14,15 @@ namespace Assets.draco18s.artificer.items {
 	public class ItemPowerStone : Item {
 		private AidType[] healingTypes = { AidType.RESSURECTION, AidType.HEALING_LARGE, AidType.HEALING_MEDIUM, AidType.HEALING_SMALL, AidType.HEALING_TINY, AidType.MANA_LARGE, AidType.MANA_MEDIUM, AidType.MANA_SMALL, AidType.MANA_TINY };
 		public ItemPowerStone():base("stone_of_power") {
-			
+			addReqType(RequirementType.FREE_MOVEMENT);
+			addReqType(RequirementType.ETHEREALNESS);
+			addReqType(RequirementType.FIRM_RESOLVE);
+			addReqType(RequirementType.SPELL_RESIST);
 		}
 
 		public override bool hasReqType(RequirementType type) {
 			if(type == 0) return false;
-			return type != RequirementType.MANA && type != RequirementType.HEALING; //(reqProperties & type) > 0;
+			return type != RequirementType.MANA && type != RequirementType.HEALING && type != RequirementType.ARMOR;
 		}
 
 		public override bool hasAidType(AidType type) {
@@ -54,9 +58,10 @@ namespace Assets.draco18s.artificer.items {
 			if(quest.heroCurHealth <= 0 && cor >= 8 && !fallen) {
 				quest.miscData.Add("fallen", true);
 				//new corrupted hero quest goal
-				QuestManager.availableRelics.Add(QuestManager.makeRelic(itemStack, new Curse(quest.heroName), 1, this.name));
 				if(StatisticsTracker.maxQuestDifficulty.value >= 20) {
-					Quest q = Quest.GenerateNewQuest(ChallengeTypes.Goals.Sub.FALLEN_HERO);
+					QuestManager.availableRelics.Add(QuestManager.makeRelic(itemStack, new Curse(quest.heroName), 1, this.name));
+					Quest q = Quest.GenerateNewQuest(ChallengeTypes.Goals.Bonus.FALLEN_HERO);
+					q.miscData.Add(((IDescriptorData)ChallengeTypes.Goals.Bonus.FALLEN_HERO).getDescValue(), quest.heroName);
 					QuestManager.availableQuests.Add(q);
 					QuestManager.updateLists();
 					Main.instance.debugMode = false;

@@ -778,6 +778,9 @@ namespace Assets.draco18s.artificer.game {
 				if(m == 0) {
 					m = 1;
 				}
+				if(d + m > maxDigits) {
+					m = maxDigits - d;
+				}
 				if(!skipDecimal) {
 					output += ".";
 					for(int i = d; i < d + m; i++) {

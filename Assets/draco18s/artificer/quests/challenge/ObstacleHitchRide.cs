@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	class ObstacleHitchRide : ObstacleType {
@@ -37,10 +38,10 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				case EnumResult.MIXED: //nothing bad, nothing good
 					break;
 				case EnumResult.SUCCESS:
-					theQuest.hastenQuestEnding(-180);
+					theQuest.hastenQuestEnding(-300);
 					break;
 				case EnumResult.CRIT_SUCCESS:
-					theQuest.hastenQuestEnding(-240);
+					theQuest.hastenQuestEnding(-360);
 					break;
 			}
 		}

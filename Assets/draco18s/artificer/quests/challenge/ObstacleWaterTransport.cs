@@ -40,12 +40,13 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.addTime(30);
 					break;
 				case EnumResult.MIXED: //nothing bad, nothing good
+					theQuest.hastenQuestEnding(-60);
 					break;
 				case EnumResult.SUCCESS:
-					theQuest.hastenQuestEnding(-180);
+					theQuest.hastenQuestEnding(-240);
 					break;
 				case EnumResult.CRIT_SUCCESS:
-					theQuest.hastenQuestEnding(-240);
+					theQuest.hastenQuestEnding(-360);
 					break;
 			}
 			theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Travel.RIVER, questBonus));

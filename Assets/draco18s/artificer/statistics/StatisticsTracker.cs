@@ -39,11 +39,13 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatAchievement unlockedResearch = new StatAchievement("unlockedResearch").register();
 		public static readonly StatAchievement unlockedEnchanting = new StatAchievement("unlockedEnchanting").register();
 		public static readonly StatAchievement clicksAch = new AchievementMulti("clicksAch", numClicks, new object[] { 1000, 2000, 4000, 8000, 16000, 32000, 100000, 250000, 500000, 1000000 }).register();
+		public static readonly StatAchievement sequentialLogin = new AchievementMulti("sequentialLogin", sequentialDaysPlayed, new object[] { 5, 10, 15, 30, 60, 90, 120, 180, 270, 365 }).register();
 		public static readonly StatAchievement allQuestsUnlocked = new StatAchievement("allQuestsUnlocked").register();
 		public static readonly StatAchievement firstQuestCompleted = new StatAchievement("firstQuestCompleted").register().setHidden();
 		public static readonly StatAchievement twentiethQuestCompleted = new StatAchievement("twentiethQuestCompleted").register().setHidden();
 		public static readonly StatAchievement questsCompletedAch = new AchievementMulti("questsCompleted", questsCompleted, new object[] { 1, 20, 50, 100, 500, 1000, 10000, 100000, 1000000, 10000000 }).register();
-		public static readonly StatAchievement relicFromGenie = new StatAchievement("relicFromGenie").register();
+		public static readonly StatAchievement relicFromGenie = new StatAchievement("relicFromGenie").register().setSecret();
+		public static readonly StatAchievement defeatKraken = new StatAchievement("defeatKraken").register().setSecret();
 		public static readonly StatAchievement impressiveAntiquity = new StatAchievement("impressiveAntiquity").register();
 		public static readonly StatAchievement firstEnchantment = new StatAchievement("firstEnchantment").register();
 		public static readonly StatAchievement firstGuildmaster = new StatAchievement("firstGuildmaster").register();

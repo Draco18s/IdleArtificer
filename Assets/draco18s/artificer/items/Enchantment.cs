@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Assets.draco18s.artificer.quests;
 
 namespace Assets.draco18s.artificer.items {
 	public class Enchantment {
@@ -36,6 +37,10 @@ namespace Assets.draco18s.artificer.items {
 
 		public float getEffectiveness() {
 			return effectivenessMulti;
+		}
+
+		public virtual void onUsedDuringQuest(Quest quest, ItemStack itemStack) {
+			
 		}
 	}
 
