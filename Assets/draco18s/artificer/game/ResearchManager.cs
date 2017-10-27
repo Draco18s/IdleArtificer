@@ -1,5 +1,6 @@
 ﻿using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.items;
+using Assets.draco18s.artificer.quests.requirement;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
 using Assets.draco18s.artificer.upgrades;
@@ -16,6 +17,7 @@ namespace Assets.draco18s.artificer.game {
 	class ResearchManager {
 		private static Transform relicList;
 		private static Transform relicInfo;
+		private static Text relicInfoText;
 		private static Dictionary<ItemStack, GameObject> relicsList = new Dictionary<ItemStack, GameObject>();
 		private static Material progressBarMat;
 		private static Text timeLeftTxt;
@@ -34,22 +36,56 @@ namespace Assets.draco18s.artificer.game {
 			timeLeftTxt = trans.FindChild("Research").FindChild("TimeLeft").GetComponent<Text>();
 			relicsLeftTxt = trans.FindChild("Research").FindChild("NumUnidentified").GetComponent<Text>();
 
-			relicInfo = trans.FindChild("RelicInfoOpen");
+			relicInfo = trans.FindChild("RelicInfoOpen").GetChild(0);
 			relicInfo.FindChild("CloseBtn").GetComponent<Button>().onClick.AddListener(delegate { CloseInfo(); });
 			Button btn = relicInfo.FindChild("SellBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { SellItem(); });
 			btn.AddHover(delegate (Vector3 p) {
 				if(examinedStack != null) {
 					BigInteger val = BigRational.ToBigInt(GetRelicValue(examinedStack));
-					GuiManager.ShowTooltip(btn.transform.position,"Sell for $" + Main.AsCurrency(val));
+					GuiManager.ShowTooltip(btn.transform.position + Vector3.up * 30,"Sell for $" + Main.AsCurrency(val));
 				}
-			});
-			relicInfo.FindChild("DiscardBtn").GetComponent<Button>().onClick.AddListener(delegate { DiscardItem(); });
+			}, false);
+			Button btn2 = relicInfo.FindChild("DiscardBtn").GetComponent<Button>();
+			btn2.onClick.AddListener(delegate { DiscardItem(); });
+			btn2.AddHover(delegate (Vector3 p) {
+				if(examinedStack != null) {
+					GuiManager.ShowTooltip(btn2.transform.position + Vector3.up * 30, "Discard this artifact back to the unidentified pile.", 3);
+				}
+			}, false);
 			moneyDisp = GuiManager.instance.researchHeader.transform.FindChild("MoneyArea").GetChild(0).GetComponent<Text>();
+			relicInfoText = relicInfo.FindChild("Info Scroll View").GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>();
+			for(int r = 1; r <= 20; r++) {
+				Image igm = relicInfo.transform.FindChild("Req" + r).GetComponent<Image>();
+					igm.AddHover(delegate (Vector3 p) {
+					GuiManager.ShowTooltip(igm.transform.position + Vector3.up * 20, displayReqDetails(r));
+				},false);
+			}
+		}
+
+		private static string displayReqDetails(int r) {
+			if(examinedStack != null) {
+				long ty = (long)examinedStack.getAllReqs();
+				//ty &= 1 << r;
+				//RequirementType rt = (RequirementType)ty;
+				//return ty.ToString();//rt.ToString();
+				long req_num = 1;
+				do {
+					while((ty & 1) == 0 && ty > 0) {
+						req_num = req_num << 1;
+						ty = ty >> 1;
+					}
+					r--;
+				} while(r > 0);
+				return ((RequirementType)req_num).ToString();
+			}
+			return "";
 		}
 
 		public static void setupUI() {
 			int i = 0;
+			int X = Mathf.FloorToInt((((RectTransform)relicList).rect.width - 10) / 98);
+			Debug.Log("How many fit? " + X);
 			foreach(ItemStack stack in Main.instance.player.miscInventory) {
 				//Debug.Log("i: " + i);
 				//Debug.Log(stack.item.name);
@@ -62,7 +98,7 @@ namespace Assets.draco18s.artificer.game {
 						//go.transform.SetParent(relicList);
 						relicsList.Add(stack, go);
 					}
-					go.transform.localPosition = new Vector3((i % 4) * 98 + 5, ((i / 4) * -125) - 5, 0);
+					go.transform.localPosition = new Vector3((i % X) * 98 + 5, ((i / X) * -125) - 5, 0);
 					//Debug.Log(go.transform.parent.name + ":" + go.transform.localPosition);
 					Text tx = go.transform.FindChild("Title").GetComponent<Text>();
 					tx.text = Main.ToTitleCase(stack.getDisplayName());
@@ -82,7 +118,7 @@ namespace Assets.draco18s.artificer.game {
 							}
 						}
 						GuiManager.ShowTooltip(btn.transform.position+Vector3.down*100, str);
-					});
+					}, false);
 					btn.onClick.AddListener(delegate { ShowInfo(s); });
 					int req_num = 1;
 					long ty = (long)stack.getAllReqs();
@@ -106,7 +142,7 @@ namespace Assets.draco18s.artificer.game {
 					i++;
 				}
 			}
-			((RectTransform)relicList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ((i / 4) * 100 + 10));
+			((RectTransform)relicList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ((i / X) * 100 + 10));
 			relicList.localPosition = Vector3.zero;
 			relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
 		}
@@ -144,15 +180,15 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void ShowInfo(ItemStack stack) {
-			relicInfo.gameObject.SetActive(true);
+			relicInfo.parent.gameObject.SetActive(true);
 			examinedStack = stack;
 			relicInfo.FindChild("Title").GetComponent<Text>().text = examinedStack.getDisplayName();
 			relicInfo.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + examinedStack.item.name);
-
+			relicInfoText.text = "";
 			int req_num = 1;
 			long ty = (long)stack.getAllReqs();
 			bool abort = false;
-			for(int r = 1; r <= 10; r++) {
+			for(int r = 1; r <= 20; r++) {
 				if(ty == 0) abort = true;
 				while((ty & 1) == 0 && ty > 0) {
 					req_num++;
@@ -163,16 +199,32 @@ namespace Assets.draco18s.artificer.game {
 					relicInfo.transform.FindChild("Req" + r).gameObject.SetActive(false);
 				}
 				else {
+					relicInfo.transform.FindChild("Req" + r).gameObject.SetActive(true);
 					relicInfo.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 					ty = ty >> 1;
 					ty = ty << 1;
 				}
 			}
+			List<string> strList = new List<string>();
+
+			if(stack.enchants.Count > 0) {
+				strList.Add("Enchanted:");
+				foreach(Enchantment en in stack.enchants) {
+					strList.Add("   " + en.name);
+				}
+			}
+
+			foreach(RelicInfo inf in stack.relicData) {
+				strList.Add(inf.heroName + " (" + inf.notoriety + ")\n   " + inf.questDescription);
+			}
+			relicInfoText.text = string.Join("\n", strList.ToArray());
+			((RectTransform)relicInfoText.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, relicInfoText.preferredHeight + 1);
+			((RectTransform)relicInfoText.transform.parent).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, relicInfoText.preferredHeight + 5);
 		}
 
 		private static void CloseInfo() {
 			examinedStack = null;
-			relicInfo.gameObject.SetActive(false);
+			relicInfo.parent.gameObject.SetActive(false);
 		}
 
 		private static void SellItem() {
@@ -184,7 +236,7 @@ namespace Assets.draco18s.artificer.game {
 			Main.instance.player.AddMoney(BigRational.ToBigInt(val));
 			examinedStack.onSoldByPlayer();
 			examinedStack = null;
-			relicInfo.gameObject.SetActive(false);
+			relicInfo.parent.gameObject.SetActive(false);
 			setupUI();
 		}
 
@@ -215,7 +267,7 @@ namespace Assets.draco18s.artificer.game {
 			GameObject go;
 			relicsList.TryGetValue(examinedStack, out go);
 			examinedStack = null;
-			relicInfo.gameObject.SetActive(false);
+			relicInfo.parent.gameObject.SetActive(false);
 			setupUI();
 		}
 	}

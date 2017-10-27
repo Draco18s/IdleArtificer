@@ -14,6 +14,7 @@ achieve.questsCompleted.name=Complete Quests
 achieve.apprenticesPurchasedAch.name=Apprentices Hired
 achieve.journeymenPurchasedAch.name=Journeymen Hired
 achieve.impressiveAntiquity.name=Impressive Antique
+achieve.sequentialLogin.name=Sequential Logins
 achieve.ASDF.name=ASDF
 
 achieve.firstEnchantment.desc=Enchant something
@@ -32,6 +33,7 @@ achieve.questsCompleted.desc=Completed {0} quests
 achieve.apprenticesPurchasedAch.desc=Purchase {0} apprentices
 achieve.journeymenPurchasedAch.desc=Purchase {0} journeymen
 achieve.impressiveAntiquity.desc=Get a relic with at least 50 Antiquity
+achieve.sequentialLogin.desc=Play the game {0} days in a row
 achieve.ASDF.desc=ASDF
 
 stat.minQuestDifficulty.name=Quest Difficulty (min)

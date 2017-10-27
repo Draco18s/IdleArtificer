@@ -31,6 +31,18 @@ namespace Assets.draco18s.artificer.ui {
 			//EventTrigger trig = button.gameObject.GetComponent<EventTrigger>();
 			//trig.OnPointerEnter.
 		}
+		public static void AddHover(this Image img, OnHoverDelegate callback) {
+			AddHover(img, callback, true);
+		}
+		public static void AddHover(this Image img, OnHoverDelegate callback, bool redrawOnUpdate) {
+			Button b = img.GetComponent<Button>();
+			if(b == null) {
+				b = img.gameObject.AddComponent<Button>();
+				ColorBlock cb = b.colors;
+				cb.pressedColor = Color.white;
+			}
+			b.AddHover(callback, redrawOnUpdate);
+		}
 
 		public static void RemoveAllEvents(this Button button) {
 			TooltipTrigger trig = button.gameObject.GetComponent<TooltipTrigger>();

@@ -18,6 +18,7 @@ namespace Assets.draco18s.artificer.init {
 
 		public static class Goals {
 			#region easy
+			//Adding more quests requires increasing maxQuestDifficulty somewhere
 			//wood, leather, armor, weapon, torches--all basic stuff
 			public static ObstacleType DELIVERY = new GoalDelivery().setRewardScalar(1).setReqScalar(0.2f);//nothing at all (just don't get theft'd)
 			public static ObstacleType FIND_COWS = new GoalFindCows().setRewardScalar(1).setReqScalar(0.5f);//mana
@@ -28,8 +29,9 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType TRAINING = new GoalCombatTraining().setRewardScalar(1);//weapon + armor
 			public static ObstacleType TARGET_PRACTICE = new GoalTargetPractice().setRewardScalar(1);//ranged weapon + (agl)
 			#endregion
-			
+
 			#region moderate
+			//Adding more quests requires increasing maxQuestDifficulty somewhere
 			//can be done with relatively simple products, but has semi-optional higher teir requirement
 			public static ObstacleType RAT_INFESTATION = new GoalClearRatInfestation().setRewardScalar(2);//poison
 			public static ObstacleType PLANT_GARDEN = new GoalPlantGarden().setRewardScalar(2).setReqScalar(1.5f);//herbs*3
@@ -40,6 +42,7 @@ namespace Assets.draco18s.artificer.init {
 			#endregion
 
 			#region semi-advanced
+			//Adding more quests requires increasing maxQuestDifficulty somewhere
 			//require several basic or mid-level items
 			public static ObstacleType DEFEND_VILLAGE = new GoalDefendVillage().setRewardScalar(4); //armor*2 + weapon*2
 			public static ObstacleType DUKE = new GoalPetitionTheDuke().setRewardScalar(4).setReqScalar(2f);//cha
@@ -49,6 +52,7 @@ namespace Assets.draco18s.artificer.init {
 			#endregion
 
 			#region advanced
+			//Adding more quests requires increasing maxQuestDifficulty somewhere
 			//require high-level potions
 			public static ObstacleType MAYOR = new GoalRunForOffice().setRewardScalar(4).setReqScalar(2f);//cha + firm resolve
 			public static ObstacleType CLIMB_MOUNTAIN = new GoalReachSummit().setRewardScalar(8); //endurance + featherfall
@@ -57,6 +61,7 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType DRAGON = new GoalKillDragon().setRewardScalar(8).setReqScalar(1.5f);//fire immunity + cold damage
 			#endregion
 			#region very advanced
+			//Adding more quests requires increasing maxQuestDifficulty somewhere
 			//all require some kind of enchantment
 			public static ObstacleType FREE_SLAVES = new GoalFreeSlaves().setRewardScalar(12);//firm resolve
 			public static ObstacleType SKELETON_INFESTATION = new GoalSkeletons().setRewardScalar(12);//disruption
@@ -85,6 +90,7 @@ namespace Assets.draco18s.artificer.init {
 					StatisticsTracker.allQuestsUnlocked.setAchieved();
 				}
 				max = Math.Min(max, fields.Length-1);
+				min = Math.Min(min, Math.Max(max - 7,0));
 				int v = rand.Next(max - min) + min;
 				FieldInfo field = fields[v];
 				ObstacleType item = (ObstacleType)field.GetValue(null);

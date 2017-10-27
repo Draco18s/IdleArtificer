@@ -70,7 +70,7 @@ namespace Assets.draco18s.artificer.quests {
 			//TODO: make reward items scale
 			QuestChallenge[] list = arr.ToArray();
 			long v;
-			if(!Main.instance.player.questTypeCompletion.TryGetValue(list[list.Length - 1].type, out v)) {
+			if(!Main.instance.player.questTypeCompletion.TryGetValue(list[list.Length - 1].type.name, out v)) {
 				v = 0;
 			}
 			Quest q = new Quest(v, rand.Next(), list);

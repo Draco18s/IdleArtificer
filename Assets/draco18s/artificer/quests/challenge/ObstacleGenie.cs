@@ -96,10 +96,12 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				//allRelics.Add(newRelic);
 				//availableRelics.Add(newRelic);
 				StatisticsTracker.relicsMade.addValue(1);
-				StatisticsTracker.relicFromGenie.setAchieved();
-				//if(StatisticsTracker.relicsMade.value == 1) {
-				//	StatisticsTracker.maxQuestDifficulty.addValue(1);
-				//}
+				if(StatisticsTracker.relicsMade.value == 1) {
+					StatisticsTracker.maxQuestDifficulty.addValue(1);
+				}
+				if(!StatisticsTracker.relicFromGenie.isAchieved()) {
+					StatisticsTracker.relicFromGenie.setAchieved();
+				}
 				return;
 				baditem:
 				ChallengeTypes.Loot.AddRareResource(theQuest);

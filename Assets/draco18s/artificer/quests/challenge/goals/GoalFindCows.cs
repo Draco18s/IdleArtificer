@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalFindCows : ObstacleType, IQuestGoal {
+	public class GoalFindCows : ObstacleType, IQuestGoal {
 		public GoalFindCows() : base("finding lost cows", new RequireWrapper(RequirementType.MANA)) {
 
 		}

@@ -236,9 +236,9 @@ namespace Assets.draco18s.artificer.game {
 					y = MathHelper.snap(y, 24);
 					it.transform.GetChild(0).localPosition = new Vector3(0, y, 0);
 
-					//if(fromSave || skip) {
+					if(fromSave || skip) {
 						it.transform.GetChild(0).localPosition = item.getGridPos();
-					//}
+					}
 
 					it.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.name);
 					item.craftingGridGO = it;
@@ -281,13 +281,13 @@ namespace Assets.draco18s.artificer.game {
 						#region stats and achievements
 						if(item == Industries.LEATHER) {
 							StatisticsTracker.minQuestDifficulty.addValue(1);
-							StatisticsTracker.maxQuestDifficulty.addValue(1);
+							StatisticsTracker.maxQuestDifficulty.addValue(2);
 						}
 						if(item == Industries.NIGHTSHADE) {
-							StatisticsTracker.maxQuestDifficulty.addValue(1);
+							StatisticsTracker.maxQuestDifficulty.addValue(2);
 						}
 						if(item == Industries.POT_POISON) {
-							StatisticsTracker.maxQuestDifficulty.addValue(1);
+							StatisticsTracker.maxQuestDifficulty.addValue(2);
 						}
 						if(item == Industries.IRON_ORE) {
 							StatisticsTracker.maxQuestDifficulty.addValue(2);
@@ -297,17 +297,25 @@ namespace Assets.draco18s.artificer.game {
 							StatisticsTracker.maxQuestDifficulty.addValue(2);
 							StatisticsTracker.minQuestDifficulty.addValue(1);
 						}
-						/*if(item == Industries.IRON_ORE) {
-							StatisticsTracker.maxQuestDifficulty.addValue(1);
+						if(item == Industries.IRON_ORE) {
+							StatisticsTracker.maxQuestDifficulty.addValue(2);
 							StatisticsTracker.minQuestDifficulty.addValue(1);
 						}
 						if(item == Industries.IRON_SWORD) {
 							StatisticsTracker.minQuestDifficulty.addValue(1);
 						}
 						if(item == Industries.IRON_RING) {
-							StatisticsTracker.maxQuestDifficulty.addValue(1);
+							StatisticsTracker.maxQuestDifficulty.addValue(2);
 							StatisticsTracker.minQuestDifficulty.addValue(1);
-						}*/
+						}
+						if(item == Industries.HOLY_SYMBOL) {
+							StatisticsTracker.maxQuestDifficulty.addValue(2);
+							StatisticsTracker.minQuestDifficulty.addValue(1);
+						}
+						if(item == Industries.PHOENIX_FEATHERS) {
+							StatisticsTracker.maxQuestDifficulty.addValue(3);
+							StatisticsTracker.minQuestDifficulty.addValue(1);
+						}
 						#endregion
 					}
 					Transform t;
@@ -315,7 +323,7 @@ namespace Assets.draco18s.artificer.game {
 					t.gameObject.SetActive(QuestManager.IsIndustryOnQuest(item));
 					t.GetComponent<Button>().AddHover(delegate (Vector3 p) {
 						GuiManager.ShowTooltip(t.position + Vector3.right * 10, "Needed for quests", 1);
-					});
+					},false);
 					t = it.transform.GetChild(0).GetChild(0).FindChild("Ico2");
 					t.gameObject.SetActive(item.getRawVendors() > 0);
 					t.GetComponent<Button>().AddHover(delegate(Vector3 p) {
@@ -328,7 +336,7 @@ namespace Assets.draco18s.artificer.game {
 					t.gameObject.SetActive(item.apprentices > 0);
 					t.GetComponent<Button>().AddHover(delegate (Vector3 p) {
 						GuiManager.ShowTooltip(t.position + Vector3.right * 10, item.apprentices + " apprentice(s) assigned", 1);
-					});
+					}, false);
 					t.GetComponent<Button>().onClick.AddListener(delegate { IncreaseApprentices(item); });
 					t.GetComponent<Button>().OnRightClick(delegate { DecreaseApprentices(item); });
 				}
@@ -803,8 +811,8 @@ namespace Assets.draco18s.artificer.game {
 				//int minx = Mathf.RoundToInt(((RectTransform)selectedIcon.transform.parent).offsetMin.x);
 				int maxy = Screen.height - 100;
 				int minx = Screen.width / 2 - 32;
-				newpos.y = Mathf.Clamp(newpos.y, 48, maxy-32);
-				newpos.x = Mathf.Clamp(newpos.x, -1*(minx - 128), minx);
+				newpos.y = Mathf.Clamp(newpos.y, 48, maxy - 32);
+				newpos.x = Mathf.Clamp(newpos.x, -1 * (minx - 128), minx);
 				newpos = MathHelper.snap(newpos, 24);
 				selectedIcon.craftingGridGO.transform.GetChild(0).localPosition = newpos;
 				Main.instance.mouseDownTime += 1;
@@ -868,13 +876,10 @@ namespace Assets.draco18s.artificer.game {
 						return;
 					}
 
-					//pos.y -= 120;
-					int v = (Screen.height) / 2;
-					//pos.y += v;
-					int h = (Screen.width / 2) - 170;
-					pos.x = Mathf.Clamp(pos.x, 115 - h, h);
-					pos.y = Mathf.Clamp(pos.y, v-214, v+110) + 0.5f;
-
+					int maxy = Screen.height - 235;
+					int minx = Screen.width / 2 - 160;
+					pos.y = Mathf.Clamp(pos.y, 168, maxy - 32);
+					pos.x = Mathf.Clamp(pos.x, -1 * (minx - 128), minx - 16);
 					GuiManager.instance.infoPanel.transform.localPosition = pos;
 				}
 				info.Title.text = Main.ToTitleCase(selectedIcon.name);

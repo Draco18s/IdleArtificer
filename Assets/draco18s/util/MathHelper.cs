@@ -70,9 +70,9 @@ namespace Assets.draco18s.util {
 			float x = pos.x;
 			float y = pos.y;
 			float z = pos.z;
-			x = Mathf.FloorToInt(x / v) * v;
-			y = Mathf.FloorToInt(y / v) * v;
-			z = Mathf.FloorToInt(z / v) * v;
+			x = snap(x, v);
+			y = snap(y, v);
+			z = snap(z, v);
 			return new Vector3(x, y, z);
 		}
 

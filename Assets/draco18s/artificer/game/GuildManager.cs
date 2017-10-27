@@ -261,6 +261,8 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.guildmasterArea.transform.FindChild("OwnedTxt").GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
 			if(!StatisticsTracker.firstGuildmaster.isAchieved()) {
 				StatisticsTracker.firstGuildmaster.setAchieved();
+				StatisticsTracker.maxQuestDifficulty.addValue(2);
+				StatisticsTracker.minQuestDifficulty.addValue(1);
 			}
 			closeNewGuildmaster();
 			GuiManager.instance.guildArea.transform.FindChild("SkillPanel").FindChild("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);

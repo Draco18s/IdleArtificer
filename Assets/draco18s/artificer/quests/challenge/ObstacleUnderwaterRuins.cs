@@ -18,7 +18,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			else result = EnumResult.MIXED;
 
 			long v = 0;
-			if(!Main.instance.player.questTypeCompletion.TryGetValue(ChallengeTypes.Goals.Bonus.KRAKEN, out v)) {
+			if(!Main.instance.player.questTypeCompletion.TryGetValue(ChallengeTypes.Goals.Bonus.KRAKEN.name, out v)) {
 				v = 0;
 			}
 			if(v == 0 && StatisticsTracker.maxQuestDifficulty.value >= 15) {
