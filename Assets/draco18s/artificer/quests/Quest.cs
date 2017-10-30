@@ -326,6 +326,7 @@ namespace Assets.draco18s.artificer.quests {
 				questTimer -= t;
 				return EnumResult.CONTINUE;
 			}
+			int initQuestStep = questStep;
 			if(questStep >= obstacles.Length || questStep < 0) {
 				Debug.Log(this.heroName);
 				foreach(QuestChallenge o in obstacles) {
@@ -418,7 +419,9 @@ namespace Assets.draco18s.artificer.quests {
 			questTimer += 60;
 			questStep++;
 
-
+			if(questStep > initQuestStep) {
+				heroCurHealth = Math.Min(heroCurHealth + 5, heroMaxHealth);
+			}
 
 			if(questStep >= obstacles.Length) {
 				if(result < EnumResult.MIXED && ob.type is IQuestGoal) {

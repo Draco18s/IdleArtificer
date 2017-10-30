@@ -1,27 +1,29 @@
-﻿using System;
+﻿using Assets.draco18s.artificer.init;
+using Assets.draco18s.artificer.quests.hero;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	public class ObstacleHitchRide : ObstacleType {
-		public ObstacleHitchRide() : base("hitching a ride") {
+	public class ObstacleTeleport : ObstacleType {
+		public ObstacleTeleport() : base("teleporting") {
 
 		}
 
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
-			EnumResult result = EnumResult.MIXED;
+			EnumResult result = EnumResult.FAIL;
 
-			if(theQuest.testCharisma(questBonus)) {
+			if(theQuest.testIntelligence(questBonus)) {
 				result += 1;
-				if(theQuest.testCharisma(0)) {
+				if(theQuest.testIntelligence(0)) {
 					result += 1;
 				}
 			}
 			else {
-				if(!theQuest.testCharisma(0)) {
-					result -= 1;
+				if(theQuest.testLuck(20) < 10 + questBonus) {
+					result += 1;
 				}
 			}
 
@@ -32,16 +34,19 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			switch(result) {
 				case EnumResult.CRIT_FAIL: //no crit fail
 				case EnumResult.FAIL:
-					theQuest.raiseCharisma(questBonus > 0 ? 1 : 0); //if the hero had a bonus and still failed
 					theQuest.addTime(60);
+					theQuest.harmHero(10, DamageType.HOLY);
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.LOST, 0));
 					break;
 				case EnumResult.MIXED: //nothing bad, nothing good
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.LOST, 4));
 					break;
 				case EnumResult.SUCCESS:
 					theQuest.hastenQuestEnding(-300);
 					break;
 				case EnumResult.CRIT_SUCCESS:
-					theQuest.hastenQuestEnding(-360);
+					theQuest.hastenQuestEnding(-300);
+					ChallengeTypes.Loot.AddRareResource(theQuest);
 					break;
 			}
 		}

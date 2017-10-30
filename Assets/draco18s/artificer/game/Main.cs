@@ -39,6 +39,7 @@ namespace Assets.draco18s.artificer.game {
 		//private string lastPurchase = "";
 		//private int lastTime = -1;
 		public bool close_file = false;
+		private float autosaveTimer = 0;
 
 		void Start() {
 			Profiler.maxNumberOfSamplesPerFrame = -1;
@@ -115,10 +116,19 @@ namespace Assets.draco18s.artificer.game {
 				totalRenown /= 10000;
 				BigInteger renown = totalRenown - spentRenown + Main.instance.player.questsCompleted;*/
 				BigInteger renown = getCachedNewRenown() + Main.instance.player.questsCompleted;
-				GuiManager.ShowTooltip(GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").transform.position, "You will gain " + Main.AsCurrency(renown) + " Renown if you reset now.", 2.3f);
+				GuiManager.ShowTooltip(GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").transform.position, "You will gain " + Main.AsCurrency(renown) + " Renown if you reset now.", 2.5f);
 			});
 			btn = GuiManager.instance.craftHeader.transform.FindChild("SyncBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { CraftingManager.SynchronizeInustries(); });
+			btn.AddHover(delegate (Vector3 p) {
+				GuiManager.ShowTooltip(btn.transform.position+Vector3.right*50, "Automatically synchronize the build timers.",3);
+			}, false);
+			GuiManager.instance.craftHeader.transform.FindChild("RecallBtn").GetComponent<Button>().onClick.AddListener(delegate {
+				foreach(Industry ind in instance.player.builtItems) {
+					ind.AdjustVendors(0);
+				}
+				instance.player.currentVendors = 0;
+			});
 			Toggle tog = GuiManager.instance.craftHeader.transform.FindChild("AutoToggle").GetComponent<Toggle>();
 			tog.onValueChanged.AddListener(delegate { debugAutoBuild = !debugAutoBuild; });
 			tog.AddHover(delegate (Vector3 pos) {
@@ -136,6 +146,7 @@ namespace Assets.draco18s.artificer.game {
 				else {
 					writeDataToSave();
 				}
+				GuiManager.ShowNotification(new NotificationItem("Game saved!", "", GuiManager.instance.checkOn));
 			});
 #pragma warning disable 0219
 			//make sure these static class references have been created
@@ -246,6 +257,10 @@ namespace Assets.draco18s.artificer.game {
 
 			CraftingManager.setupUI();
 			GuildManager.update();
+			checkDailyLogin();
+		}
+
+		private void checkDailyLogin() {
 			long nl = long.Parse(DateTime.Now.ToString("yyMMddHHmm"));
 			long ll = StatisticsTracker.lastDailyLogin.value * 5;
 			if(ll > 0) {
@@ -331,7 +346,6 @@ namespace Assets.draco18s.artificer.game {
 			finally {
 				s.Close();
 			}
-			GuiManager.ShowNotification(new NotificationItem("Game saved!", "", GuiManager.instance.checkOn));
 		}
 
 		public static bool readDataFromCookie() {
@@ -353,6 +367,7 @@ namespace Assets.draco18s.artificer.game {
 
 		void Update() {
 			float deltaTime = Time.deltaTime * GetSpeedMultiplier();
+			autosaveTimer += Time.deltaTime;
 			autoClickTime += deltaTime;
 			TimeSinceLastRequest += deltaTime;
 			bool doAutoClick = false;
@@ -430,12 +445,17 @@ namespace Assets.draco18s.artificer.game {
 			}
 			Profiler.EndSample();
 			Profiler.BeginSample("Sell Items");
+			player.clearCache();
+			BigInteger maxSell;
+			BigInteger quant;
+			BigInteger amt;
+			BigRational val;
 			foreach(Industry i in player.builtItems) {
 				if(i.didComplete > 0) {
 					do {
-						BigInteger maxSell = (i.isSellingStores ? -1 : (i.output * i.getTotalLevel()) - i.consumeAmount);
-						BigInteger quant = i.quantityStored;
-						BigInteger amt = i.getVendors() * GetVendorSize();
+						maxSell = (i.isSellingStores ? -1 : (i.output * i.getTotalLevel()) - i.consumeAmount);
+						quant = i.quantityStored;
+						amt = i.getVendors() * GetVendorSize();
 						if(maxSell >= 0)
 							amt = MathHelper.Min(amt, maxSell);
 						/*i.quantityStored -= amt;
@@ -443,7 +463,7 @@ namespace Assets.draco18s.artificer.game {
 						amt = MathHelper.Max(MathHelper.Min(amt, i.quantityStored), 0);
 						i.quantityStored -= amt;
 						quant -= i.quantityStored;
-						BigRational val = ((BigRational)quant * GetVendorValue());
+						val = ((BigRational)quant * GetVendorValue());
 						val *= i.GetSellValue();
 						AddMoney((BigInteger)val);
 						//AddMoney(GetVendorValue() * (quant * i.GetSellValue()));
@@ -498,6 +518,16 @@ namespace Assets.draco18s.artificer.game {
 							input.item.consumeAmount += Mathf.RoundToInt((input.quantity * item.getTotalLevel()) * mod);
 						}
 					}
+				}
+			}
+			if(autosaveTimer >= 30) {
+				autosaveTimer -= 30;
+				checkDailyLogin();
+				if(Application.platform == RuntimePlatform.WebGLPlayer) {
+					DataAccess.Save(player);
+				}
+				else {
+					writeDataToSave();
 				}
 			}
 		}
@@ -588,6 +618,7 @@ namespace Assets.draco18s.artificer.game {
 				//csv_st.Close();
 			}*/
 			//Debug.Log("end: " + DateTime.Now.Millisecond);
+			
 			return ret;
 		}
 

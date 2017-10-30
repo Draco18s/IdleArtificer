@@ -44,6 +44,7 @@ namespace Assets.draco18s.artificer.init {
 			#region semi-advanced
 			//Adding more quests requires increasing maxQuestDifficulty somewhere
 			//require several basic or mid-level items
+			public static ObstacleType RECRUIT = new GoalRecruitAllies().setRewardScalar(4).setReqScalar(2f);//cha
 			public static ObstacleType DEFEND_VILLAGE = new GoalDefendVillage().setRewardScalar(4); //armor*2 + weapon*2
 			public static ObstacleType DUKE = new GoalPetitionTheDuke().setRewardScalar(4).setReqScalar(2f);//cha
 			public static ObstacleType SPHINX = new GoalSphynxRiddles().setRewardScalar(4).setReqScalar(2f);//int + mana
@@ -148,6 +149,7 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType SWAMP = new ObstacleSwamp();
 			public static ObstacleType WATER_TRANSPORT = new ObstacleWaterTransport();
 			public static ObstacleType WEATHER = new ObstacleBadWeather(); //damage
+			public static ObstacleType TELEPORT = new ObstacleTeleport();
 
 			public static ObstacleType getRandom(Random rand) {
 				FieldInfo[] fields = typeof(Travel).GetFields();

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleGraveyard : ObstacleType {
+	public class ObstacleGraveyard : ObstacleType {
 
 		public ObstacleGraveyard() : base("having an encounter in a graveyard", new RequireWrapper(RequirementType.UNHOLY_IMMUNE), new RequireWrapper(RequirementType.HOLY_DAMAGE, RequirementType.DISRUPTION)) {
 

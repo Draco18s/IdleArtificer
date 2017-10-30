@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalExploreTomb_Mummy : ObstacleType, IQuestGoal, IMonsterChallenge {
+	public class GoalExploreTomb_Mummy : ObstacleType, IQuestGoal, IMonsterChallenge {
 		protected int mummyMaxHealth;
 		//private static FantasyNameSettings fantasyNameSettings = new FantasyNameSettings(Classes.Warrior, Race.Dragon, true, true, Gender.Male);
 		//private static IFantasyNameGenerator fantasyNameGenerator = FantasyNameGenerator.FromSettingsInfo(fantasyNameSettings);

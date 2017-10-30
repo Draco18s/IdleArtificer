@@ -10,7 +10,7 @@ using System.Text;
 using UnityEngine;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleGenie : ObstacleType,IRelicMaker {
+	public class ObstacleGenie : ObstacleType,IRelicMaker {
 		public ObstacleGenie() : base("talking to a genie") {
 			setRewardScalar(12);
 		}

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleWaterTransport : ObstacleType {
+	public class ObstacleWaterTransport : ObstacleType {
 		public ObstacleWaterTransport() : base("hiring a boat", new RequireWrapper(RequirementType.CHARISMA)) {
 
 		}

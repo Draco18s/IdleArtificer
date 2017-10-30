@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleSwamp : ObstacleType {
+	public class ObstacleSwamp : ObstacleType {
 		public ObstacleSwamp() : base("navigating a swamp", new RequireWrapper(RequirementType.FREE_MOVEMENT)) {
 
 		}

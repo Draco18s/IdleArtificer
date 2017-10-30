@@ -8,7 +8,7 @@ using Assets.draco18s.artificer.game;
 using Assets.draco18s.artificer.init;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	internal class GoalFallenHero : ObstacleType, IQuestGoal, IMonsterChallenge, IDescriptorData {
+	public class GoalFallenHero : ObstacleType, IQuestGoal, IMonsterChallenge, IDescriptorData {
 		protected int fallenHeroMaxHealth;
 
 		public GoalFallenHero() : base("slaying the fallen hero", new RequireWrapper(RequirementType.WEAPON), new RequireWrapper(RequirementType.HOLY_DAMAGE), new RequireWrapper(RequirementType.WEAKNESS)) {

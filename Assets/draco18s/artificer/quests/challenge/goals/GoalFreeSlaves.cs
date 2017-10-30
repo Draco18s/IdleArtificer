@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalFreeSlaves : ObstacleType, IQuestGoal {
+	public class GoalFreeSlaves : ObstacleType, IQuestGoal {
 		public GoalFreeSlaves() : base("freeing slaves", new RequireWrapper(RequirementType.FIRM_RESOLVE, RequirementType.CHARISMA)) {
 
 		}

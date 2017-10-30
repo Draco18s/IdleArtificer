@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleResourceCacheSimple : ObstacleType {
+	public class ObstacleResourceCacheSimple : ObstacleType {
 		public ObstacleResourceCacheSimple() : base("finding some items") {
 
 		}

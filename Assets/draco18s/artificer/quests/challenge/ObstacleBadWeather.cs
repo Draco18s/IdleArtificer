@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleBadWeather : ObstacleType {
+	public class ObstacleBadWeather : ObstacleType {
 		public ObstacleBadWeather() : base("dealing with bad weather", new RequireWrapper(0,RequirementType.ENDURANCE)) {
 
 		}

@@ -14,7 +14,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.draco18s.artificer.game {
-	class ResearchManager {
+	public class ResearchManager {
 		private static Transform relicList;
 		private static Transform relicInfo;
 		private static Text relicInfoText;
@@ -85,7 +85,6 @@ namespace Assets.draco18s.artificer.game {
 		public static void setupUI() {
 			int i = 0;
 			int X = Mathf.FloorToInt((((RectTransform)relicList).rect.width - 10) / 98);
-			Debug.Log("How many fit? " + X);
 			foreach(ItemStack stack in Main.instance.player.miscInventory) {
 				//Debug.Log("i: " + i);
 				//Debug.Log(stack.item.name);
@@ -173,10 +172,12 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static void IncrementResearch() {
-			StatisticsTracker.numClicks.addValue(1);
-			UpgradeValueWrapper wrap1;
-			Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap1);
-			Main.instance.player.researchTime += 50 * ((UpgradeFloatValue)wrap1).value * Main.instance.GetClickRate() * Main.instance.player.currentGuildmaster.researchMultiplier();
+			if(Main.instance.player.unidentifiedRelics.Count > 0) {
+				StatisticsTracker.numClicks.addValue(1);
+				UpgradeValueWrapper wrap1;
+				Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap1);
+				Main.instance.player.researchTime += 50 * ((UpgradeFloatValue)wrap1).value * Main.instance.GetClickRate() * Main.instance.player.currentGuildmaster.researchMultiplier();
+			}
 		}
 
 		private static void ShowInfo(ItemStack stack) {
@@ -244,7 +245,7 @@ namespace Assets.draco18s.artificer.game {
 			if(examinedStack.item.industry == null) {
 				return 1000;
 			}
-			BigRational val = examinedStack.item.industry.GetSellValue() * 10000 * BigRational.Pow(1.1f, examinedStack.enchants.Count);
+			BigRational val = examinedStack.item.industry.GetSellValue() * 2000 * BigRational.Pow(1.1f, examinedStack.enchants.Count + examinedStack.antiquity);
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out wrap);
 			RelicInfo ri = examinedStack.relicData.OrderByDescending(o => o.notoriety).First();
@@ -253,6 +254,7 @@ namespace Assets.draco18s.artificer.game {
 				b *= ((UpgradeFloatValue)wrap).value;
 				val += b;
 				if(ri.relicName.Equals("Lost")) {
+					Debug.Log("Lost");
 					val /= 100000;
 				}
 			}

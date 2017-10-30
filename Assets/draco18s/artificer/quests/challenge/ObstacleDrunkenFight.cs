@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleDrunkenFight : ObstacleType {
+	public class ObstacleDrunkenFight : ObstacleType {
 		public ObstacleDrunkenFight() : base("in a drunken fight", new RequireWrapper(RequirementType.WEAPON),new RequireWrapper(RequirementType.CLUMSINESS)) {
 
 		}

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleDetained : ObstacleType {
+	public class ObstacleDetained : ObstacleType {
 		public ObstacleDetained() : base("being detained", new RequireWrapper(RequirementType.ETHEREALNESS), new RequireWrapper(RequirementType.CHARISMA)) {
 
 		}

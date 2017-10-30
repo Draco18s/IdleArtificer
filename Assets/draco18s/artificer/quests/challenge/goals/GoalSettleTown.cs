@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalSettleTown : ObstacleType, IQuestGoal {
+	public class GoalSettleTown : ObstacleType, IQuestGoal {
 		public GoalSettleTown() : base("settling a new town", new RequireWrapper(RequirementType.WOOD), new RequireWrapper(RequirementType.LEATHER), new RequireWrapper(RequirementType.IRON)) {
 
 		}

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstcaleStealSupplies : ObstacleType {
+	public class ObstcaleStealSupplies : ObstacleType {
 		public ObstcaleStealSupplies() : base("stealing supplies", new RequireWrapper(RequirementType.STEALTH,RequirementType.STUPIDITY)) {
 
 		}

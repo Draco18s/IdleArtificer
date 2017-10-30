@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalSlayGorgon : ObstacleType, IQuestGoal, IMonsterChallenge {
+	public class GoalSlayGorgon : ObstacleType, IQuestGoal, IMonsterChallenge {
 		protected int gorgonMaxHealth;
 		public GoalSlayGorgon() : base("slaying the gorgon", new RequireWrapper(RequirementType.MIRRORED)) {
 			gorgonMaxHealth = 100;

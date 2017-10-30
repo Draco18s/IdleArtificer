@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleMarooned : ObstacleType {
+	public class ObstacleMarooned : ObstacleType {
 		public ObstacleMarooned() : base("marooned at sea") {
 
 		}

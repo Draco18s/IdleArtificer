@@ -16,9 +16,10 @@ using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.masters;
 using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.config;
+using System.Collections;
 
 namespace Assets.draco18s.artificer.game {
-	class GuildManager {
+	public class GuildManager {
 		private static Text moneyDisp;
 		private static Text renownDisp;
 		private static Text skillDisp;
@@ -170,6 +171,8 @@ namespace Assets.draco18s.artificer.game {
 				GameObject go = Main.Instantiate(PrefabManager.instance.SKILL_LISTITEM, skillListParent) as GameObject;
 				sk.guiItem = go;
 				go.transform.localPosition = new Vector3(5, i * -110 -5, 5);
+				((RectTransform)go.transform).anchorMax = new Vector2(1,1);
+				((RectTransform)go.transform).offsetMax = new Vector2(-3, ((RectTransform)go.transform).offsetMax.y);
 				go.transform.FindChild("Name").GetComponent<Text>().text = Localization.translateToLocal(sk.name);
 				go.transform.FindChild("Description").GetComponent<Text>().text = Localization.translateToLocal(sk.description);
 				go.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
@@ -268,6 +271,7 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.guildArea.transform.FindChild("SkillPanel").FindChild("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.transform.parent.gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
+			StatisticsTracker.guildmastersElected.addValue(1);
 		}
 
 		public static void setupUI() {
@@ -374,6 +378,9 @@ namespace Assets.draco18s.artificer.game {
 						}
 					}
 				}
+				if(i == 0) {
+					StatisticsTracker.allCashUpgrades.setAchieved();
+				}
 				((RectTransform)cashList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
 
 				i = 0;
@@ -412,6 +419,9 @@ namespace Assets.draco18s.artificer.game {
 							Main.Destroy(item.upgradListGui);
 						}
 					}
+				}
+				if(i == 0) {
+					StatisticsTracker.allRenownUpgrades.setAchieved();
 				}
 				((RectTransform)renownList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
 				//listGui.localPosition = Vector3.zero;
@@ -526,7 +536,25 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static void readSaveData(ref SerializationInfo info, ref StreamingContext context) {
-			if(Main.saveVersionFromDisk >= 4) {
+			SerializationInfoEnumerator infoEnum = info.GetEnumerator();
+			Hashtable values = new Hashtable();
+			while(infoEnum.MoveNext()) {
+				SerializationEntry val = infoEnum.Current;
+				values.Add(val.Name, val.Value);
+			}
+			if(Main.saveVersionFromDisk >= 11) {
+				foreach(Upgrade item in cashUpgradeList) {
+					if(values.Contains("upgrade_" + item.saveName) && (bool)values["upgrade_" + item.saveName]) {
+						item.applyUpgrade();
+					}
+				}
+				foreach(Upgrade item in renownUpgradeList) {
+					if(values.Contains("renown_upgrade_" + item.saveName) && (bool)values["renown_upgrade_" + item.saveName]) {
+						item.applyUpgrade();
+					}
+				}
+			}
+			else if(Main.saveVersionFromDisk >= 4) {
 				foreach(Upgrade item in cashUpgradeList) {
 					try {
 						if(info.GetBoolean("upgrade_" + item.saveName)) {
@@ -535,11 +563,11 @@ namespace Assets.draco18s.artificer.game {
 						//item.setIsPurchased(info.GetBoolean("upgrade_" + item.saveName));
 					}
 					catch (SerializationException e) {
-						//Debug.Log(e);
+						Debug.Log(e);
 					}
 				}
 				if(Main.saveVersionFromDisk >= 6) {
-					foreach(Upgrade item in cashUpgradeList) {
+					foreach(Upgrade item in renownUpgradeList) {
 						try {
 							if(info.GetBoolean("renown_upgrade_" + item.saveName)) {
 								item.applyUpgrade();
@@ -547,7 +575,7 @@ namespace Assets.draco18s.artificer.game {
 							//item.setIsPurchased(info.GetBoolean("renown_upgrade_" + item.saveName));
 						}
 						catch(SerializationException e) {
-							//Debug.Log(e);
+							Debug.Log(e);
 						}
 					}
 				}

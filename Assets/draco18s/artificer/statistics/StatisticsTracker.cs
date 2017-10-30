@@ -21,7 +21,7 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatBint lifetimeMoney = new StatBint("lifetimeMoney").register();
 		public static readonly StatBint lifetimeRenown = new StatBint("lifetimeRenown").register();
 		public static readonly StatBase lastDailyLogin = new StatBase("lastDailyLogin").register().setHidden();
-		public static readonly StatBase sequentialDaysPlayed = new StatHighscore("sequentialDaysPlayed").register();
+		public static readonly StatBase sequentialDaysPlayed = new StatLogin("sequentialDaysPlayed").register();
 		public static readonly StatBase vendorsPurchased = new StatHighscore("vendorsPurchased").register();
 		public static readonly StatBase apprenticesPurchased = new StatHighscore("apprenticesPurchased").register();
 		public static readonly StatBase journeymenPurchased = new StatHighscore("journeymenPurchased").register();
@@ -30,7 +30,7 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatBase questsCompleted = new StatHighscore("questsCompleted").register();
 		public static readonly StatBase relicsMade = new StatBase("relicsMade").register();
 		public static readonly StatBase relicAntiquity = new StatHighscore("relicAntiquity").register();
-		//sequential days logged in
+		public static readonly StatBase guildmastersElected = new StatBase("guildmastersElected").register();
 		//total play duration
 		#endregion
 		#region achieve list
@@ -49,9 +49,11 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatAchievement impressiveAntiquity = new StatAchievement("impressiveAntiquity").register();
 		public static readonly StatAchievement firstEnchantment = new StatAchievement("firstEnchantment").register();
 		public static readonly StatAchievement firstGuildmaster = new StatAchievement("firstGuildmaster").register();
+		public static readonly StatAchievement allCashUpgrades = new StatAchievement("allCashUpgrades").register();
+		public static readonly StatAchievement allRenownUpgrades = new StatAchievement("allRenownUpgrades").register();
 		public static readonly StatAchievement vendorsPurchasedAch = new AchievementMulti("vendorsPurchasedAch", vendorsPurchased, new object[] { 10, 25, 50, 75, 100, 150, 200, 250, 500, 1000 }).register();
-		public static readonly StatAchievement apprenticesPurchasedAch = new AchievementMulti("apprenticesPurchasedAch", apprenticesPurchased, new object[] { 10, 25, 50, 75, 100, 150, 200, 250, 500, 1000 }).register();
-		public static readonly StatAchievement journeymenPurchasedAch = new AchievementMulti("journeymenPurchasedAch", journeymenPurchased, new object[] { 10, 25, 50, 75, 100, 150, 200, 250, 500, 1000 }).register();
+		public static readonly StatAchievement apprenticesPurchasedAch = new AchievementMulti("apprenticesPurchasedAch", apprenticesPurchased, new object[] { 1, 5, 10, 25, 50, 75, 100, 150, 200, 250 }).register();
+		public static readonly StatAchievement journeymenPurchasedAch = new AchievementMulti("journeymenPurchasedAch", journeymenPurchased, new object[] { 1, 5, 10, 25, 50, 75, 100, 150, 200, 250 }).register();
 		#endregion
 		//unlocked all quests
 		//built all buildings - have ever built x

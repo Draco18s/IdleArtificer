@@ -1,4 +1,5 @@
 ﻿using Assets.draco18s.artificer.game;
+using Assets.draco18s.config;
 using Koopakiller.Numerics;
 using System;
 using System.Xml;
@@ -11,18 +12,15 @@ namespace Assets.draco18s.artificer.statistics {
 		private string _description;
 		public string statName {
 			get { return _statName; }
-			set { _statName = value; }
 		}
 		public string description {
-			get { return _description; }
-			set { _description = value; }
+			get { return Localization.translateToLocal(_description); }
 		}
 		public readonly bool shouldResetOnNewLevel;
 		protected bool shouldReadAsFloat = false;
 		private int dispOrd = -1;
 		public int displayOrder {
 			get { return dispOrd; }
-			set { }
 		}
 		public virtual BigInteger value {
 			get {
@@ -67,8 +65,8 @@ namespace Assets.draco18s.artificer.statistics {
 		protected int idVal = -1;
 
 		public StatBint(string name) {
-			statName = "stat." + name + ".name";
-			description = "stat." + name + ".desc";
+			_statName = "stat." + name + ".name";
+			_description = "stat." + name + ".desc";
 			statValue = 0;
 			shouldResetOnNewLevel = false;
 		}

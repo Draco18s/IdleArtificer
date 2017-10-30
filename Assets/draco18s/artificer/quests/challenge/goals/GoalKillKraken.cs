@@ -107,6 +107,8 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 
 		public void getLootDrops(EnumResult result, Quest theQuest, ref int questBonus) {
 			StatisticsTracker.defeatKraken.setAchieved();
+			StatisticsTracker.maxQuestDifficulty.addValue(1);
+
 			Item i = Items.DRAGON_SCALES;
 			int s = theQuest.questRand.Next(i.maxStackSize - i.minStackSize + 1) + i.minStackSize;
 			ChallengeTypes.Loot.AddStack(theQuest, new ItemStack(i, s));

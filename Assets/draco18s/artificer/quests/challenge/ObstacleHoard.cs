@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleHoard : ObstacleType {
+	public class ObstacleHoard : ObstacleType {
 		public ObstacleHoard() : base("raiding a hoard") {
 
 		}

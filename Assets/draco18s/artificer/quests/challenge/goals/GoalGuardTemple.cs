@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalGuardTemple : ObstacleType, IQuestGoal {
+	public class GoalGuardTemple : ObstacleType, IQuestGoal {
 		public GoalGuardTemple() : base("guarding temple", new RequireWrapper(RequirementType.DETECTION), new RequireWrapper(RequirementType.ARMOR)) {
 
 		}

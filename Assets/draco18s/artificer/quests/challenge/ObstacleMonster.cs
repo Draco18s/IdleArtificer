@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleMonster : ObstacleType,IMonsterChallenge {
+	public class ObstacleMonster : ObstacleType,IMonsterChallenge {
 		DamageType atkDamage;
 		RequirementType weakTo;
 		public ObstacleMonster(string name, DamageType monsterAttackType, RequirementType monsterWeakness) : base("fighting " + name, name, new RequireWrapper(monsterAttackType.getImmunityType()), new RequireWrapper(monsterWeakness)) {
@@ -41,7 +41,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public int getMonsterTotalHealth() {
-			return 200;
+			return 100;
 		}
 
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
@@ -61,17 +61,15 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
-			theQuest.addTime(-30);
-			theQuest.hastenQuestEnding(-30);
 			switch(result) {
 				case EnumResult.CRIT_FAIL: //no crit fail
-					theQuest.harmHero(20, atkDamage);
+					theQuest.harmHero(15, atkDamage);
 					break;
 				case EnumResult.FAIL:
 					theQuest.harmHero(10, atkDamage);
 					break;
 				case EnumResult.MIXED:
-					theQuest.harmHero(10, DamageType.GENERIC);
+					theQuest.harmHero(5, DamageType.GENERIC);
 					break;
 				case EnumResult.SUCCESS:
 					break;

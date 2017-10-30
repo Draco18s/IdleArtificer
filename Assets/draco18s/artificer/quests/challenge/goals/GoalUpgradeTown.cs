@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalUpgradeTown : ObstacleType, IQuestGoal {
+	public class GoalUpgradeTown : ObstacleType, IQuestGoal {
 		public GoalUpgradeTown() : base("building infrastructure", new RequireWrapper(RequirementType.TOOLS, RequirementType.WOOD), new RequireWrapper(RequirementType.IRON, RequirementType.LEATHER)) {
 
 		}

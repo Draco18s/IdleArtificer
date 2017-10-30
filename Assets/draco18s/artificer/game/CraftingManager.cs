@@ -738,6 +738,12 @@ namespace Assets.draco18s.artificer.game {
 			selectedIcon.level -= buyNum;
 			info.DowngradeBtn.gameObject.SetActive(true);
 			if(selectedIcon.level <= 0) {
+				Main.instance.player.currentVendors -= selectedIcon.getRawVendors();
+				Main.instance.player.currentApprentices -= selectedIcon.apprentices;
+				foreach(IndustryInput input in selectedIcon.inputs) {
+					Main.Destroy(input.arrow);
+				}
+
 				Main.instance.player.builtItems.Remove(selectedIcon);
 				Main.Destroy(selectedIcon.craftingGridGO);
 				selectedIcon.craftingGridGO = null;
@@ -812,7 +818,11 @@ namespace Assets.draco18s.artificer.game {
 				int maxy = Screen.height - 100;
 				int minx = Screen.width / 2 - 32;
 				newpos.y = Mathf.Clamp(newpos.y, 48, maxy - 32);
-				newpos.x = Mathf.Clamp(newpos.x, -1 * (minx - 128), minx);
+				int minx2 = -1 * (minx - 120);
+				if(minx2 > MathHelper.snap(minx2, 24)) {
+					minx2 += 24;
+				}
+				newpos.x = Mathf.Clamp(newpos.x, minx2, minx);
 				newpos = MathHelper.snap(newpos, 24);
 				selectedIcon.craftingGridGO.transform.GetChild(0).localPosition = newpos;
 				Main.instance.mouseDownTime += 1;

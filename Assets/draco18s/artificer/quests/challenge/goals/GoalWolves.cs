@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalWolves : ObstacleType, IQuestGoal {
+	public class GoalWolves : ObstacleType, IQuestGoal {
 		public GoalWolves() : base("hunting wolves", new RequireWrapper(RequirementType.WEAPON), new RequireWrapper(RequirementType.ARMOR), new RequireWrapper(RequirementType.POISON_DAMAGE)) {
 
 		}

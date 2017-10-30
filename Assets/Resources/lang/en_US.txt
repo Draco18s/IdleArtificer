@@ -15,6 +15,8 @@ achieve.apprenticesPurchasedAch.name=Apprentices Hired
 achieve.journeymenPurchasedAch.name=Journeymen Hired
 achieve.impressiveAntiquity.name=Impressive Antique
 achieve.sequentialLogin.name=Sequential Logins
+achieve.allCashUpgrades.name=All Cash Upgrades
+achieve.allRenownUpgrades.name=All Renown Upgrades
 achieve.ASDF.name=ASDF
 
 achieve.firstEnchantment.desc=Enchant something
@@ -34,6 +36,8 @@ achieve.apprenticesPurchasedAch.desc=Purchase {0} apprentices
 achieve.journeymenPurchasedAch.desc=Purchase {0} journeymen
 achieve.impressiveAntiquity.desc=Get a relic with at least 50 Antiquity
 achieve.sequentialLogin.desc=Play the game {0} days in a row
+achieve.allCashUpgrades.desc=Purchased Every Cash Upgrade
+achieve.allRenownUpgrades.desc=Purchased Every Renown Upgrade
 achieve.ASDF.desc=ASDF
 
 stat.minQuestDifficulty.name=Quest Difficulty (min)
@@ -49,7 +53,7 @@ stat.numClicks.name=Clicks!
 stat.lifetimeRenown.name=Lifetime Renown
 stat.relicAntiquity.name=Highest Relic Antiquity
 stat.sequentialDaysPlayed.name=Sequential Days Played
-stat.ASDF1.name=ASDF1
+stat.guildmastersElected.name=Guildmasters Elected
 stat.ASDF.name=ASDF
 
 stat.minQuestDifficulty.desc=Current minimum quest difficulty
@@ -64,8 +68,8 @@ stat.lifetimeMoney.desc=Total amount of money earned ever.
 stat.numClicks.desc= 
 stat.lifetimeRenown.desc=Total amount of renown earned ever.
 stat.relicAntiquity.desc= 
-stat.sequentialDaysPlayed.desc=Number of days playing in a row.
-stat.ASDF1.desc=ASDF1
+stat.sequentialDaysPlayed.desc=Days played in a row. Next day: {0}
+stat.guildmastersElected.desc= 
 stat.ASDF.desc=ASDF
 
 skill.rank_raw.name=Raw Resources

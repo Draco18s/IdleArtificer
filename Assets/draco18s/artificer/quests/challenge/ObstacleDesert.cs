@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleDesert : ObstacleType {
+	public class ObstacleDesert : ObstacleType {
 		public ObstacleDesert() : base("traveling across a desert", new RequireWrapper(RequirementType.ENDURANCE)) {
 
 		}

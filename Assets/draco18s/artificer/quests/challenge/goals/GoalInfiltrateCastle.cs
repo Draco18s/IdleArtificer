@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalInfiltrateCastle : ObstacleType, IQuestGoal {
+	public class GoalInfiltrateCastle : ObstacleType, IQuestGoal {
 		public GoalInfiltrateCastle() : base("infiltrating a castle", new RequireWrapper(RequirementType.ETHEREALNESS, RequirementType.STEALTH),new RequireWrapper(RequirementType.AGILITY)) {
 
 		}

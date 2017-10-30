@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleTrappedPassage : ObstacleType {
+	public class ObstacleTrappedPassage : ObstacleType {
 		DamageType damage;
 		public ObstacleTrappedPassage(DamageType trapDamageType) : base("in a trapped passage", trapDamageType.getImmunityType().ToString(), new RequireWrapper(RequirementType.DETECTION, RequirementType.AGILITY)) {
 			damage = trapDamageType;

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleBuyEquipment : ObstacleType {
+	public class ObstacleBuyEquipment : ObstacleType {
 		public ObstacleBuyEquipment(string name) : base("buying equipment", name, new RequireWrapper(RequirementType.CHARISMA)) { //does basically nothing
 
 		}

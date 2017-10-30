@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalSphynxRiddles : ObstacleType, IQuestGoal {
+	public class GoalSphynxRiddles : ObstacleType, IQuestGoal {
 		public GoalSphynxRiddles() : base("solving riddles", new RequireWrapper(RequirementType.INTELLIGENCE), new RequireWrapper(RequirementType.MANA)) {
 
 		}

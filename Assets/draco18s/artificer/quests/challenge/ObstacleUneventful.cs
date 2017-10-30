@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleUneventful : ObstacleType {
+	public class ObstacleUneventful : ObstacleType {
 		public ObstacleUneventful() : base("traveling") {
 
 		}

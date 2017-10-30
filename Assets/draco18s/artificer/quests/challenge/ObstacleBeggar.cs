@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleBeggar : ObstacleType {
+	public class ObstacleBeggar : ObstacleType {
 		public ObstacleBeggar() : base("talking to a beggar") {
 
 		}

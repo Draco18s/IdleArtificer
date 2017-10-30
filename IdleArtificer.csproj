@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>5.4.0f3</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -71,16 +69,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentHaste.cs" />
-    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentLeech.cs" />
-    <Compile Include="Assets\draco18s\artificer\items\item\ItemGoods.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDelivery.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillKraken.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRunForOffice.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalWolves.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IDescriptorData.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstaclePriest.cs" />
-    <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeQuestReqs.cs" />
     <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyName.cs" />
     <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyNameGenerator.cs" />
     <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyNameSettings.cs" />
@@ -115,6 +103,7 @@
     <Compile Include="Assets\draco18s\artificer\game\QuestManager.cs" />
     <Compile Include="Assets\draco18s\artificer\game\ResearchManager.cs" />
     <Compile Include="Assets\draco18s\artificer\init\ChallengeTypes.cs" />
+    <Compile Include="Assets\draco18s\artificer\init\DeepGoalsTypes.cs" />
     <Compile Include="Assets\draco18s\artificer\init\Enchantments.cs" />
     <Compile Include="Assets\draco18s\artificer\init\GameRegistry.cs" />
     <Compile Include="Assets\draco18s\artificer\init\Industries.cs" />
@@ -128,6 +117,9 @@
     <Compile Include="Assets\draco18s\artificer\items\ItemStack.cs" />
     <Compile Include="Assets\draco18s\artificer\items\RelicInfo.cs" />
     <Compile Include="Assets\draco18s\artificer\items\Scalar.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentHaste.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentLeech.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\item\ItemGoods.cs" />
     <Compile Include="Assets\draco18s\artificer\items\item\ItemPowerStone.cs" />
     <Compile Include="Assets\draco18s\artificer\masters\Master.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\DamageType.cs" />
@@ -170,6 +162,7 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleOutskirts.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstaclePersued.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstaclePirateShip.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstaclePriest.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleQuicksand.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleResourceCache.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleResourceCacheSimple.cs" />
@@ -180,6 +173,7 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleSneaking.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleSwamp.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleTavern.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleTeleport.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleThief.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleTrappedPassage.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleTravelToTown.cs" />
@@ -192,6 +186,8 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleWilderness.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstcaleStealSupplies.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\QuestChallenge.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\CursedWood.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\IDeepGoal.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalArcheryContest.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBeheadHydra.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBuildAlchemyLab.cs" />
@@ -199,6 +195,7 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalClearRatInfestation.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCombatTraining.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDefendVillage.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDelivery.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEvilBard.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreCave.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb.cs" />
@@ -212,19 +209,24 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalGuardTemple.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalInfiltrateCastle.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillDragon.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillKraken.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillLitch.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalObserveTroopMovements.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPatrolDuty.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPetitionTheDuke.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPlantGarden.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalReachSummit.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRecruitAllies.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRepairDam.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRunForOffice.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSettleTown.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSkeletons.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSlayGorgon.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSphynxRiddles.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalTargetPractice.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalUpgradeTown.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalWolves.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IDescriptorData.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IQuestGoal.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\hero\HarrowDeck.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\requirement\RequirementType.cs" />
@@ -234,6 +236,7 @@
     <Compile Include="Assets\draco18s\artificer\statistics\StatBase.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatBint.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatHighscore.cs" />
+    <Compile Include="Assets\draco18s\artificer\statistics\StatLogin.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatResetable.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatisticsTracker.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\InfoPanel.cs" />
@@ -255,6 +258,7 @@
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeIndustryValue.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeJourneymanRate.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeQuestRenown.cs" />
+    <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeQuestReqs.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeQuestSpeed.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeRenownMulti.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeResearchSpeed.cs" />

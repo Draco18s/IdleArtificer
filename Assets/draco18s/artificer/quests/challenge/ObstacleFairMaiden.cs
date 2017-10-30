@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleFairMaiden : ObstacleType {
+	public class ObstacleFairMaiden : ObstacleType {
 		public ObstacleFairMaiden() : base("talking with a maiden", new RequireWrapper(RequirementType.CHARISMA)) {
 
 		}

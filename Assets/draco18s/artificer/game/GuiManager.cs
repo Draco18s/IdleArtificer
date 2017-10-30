@@ -100,9 +100,15 @@ public class GuiManager : MonoBehaviour {
 			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (h / 4) + 7.5f);
 		}
 		float wid = ((RectTransform)instance.tooltip.transform).rect.width;
+		float hig = ((RectTransform)instance.tooltip.transform).rect.height;
 		if(instance.tooltip.transform.position.x + wid > Screen.width) {
 			//shift the tooltip down. No check for off-screen
-			instance.tooltip.transform.position = new Vector3(Screen.width - wid / 2 - 5, instance.tooltip.transform.position.y - ((RectTransform)instance.tooltip.transform).rect.height, 0);
+			if(instance.tooltip.transform.position.y - hig*1.5f < 35) {
+				instance.tooltip.transform.position = new Vector3(Screen.width - wid / 2 - 5, instance.tooltip.transform.position.y + ((RectTransform)instance.tooltip.transform).rect.height, 0);
+			}
+			else {
+				instance.tooltip.transform.position = new Vector3(Screen.width - wid / 2 - 5, instance.tooltip.transform.position.y - ((RectTransform)instance.tooltip.transform).rect.height, 0);
+			}
 		}
 		else {
 			instance.tooltip.transform.position += new Vector3(wid / 2, 0, 0);

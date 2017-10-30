@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleLostLagoon : ObstacleType {
+	public class ObstacleLostLagoon : ObstacleType {
 		public ObstacleLostLagoon() : base("exploring an island", new RequireWrapper(RequirementType.INTELLIGENCE)) {
 
 		}

@@ -139,7 +139,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public virtual BigInteger GetBaseSellValue() {
-			return value * halvesAndDoubles;
+			return value;
 		}
 
 		/// <summary>
@@ -228,8 +228,8 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public virtual BigRational GetSellValue() {
-			BigRational sell = Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue() * Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType) * SkillList.getScalarTypeMulti(productType);
-			return sell;
+			//BigRational sell = ;
+			return Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue() * Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType) * SkillList.getScalarTypeMulti(productType);
 			//BigInteger frac = (BigInteger)(Main.instance.GetSellMultiplierMicro() * valueMulti * (BigRational)GetBaseSellValue());
 			//BigInteger ret = (BigInteger)(valueMulti * (BigRational)GetBaseSellValue() * Main.instance.GetSellMultiplier()) + frac;
 			//return ret;
@@ -405,7 +405,7 @@ namespace Assets.draco18s.artificer.items {
 			apprentices = copy.apprentices;
 			vendors = copy.vendors;
 			timeRemaining = copy.timeRemaining;
-			halvesAndDoubles = copy.halvesAndDoubles;
+			//halvesAndDoubles = copy.halvesAndDoubles; //applied via upgrade deserialization
 			gridPos = MathHelper.snap(copy.gridPos,24);
 		}
 	}

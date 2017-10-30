@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalFindMcGuffin : ObstacleType, IQuestGoal {
+	public class GoalFindMcGuffin : ObstacleType, IQuestGoal {
 		public GoalFindMcGuffin() : base("finding magic item", new RequireWrapper(RequirementType.INTELLIGENCE), new RequireWrapper(RequirementType.MANA)) {
 
 		}

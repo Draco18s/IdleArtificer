@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleExploreTown : ObstacleType {
+	public class ObstacleExploreTown : ObstacleType {
 		public ObstacleExploreTown() : base("exploring a town", new RequireWrapper(RequirementType.CHARISMA)) {//does basically nothing
 
 		}

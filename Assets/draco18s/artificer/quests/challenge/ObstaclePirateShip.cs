@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstaclePirateShip : ObstacleType {
+	public class ObstaclePirateShip : ObstacleType {
 		public ObstaclePirateShip() : base("sneaking onto pirate ship", new RequireWrapper(RequirementType.STEALTH, RequirementType.MIND_SHIELD)) {
 
 		}

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalTargetPractice : ObstacleType, IQuestGoal {
+	public class GoalTargetPractice : ObstacleType, IQuestGoal {
 		public GoalTargetPractice() : base("practicing archery", new RequireWrapper(RequirementType.RANGED)) {
 
 		}

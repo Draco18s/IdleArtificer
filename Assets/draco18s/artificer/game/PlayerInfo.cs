@@ -49,11 +49,7 @@ namespace Assets.draco18s.artificer.game {
 		internal float researchTime;
 		public Dictionary<UpgradeType, UpgradeValueWrapper> upgrades = new Dictionary<UpgradeType, UpgradeValueWrapper>();
 		public Master currentGuildmaster;
-
-		//achivements
-		//upgrades
-		//skills
-
+		
 		public PlayerInfo() {
 			money = 20;
 			StatisticsTracker.lifetimeMoney.setValue(money);
@@ -155,26 +151,40 @@ namespace Assets.draco18s.artificer.game {
 			return ((UpgradeIntValue)vendorSellQuantity).value;
 		}
 
+		public void clearCache() {
+			cachedVendorValue = -1;
+			cachedSellValue = -1;
+		}
+
+		BigRational cachedVendorValue = -1;
+		BigRational cachedSellValue = -1;
+
 		public BigRational GetVendorValue() {
-			int v = StatisticsTracker.moneyMagnitude.value;
-			v -= (v % 3);
-			v /= 3;
-			v = Math.Max(v - 1, 0);
-			UpgradeValueWrapper vendorSellEffectiveness;
-			upgrades.TryGetValue(UpgradeType.VENDOR_SELL_VALUE, out vendorSellEffectiveness);
-			return (((UpgradeFloatValue)vendorSellEffectiveness).value + (0.05f * v)) * (1 + SkillList.VendorEffectiveness.getMultiplier()) + currentGuildmaster.vendorSellMultiplier();
+			if(cachedVendorValue < 0) {
+				int v = StatisticsTracker.moneyMagnitude.value;
+				v -= (v % 3);
+				v /= 3;
+				v = Math.Max(v - 1, 0);
+				UpgradeValueWrapper vendorSellEffectiveness;
+				upgrades.TryGetValue(UpgradeType.VENDOR_SELL_VALUE, out vendorSellEffectiveness);
+				cachedVendorValue = (((UpgradeFloatValue)vendorSellEffectiveness).value + (0.05f * v)) * (1 + SkillList.VendorEffectiveness.getMultiplier()) + currentGuildmaster.vendorSellMultiplier();
+			}
+			return cachedVendorValue;
 		}
 
 		public BigRational GetSellMultiplierFull() {
-			UpgradeValueWrapper multi;
-			upgrades.TryGetValue(UpgradeType.MONEY_INCOME, out multi);
-			BigRational baseMultiplier = ((UpgradeFloatValue)multi).value * currentGuildmaster.cashIncomeMultiplier() * (1+SkillList.Income.getMultiplier());
-			if(renown > 0) {
-				UpgradeValueWrapper wrap;
-				upgrades.TryGetValue(UpgradeType.RENOWN_MULTI, out wrap);
-				return (1 + ((BigRational)renown) * (((UpgradeFloatValue)wrap).value + SkillList.RenownMulti.getMultiplier())) * baseMultiplier;
+			if(cachedSellValue < 0) {
+				UpgradeValueWrapper multi;
+				upgrades.TryGetValue(UpgradeType.MONEY_INCOME, out multi);
+				BigRational baseMultiplier = ((UpgradeFloatValue)multi).value * currentGuildmaster.cashIncomeMultiplier() * (1 + SkillList.Income.getMultiplier());
+				if(renown > 0) {
+					UpgradeValueWrapper wrap;
+					upgrades.TryGetValue(UpgradeType.RENOWN_MULTI, out wrap);
+					cachedSellValue = (1 + ((BigRational)renown) * (((UpgradeFloatValue)wrap).value + SkillList.RenownMulti.getMultiplier())) * baseMultiplier;
+				}
+				cachedSellValue = baseMultiplier;
 			}
-			return baseMultiplier;
+			return cachedSellValue;
 		}
 
 		public BigRational GetRelicSellMultiplier() {
@@ -226,7 +236,6 @@ namespace Assets.draco18s.artificer.game {
 			questsCompleted = 0;
 			StatisticsTracker.minQuestDifficulty.resetValue();
 			StatisticsTracker.maxQuestDifficulty.resetValue();
-			StatisticsTracker.firstQuestCompleted.setUnachieved();
 			if(StatisticsTracker.firstEnchantment.isAchieved()) {
 				StatisticsTracker.maxQuestDifficulty.addValue(2);
 				StatisticsTracker.minQuestDifficulty.addValue(1);
@@ -282,7 +291,7 @@ namespace Assets.draco18s.artificer.game {
 
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
-			info.AddValue("SaveVersion", 10);
+			info.AddValue("SaveVersion", 11);
 			info.AddValue("money", money.ToString());
 			info.AddValue("moneyFloor", moneyFloor.ToString());
 			//info.AddValue("lifetimeMoney", StatisticsTracker.lifetimeMoney.ToString());
@@ -328,6 +337,7 @@ namespace Assets.draco18s.artificer.game {
 			}
 			info.AddValue("questTypeCompletion", questTypeCompletion, typeof(Dictionary<string, long>));
 			info.AddValue("newQuestTimer", QuestManager.getNewQuestTimer());
+			info.AddValue("questEquipTimer", QuestManager.getEquipTimer());
 			GuildManager.writeSaveData(ref info, ref context);
 			StatisticsTracker.serializeAllStats(ref info, ref context);
 			info.AddValue("currentGuildmaster", currentGuildmaster, typeof(Master));
@@ -396,14 +406,14 @@ namespace Assets.draco18s.artificer.game {
 			}
 
 			num = info.GetInt32("activeQuestsSize");
-			Debug.Log("Reading " + num + " active quests");
+			//Debug.Log("Reading " + num + " active quests");
 			for(int o = 0; o < num; o++) {
 				Quest temp = (Quest)info.GetValue("activeQuests_" + o, typeof(Quest));
 				//quest obstacle type data from disk isn't actually available yet
 				activeQuestsFromDisk.Add(new QuestLoadWrapper(temp));
 			}
 			num = info.GetInt32("availableQuestsSize");
-			Debug.Log("Reading " + num + " available quests");
+			//Debug.Log("Reading " + num + " available quests");
 			for(int o = 0; o < num; o++) {
 				Quest temp = (Quest)info.GetValue("availableQuests_" + o, typeof(Quest));
 				//quest obstacle type data from disk isn't actually available yet
@@ -418,6 +428,9 @@ namespace Assets.draco18s.artificer.game {
 			}
 			float f = (float)info.GetDouble("newQuestTimer");
 			QuestManager.LoadTimerFromSave(f);
+			if(Main.saveVersionFromDisk >= 11) {
+				QuestManager.setEquipTimer((float)info.GetDouble("questEquipTimer"));
+			}
 
 			if(Main.saveVersionFromDisk >= 2)
 				GuildManager.readSaveData(ref info, ref context);
@@ -449,7 +462,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public void FinishLoad() {
 			//renown = totalRenown = 100000; //for testing
-			if(industriesFromDisk == null) return;
+			//if(industriesFromDisk == null) return;
 			for(int o = 0; o < industriesFromDisk.Count; o++) {
 				Industry ind = GameRegistry.GetIndustryByID(industriesFromDisk[o].ID);
 				ind.ReadFromCopy(industriesFromDisk[o].ind);

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleUnderwaterRuins : ObstacleType {
+	public class ObstacleUnderwaterRuins : ObstacleType {
 		public ObstacleUnderwaterRuins() : base("in some underwater ruins", new RequireWrapper(RequirementType.WATER_BREATH)) {
 
 		}

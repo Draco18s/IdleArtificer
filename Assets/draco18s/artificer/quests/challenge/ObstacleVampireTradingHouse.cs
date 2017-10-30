@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleVampireTradingHouse : ObstacleType {
+	public class ObstacleVampireTradingHouse : ObstacleType {
 		public ObstacleVampireTradingHouse() : base("visiting vampire market", new RequireWrapper(RequirementType.UNHOLY_IMMUNE), new RequireWrapper(RequirementType.CHARISMA)) {
 
 		}

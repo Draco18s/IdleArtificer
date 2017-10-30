@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalObserveTroopMovements : ObstacleType, IQuestGoal {
+	public class GoalObserveTroopMovements : ObstacleType, IQuestGoal {
 		public GoalObserveTroopMovements() : base("observing the enemy", new RequireWrapper(RequirementType.STEALTH),new RequireWrapper(RequirementType.INTELLIGENCE)) {
 
 		}

@@ -6,43 +6,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.draco18s.artificer.quests.challenge {
-	public class ObstacleCleanMess : ObstacleType { //TODO: this makes no sense
-		public ObstacleCleanMess() : base("picking up dropped items", new RequireWrapper(RequirementType.CLUMSINESS)) {
+namespace Assets.draco18s.artificer.quests.challenge.goals {
+	public class GoalRecruitAllies : ObstacleType, IQuestGoal {
+		public GoalRecruitAllies() : base("recruiting allies", new RequireWrapper(RequirementType.CHARISMA)) {
 
 		}
-
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
-			EnumResult result;
-			if(fails == 0) result = EnumResult.FAIL;
-			else result = EnumResult.SUCCESS;
-
-			if(theQuest.testAgility(questBonus)) {
-				result += 1;
+			EnumResult result = EnumResult.FAIL - fails;
+			for(int i=0;i<4;i++) {
+				if(theQuest.testCharisma(questBonus)) {
+					result++;
+				}
 			}
-			else {
-				result -= 1;
-			}
-
 			return result;
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.removeItemFromInventory(theQuest.getRandomItem());
 					break;
 				case EnumResult.FAIL:
-					theQuest.hastenQuestEnding(90);
-					break;
 				case EnumResult.MIXED:
-					theQuest.hastenQuestEnding(30);
+					theQuest.repeatTask();
 					break;
 				case EnumResult.SUCCESS:
 					break;
 				case EnumResult.CRIT_SUCCESS:
+					ChallengeTypes.Loot.AddRareResource(theQuest);
 					break;
 			}
+		}
+
+		public string relicDescription(ItemStack stack) {
+			return "Aided in recruitment";
+		}
+
+		public string relicNames(ItemStack stack) {
+			return "Recruiter";
+		}
+
+		public int getNumTotalEncounters() {
+			return 7;
 		}
 	}
 }

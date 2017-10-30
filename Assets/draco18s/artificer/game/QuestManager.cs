@@ -321,6 +321,14 @@ namespace Assets.draco18s.artificer.game {
 			miscInventoryList.transform.localPosition = Vector3.zero;
 		}
 
+		public static float getEquipTimer() {
+			return questEquipTimer;
+		}
+
+		public static void setEquipTimer(float v) {
+			questEquipTimer = v;
+		}
+
 		private static void validateQuests() {
 			int i = 0;
 			foreach(Industry ind in Main.instance.player.builtItems) {
@@ -562,7 +570,10 @@ namespace Assets.draco18s.artificer.game {
 				availableQuests.Add(q);
 			}
 			if(newQuestDelayTimer <= 0) {
-				newQuestDelayTimer = 1;
+				GuiManager.instance.questHeader.transform.FindChild("NewQuestTime").GetComponent<Text>().text = "---";
+			}
+			else {
+				GuiManager.instance.questHeader.transform.FindChild("NewQuestTime").GetComponent<Text>().text = "New Quest in " + Main.SecondsToTime((int)newQuestDelayTimer);
 			}
 			foreach(Quest q in availableQuests) {
 				q.timeUntilQuestExpires -= time;
@@ -599,21 +610,23 @@ namespace Assets.draco18s.artificer.game {
 			}
 
 			availableQuests.RemoveAll(x => x.timeUntilQuestExpires <= 0);
-			GuiManager.instance.questHeader.transform.FindChild("NewQuestTime").GetComponent<Text>().text = "New Quest in " + Main.SecondsToTime((int)newQuestDelayTimer);
+			
 			updateActiveQuestList();
 			questEquipTimer += (time * Main.instance.player.currentGuildmaster.journeymenRateMultiplier());
 			//journeyman equip loop
+			float tim = (questEquipTimerMax - questEquipTimer) / Main.instance.player.currentGuildmaster.journeymenRateMultiplier();
+			GuiManager.instance.questHeader.transform.FindChild("JourneymanTime").GetComponent<Text>().text = "Auto-Equip in " + Main.SecondsToTime(tim);
 			if(questEquipTimer >= questEquipTimerMax) {
 				questEquipTimer -= questEquipTimerMax;
 				int questIndex = 0;
 				for(int j = 0; j < Main.instance.player.journeymen*2; j++) {
 					if(questIndex < availableQuests.Count) {
 						Quest jq = availableQuests[questIndex];
-						for(int r = 6; r >= 1; r--) {
+						for(int r = 1; r <= 6; r++) {
 							RequirementType req = (RequirementType)jq.getReq(r - 1);
 							if(req != 0 && !jq.doesHeroHave(req)) {
 								foreach(ItemStack stack in Main.instance.player.miscInventory) {
-									if(stack.relicData != null || stack.enchants.Count > 0) {
+									if((stack.relicData != null || stack.enchants.Count > 0) && stack.doesStackHave(req)) {
 										Main.instance.player.miscInventory.Remove(stack);
 										ItemStack toPlayer = stack.split(stack.stackSize - 1);
 										Main.instance.player.addItemToInventory(toPlayer);

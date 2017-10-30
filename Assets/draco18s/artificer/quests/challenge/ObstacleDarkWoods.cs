@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleDarkWoods : ObstacleType {
+	public class ObstacleDarkWoods : ObstacleType {
 		public ObstacleDarkWoods() : base("traveling in a dark forest", new RequireWrapper(RequirementType.LIGHT)) {
 
 		}

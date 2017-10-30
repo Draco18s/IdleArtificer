@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalPatrolDuty : ObstacleType, IQuestGoal {
+	public class GoalPatrolDuty : ObstacleType, IQuestGoal {
 		public GoalPatrolDuty() : base("patrolling", new RequireWrapper(RequirementType.LIGHT), new RequireWrapper(RequirementType.HEALING)) {
 
 		}

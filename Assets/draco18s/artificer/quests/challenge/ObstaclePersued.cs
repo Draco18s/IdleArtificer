@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstaclePersued : ObstacleType {
+	public class ObstaclePersued : ObstacleType {
 		public ObstaclePersued() : base("being chased", new RequireWrapper(RequirementType.FREE_MOVEMENT, RequirementType.AGILITY)) {
 
 		}

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalExploreTomb_Skeletons : ObstacleType, IQuestGoal, IMonsterChallenge {
+	public class GoalExploreTomb_Skeletons : ObstacleType, IQuestGoal, IMonsterChallenge {
 		protected int skeletonsMaxHealth;
 		public GoalExploreTomb_Skeletons() : base("putting down skeletons", new RequireWrapper(RequirementType.DISRUPTION), new RequireWrapper(RequirementType.WEAPON)) {
 			skeletonsMaxHealth = 200;

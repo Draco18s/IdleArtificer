@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleHome : ObstacleType {
+ public class ObstacleHome : ObstacleType {
 		public ObstacleHome() : base("at home", new RequireWrapper(RequirementType.MANA)) { //the mana potion just prevents losing time during attempt result
 
 		}

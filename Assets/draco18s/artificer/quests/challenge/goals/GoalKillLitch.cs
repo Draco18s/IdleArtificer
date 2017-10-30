@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalKillLitch : ObstacleType, IQuestGoal, IMonsterChallenge {
+	public class GoalKillLitch : ObstacleType, IQuestGoal, IMonsterChallenge {
 		protected int monsterMaxHealth;
 		private static FantasyNameSettings fantasyNameSettings = new FantasyNameSettings(Classes.Warrior, Race.Dragon, true, true, Gender.Male);
 		private static IFantasyNameGenerator fantasyNameGenerator = FantasyNameGenerator.FromSettingsInfo(fantasyNameSettings);

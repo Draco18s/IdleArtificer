@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalRepairDam : ObstacleType, IQuestGoal {
+	public class GoalRepairDam : ObstacleType, IQuestGoal {
 		public GoalRepairDam() : base("making repairs", new RequireWrapper(RequirementType.WOOD), new RequireWrapper(RequirementType.TOOLS)) {
 
 		}

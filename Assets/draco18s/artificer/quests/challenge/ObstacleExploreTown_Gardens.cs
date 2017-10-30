@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleExploreTown_Gardens : ObstacleType {
+	public class ObstacleExploreTown_Gardens : ObstacleType {
 		public ObstacleExploreTown_Gardens() : base("relaxing in the gardens") {
 
 		}

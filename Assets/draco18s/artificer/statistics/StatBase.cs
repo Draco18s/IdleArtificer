@@ -1,19 +1,18 @@
-﻿using System;
+﻿using Assets.draco18s.config;
+using System;
 using System.Xml;
 using System.Xml.Linq;
 using UnityEngine;
 
 namespace Assets.draco18s.artificer.statistics {
 	public class StatBase : IStat {
-		private string _statName;
-		private string _description;
-		public string statName {
+		protected string _statName;
+		protected string _description;
+		public virtual string statName {
 			get { return _statName; }
-			set { _statName = value; }
 		}
-		public string description {
-			get { return _description; }
-			set { _description = value; }
+		public virtual string description {
+			get { return Localization.translateToLocal(_description); }
 		}
 		public readonly bool shouldResetOnNewLevel;
 		protected bool shouldReadAsFloat = false;
@@ -21,16 +20,10 @@ namespace Assets.draco18s.artificer.statistics {
 			get {
 				return statValue;
 			}
-			set {
-
-			}
 		}
 		public virtual float floatValue {
 			get {
 				return statValue / 10000f;
-			}
-			set {
-
 			}
 		}
 		public int ID {
@@ -60,8 +53,8 @@ namespace Assets.draco18s.artificer.statistics {
 		protected int idVal = -1;
 
 		public StatBase(string name) {
-			statName = "stat." + name + ".name";
-			description = "stat." + name + ".desc";
+			_statName = "stat." + name + ".name";
+			_description = "stat." + name + ".desc";
 			statValue = 0;
 			shouldResetOnNewLevel = false;
 		}

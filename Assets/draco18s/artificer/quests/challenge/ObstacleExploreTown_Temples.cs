@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleExploreTown_Temples : ObstacleType {
+	public class ObstacleExploreTown_Temples : ObstacleType {
 		public ObstacleExploreTown_Temples() : base("exploring the temple district", new RequireWrapper(RequirementType.HOLY_DAMAGE,RequirementType.UNHOLY_IMMUNE)) {//hero avoids the graveyard
 
 		}

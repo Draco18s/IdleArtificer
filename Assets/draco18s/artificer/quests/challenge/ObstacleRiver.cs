@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleRiver : ObstacleType {
+	public class ObstacleRiver : ObstacleType {
 		public ObstacleRiver() : base("river rafting", new RequireWrapper(RequirementType.AGILITY)) {
 
 		}

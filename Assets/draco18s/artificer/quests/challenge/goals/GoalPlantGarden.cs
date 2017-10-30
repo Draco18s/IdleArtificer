@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalPlantGarden : ObstacleType, IQuestGoal {
+	public class GoalPlantGarden : ObstacleType, IQuestGoal {
 		public GoalPlantGarden() : base("planting a garden", new RequireWrapper(RequirementType.HERB), new RequireWrapper(RequirementType.HERB), new RequireWrapper(RequirementType.HERB)) {
 
 		}

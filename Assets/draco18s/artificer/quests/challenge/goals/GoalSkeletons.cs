@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalSkeletons : ObstacleType, IQuestGoal {
+	public class GoalSkeletons : ObstacleType, IQuestGoal {
 		public GoalSkeletons() : base("quelling skeletons", new RequireWrapper(RequirementType.DISRUPTION, RequirementType.HOLY_DAMAGE), new RequireWrapper(RequirementType.UNHOLY_IMMUNE)) {
 
 		}

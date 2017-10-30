@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleHeroDuel : ObstacleType {
+	public class ObstacleHeroDuel : ObstacleType {
 		protected static Random rand = new Random();
 
 		public ObstacleHeroDuel() : base("dueling another hero") {

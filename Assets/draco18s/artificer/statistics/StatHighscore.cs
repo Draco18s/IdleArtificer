@@ -4,15 +4,12 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.statistics {
-	class StatHighscore : StatBase {
+	public class StatHighscore : StatBase {
 		protected int bestValue;
 		private int initialValue = 0;
 		public override int value {
 			get {
 				return bestValue;
-			}
-			set {
-
 			}
 		}
 		public override string getDisplay() {
@@ -22,9 +19,6 @@ namespace Assets.draco18s.artificer.statistics {
 		public override float floatValue {
 			get {
 				return bestValue / 10000f;
-			}
-			set {
-
 			}
 		}
 

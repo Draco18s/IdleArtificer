@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleNightWatch : ObstacleType {
+	public class ObstacleNightWatch : ObstacleType {
 		public ObstacleNightWatch() : base("taking the night watch", new RequireWrapper(RequirementType.DETECTION)) {
 
 		}

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalReachSummit : ObstacleType, IQuestGoal {
+	public class GoalReachSummit : ObstacleType, IQuestGoal {
 		public GoalReachSummit() : base("climbing a mountain", new RequireWrapper(RequirementType.ENDURANCE,RequirementType.COLD_IMMUNE), new RequireWrapper(0,RequirementType.FEATHER_FALL), new RequireWrapper(RequirementType.MANA)) {
 
 		}

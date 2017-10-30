@@ -51,7 +51,7 @@ namespace Assets.draco18s.artificer.game {
 				trans.GetComponent<Text>().text = Localization.translateToLocal(item.statName);
 				trans.localPosition -= new Vector3(35,0,0);
 				trans = obj.transform.FindChild("Description");
-				trans.GetComponent<Text>().text = Localization.translateToLocal(item.description);
+				trans.GetComponent<Text>().text = item.description;
 				trans.localPosition -= new Vector3(35, 0, 0);
 				obj.transform.FindChild("Progress").GetComponent<Text>().text = item.getDisplay();
 				obj.transform.FindChild("Image").gameObject.SetActive(false);
@@ -91,6 +91,7 @@ namespace Assets.draco18s.artificer.game {
 			while(statlist.MoveNext()) {
 				KeyValuePair<IStat, GameObject> item = statlist.Current;
 				item.Value.transform.FindChild("Progress").GetComponent<Text>().text = item.Key.getDisplay();
+				item.Value.transform.FindChild("Description").GetComponent<Text>().text = item.Key.description;
 			}
 		}
 

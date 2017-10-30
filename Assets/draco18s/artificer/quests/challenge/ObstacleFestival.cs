@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
-	class ObstacleFestival : ObstacleType {
+	public class ObstacleFestival : ObstacleType {
 		public ObstacleFestival() : base("attending a festival", new RequireWrapper(RequirementType.CLUMSINESS, RequirementType.AGILITY), new RequireWrapper(RequirementType.STUPIDITY, RequirementType.INTELLIGENCE), new RequireWrapper(RequirementType.UGLINESS, RequirementType.CHARISMA)) {
 
 		}

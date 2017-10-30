@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalPetitionTheDuke : ObstacleType, IQuestGoal {
+	public class GoalPetitionTheDuke : ObstacleType, IQuestGoal {
 		public GoalPetitionTheDuke() : base("petitioning the duke", new RequireWrapper(RequirementType.CHARISMA)) {
 
 		}

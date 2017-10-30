@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge.goals {
-	class GoalExploreTomb : ObstacleType, IQuestGoal {
+	public class GoalExploreTomb : ObstacleType, IQuestGoal {
 		private static FantasyNameSettings fantasyNameSettings = new FantasyNameSettings(Classes.Rogue, Race.None, true, true, Gender.Male);
 		private static IFantasyNameGenerator fantasyNameGenerator = FantasyNameGenerator.FromSettingsInfo(fantasyNameSettings);
 		public GoalExploreTomb() : base("raiding a tomb", new RequireWrapper(RequirementType.DANGER_SENSE, RequirementType.LIGHT), new RequireWrapper(RequirementType.FIRE_DAMAGE), new RequireWrapper(RequirementType.DISRUPTION)) {
