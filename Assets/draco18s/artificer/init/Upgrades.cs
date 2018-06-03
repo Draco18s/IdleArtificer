@@ -10,24 +10,25 @@ namespace Assets.draco18s.artificer.init {
 	public static class Upgrades {
 		public static class Cash {
 			//public static Upgrade VENDOR_VALUE1 =				new UpgradeVendorEffectiveness(new BigInteger(5, 3), 0.25f);
-			public static Upgrade HALVE_DOUBLE_WOOD1 =			new UpgradeHalveDouble  (new BigInteger(5, 5), Industries.WOOD, "HALVE_DOUBLE_WOOD1");
-			public static Upgrade HALVE_DOUBLE_RED_BERRIES1 =	new UpgradeHalveDouble  (new BigInteger(75, 4), Industries.RED_BERRIES, "HALVE_DOUBLE_RED_BERRIES1");
-			public static Upgrade HALVE_DOUBLE_BLUE_BERRIES1 =	new UpgradeHalveDouble  (new BigInteger(75, 4), Industries.BLUE_BERRIES, "HALVE_DOUBLE_BLUE_BERRIES1");
-			public static Upgrade HALVE_DOUBLE_LEATHER1 =		new UpgradeHalveDouble  (new BigInteger(1, 6), Industries.LEATHER, "HALVE_DOUBLE_LEATHER1");
+			public static Upgrade HALVE_DOUBLE_WOOD1 =			new UpgradeHalveDouble  (new BigInteger(5, 3), Industries.WOOD, "HALVE_DOUBLE_WOOD1");
+			public static Upgrade HALVE_DOUBLE_RED_BERRIES1 =	new UpgradeHalveDouble  (new BigInteger(75, 2), Industries.RED_BERRIES, "HALVE_DOUBLE_RED_BERRIES1");
+			public static Upgrade HALVE_DOUBLE_BLUE_BERRIES1 =	new UpgradeHalveDouble  (new BigInteger(75, 2), Industries.BLUE_BERRIES, "HALVE_DOUBLE_BLUE_BERRIES1");
+			public static Upgrade HALVE_DOUBLE_LEATHER1 =		new UpgradeHalveDouble  (new BigInteger(5, 5), Industries.LEATHER, "HALVE_DOUBLE_LEATHER1");
 			public static Upgrade LEATHER_BOOTS1 =				new UpgradeIndustryValue(new BigInteger(5, 6), 5, Industries.LEATHER_BOOTS, "LEATHER_BOOTS1");
 			public static Upgrade HALVE_DOUBLE_TORCHES =		new UpgradeHalveDouble  (new BigInteger(5, 6), Industries.TORCHES, "HALVE_DOUBLE_TORCHES1");
+			public static Upgrade VENDOR_SIZE1 =				new UpgradeVendorSize(new BigInteger(1, 7), 2, "VENDOR_SIZE1");
 				public static Upgrade QUEST_RECHARGE1 =				new UpgradeQuestSpeed   (new BigInteger(1, 7), 120, "QUEST_RECHARGE1");
 			public static Upgrade TORCHES =						new UpgradeIndustryValue(new BigInteger(5, 7), 5, Industries.TORCHES, "TORCHES1");
 			public static Upgrade LEATHER_ARMOR1 =				new UpgradeIndustryValue(new BigInteger(5, 7), 5, Industries.ARMOR_LEATHER, "LEATHER_ARMOR1");
 			public static Upgrade SIMPLE_TOOLS1 =				new UpgradeIndustryValue(new BigInteger(75, 6), 5, Industries.SIMPLE_TOOLS, "SIMPLE_TOOLS1");
 			public static Upgrade QUARTERSTAFF1 =				new UpgradeIndustryValue(new BigInteger(1, 8), 5, Industries.QUARTERSTAFF, "QUARTERSTAFF1");
+			public static Upgrade HALVE_DOUBLE_GLASS1 =			new UpgradeHalveDouble	(new BigInteger(25, 7), Industries.GLASS, "HALVE_DOUBLE_GLASS1");
 			public static Upgrade LIGHT_CROSSBOW1 =				new UpgradeIndustryValue(new BigInteger(5, 8), 5, Industries.LIGHT_CROSSBOW, "LIGHT_CROSSBOW1");
-			public static Upgrade HALVE_DOUBLE_GLASS1 =			new UpgradeHalveDouble	(new BigInteger(1, 9), Industries.GLASS, "HALVE_DOUBLE_GLASS1");
 				public static Upgrade CLICK_RATE1 =					new UpgradeClickRate	(new BigInteger(2, 9), 0.1f, "CLICK_RATE1");
 			public static Upgrade HALVE_DOUBLE_NIGHTSHADE1 =	new UpgradeHalveDouble  (new BigInteger(5, 9), Industries.NIGHTSHADE, "HALVE_DOUBLE_NIGHTSHADE1");
 			//health/mana potions aren't end-tier. What to do: don't repeat them
-			public static Upgrade HEALTH =						new UpgradeIndustryValue(new BigInteger(5, 9), 15, Industries.POT_HEALTH, "HEALTH1");
-			public static Upgrade MANA =						new UpgradeIndustryValue(new BigInteger(5, 9), 15, Industries.POT_MANA, "MANA1");
+			public static Upgrade HEALTH =						new UpgradeIndustryValue(new BigInteger(5, 9), 15, Industries.POT_SM_HEALTH, "HEALTH1");
+			public static Upgrade MANA =						new UpgradeIndustryValue(new BigInteger(5, 9), 15, Industries.POT_SM_MANA, "MANA1");
 			public static Upgrade WOOD_BUCKLER1 =				new UpgradeIndustryValue(new BigInteger(1, 10), 5, Industries.WOOD_BUCKLER, "WOOD_BUCKLER1");
 			public static Upgrade HALVE_DOUBLE_MANDRAKE1 =		new UpgradeHalveDouble  (new BigInteger(2, 10), Industries.MANDRAKE, "HALVE_DOUBLE_MANDRAKE1");
 			public static Upgrade HALVE_DOUBLE_BLOOD_MOSS1 =	new UpgradeHalveDouble  (new BigInteger(2, 10), Industries.BLOOD_MOSS, "HALVE_DOUBLE_BLOOD_MOSS1");
@@ -38,6 +39,7 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade AGL1 =						new UpgradeIndustryValue(new BigInteger(1, 11), 5, Industries.POT_AGILITY, "AGL1");
 			public static Upgrade INT1 =						new UpgradeIndustryValue(new BigInteger(1, 11), 5, Industries.POT_INTELLIGENCE, "INT1");
 			public static Upgrade CHA1 =						new UpgradeIndustryValue(new BigInteger(1, 11), 5, Industries.POT_CHARISMA, "CHA1");
+			public static Upgrade HEROSTAM1 =					new UpgradeHeroStamina(new BigInteger(25, 10), 120, "HEROSTAM1");
 			public static Upgrade POT_RESTORATION1 =			new UpgradeIndustryValue(new BigInteger(5, 11), 5, Industries.POT_RESTORATION, "POT_RESTORATION1");
 			public static Upgrade HALVE_DOUBLE_IRON_ORE1 =		new UpgradeHalveDouble  (new BigInteger(1, 12), Industries.IRON_ORE, "HALVE_DOUBLE_IRON_ORE1");
 				public static Upgrade ITEM_CASH_VALUE1 =			new UpgradeCashValue	(new BigInteger(1, 13), 0.1f, "ITEM_CASH_VALUE1");
@@ -47,7 +49,7 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade IMPROVED_CLOAK1 =				new UpgradeIndustryValue(new BigInteger(1, 17), 5, Industries.IMPROVED_CLOAK, "IMPROVED_CLOAK1");
 			public static Upgrade IRON_HELMET1 =				new UpgradeIndustryValue(new BigInteger(1, 18), 5, Industries.IRON_HELMET, "IRON_HELMET1");
 			public static Upgrade IRON_RING1 =					new UpgradeIndustryValue(new BigInteger(1, 19), 5, Industries.IRON_RING, "IRON_RING1");
-			public static Upgrade IRON_BOOTS1 =					new UpgradeIndustryValue(new BigInteger(1, 20), 5, Industries.IRON_RING, "IRON_BOOTS1");
+			public static Upgrade IRON_BOOTS1 =					new UpgradeIndustryValue(new BigInteger(1, 20), 5, Industries.IRON_BOOTS, "IRON_BOOTS1");
 			public static Upgrade HALVE_DOUBLE_GOLD_ORE1 =		new UpgradeHalveDouble  (new BigInteger(5, 20), Industries.GOLD_ORE, "HALVE_DOUBLE_GOLD_ORE1");
 			public static Upgrade HOLY_SYMBOL1 =				new UpgradeIndustryValue(new BigInteger(1, 21), 5, Industries.HOLY_SYMBOL, "HOLY_SYMBOL1");
 			public static Upgrade UNHOLY_SYMBOL1 =				new UpgradeIndustryValue(new BigInteger(1, 21), 5, Industries.UNHOLY_SYMBOL, "UNHOLY_SYMBOL1");
@@ -77,6 +79,7 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade HALVE_DOUBLE_BLUE_BERRIES2 =	new UpgradeHalveDouble  (new BigInteger(75, 29), Industries.BLUE_BERRIES, "HALVE_DOUBLE_BLUE_BERRIES2");
 			public static Upgrade HALVE_DOUBLE_LEATHER2 =		new UpgradeHalveDouble  (new BigInteger(1, 31), Industries.LEATHER, "HALVE_DOUBLE_LEATHER2");
 			public static Upgrade LEATHER_BOOTS2 =				new UpgradeIndustryValue(new BigInteger(5, 31), 5, Industries.LEATHER_BOOTS, "LEATHER_BOOTS2");
+			public static Upgrade VENDOR_SIZE2 =				new UpgradeVendorSize   (new BigInteger(1, 32), 2, "VENDOR_SIZE2");
 				public static Upgrade QUEST_RECHARGE3 =				new UpgradeQuestSpeed   (new BigInteger(1, 32), 120, "QUEST_RECHARGE3");
 			public static Upgrade TORCHES2 =						new UpgradeIndustryValue(new BigInteger(5, 32), 5, Industries.TORCHES, "TORCHES2");
 			public static Upgrade LEATHER_ARMOR2 =				new UpgradeIndustryValue(new BigInteger(5, 32), 5, Industries.ARMOR_LEATHER, "LEATHER_ARMOR2");
@@ -105,7 +108,7 @@ namespace Assets.draco18s.artificer.init {
 			public static Upgrade IMPROVED_CLOAK2 =				new UpgradeIndustryValue(new BigInteger(1, 43), 5, Industries.IMPROVED_CLOAK, "IMPROVED_CLOAK2");
 			public static Upgrade IRON_HELMET2 =				new UpgradeIndustryValue(new BigInteger(1, 44), 5, Industries.IRON_HELMET, "IRON_HELMET2");
 			public static Upgrade IRON_RING2 =					new UpgradeIndustryValue(new BigInteger(1, 45), 5, Industries.IRON_RING, "IRON_RING2");
-			public static Upgrade IRON_BOOTS2 =					new UpgradeIndustryValue(new BigInteger(1, 46), 5, Industries.IRON_RING, "IRON_BOOTS2");
+			public static Upgrade IRON_BOOTS2 =					new UpgradeIndustryValue(new BigInteger(1, 46), 5, Industries.IRON_BOOTS, "IRON_BOOTS2");
 			public static Upgrade HALVE_DOUBLE_GOLD_ORE2 =		new UpgradeHalveDouble  (new BigInteger(5, 46), Industries.GOLD_ORE, "HALVE_DOUBLE_GOLD_ORE2");
 			public static Upgrade HOLY_SYMBOL2 =				new UpgradeIndustryValue(new BigInteger(1, 47), 5, Industries.HOLY_SYMBOL, "HOLY_SYMBOL2");
 			public static Upgrade UNHOLY_SYMBOL2 =				new UpgradeIndustryValue(new BigInteger(1, 47), 5, Industries.UNHOLY_SYMBOL, "UNHOLY_SYMBOL2");

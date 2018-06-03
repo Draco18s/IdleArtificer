@@ -14,5 +14,9 @@ namespace Assets.draco18s.artificer.upgrades {
 		new public int getMultiplier() {
 			return ranks * amount;
 		}
+
+		public override string getMultiplierForDisplay() {
+			return amount.ToString();
+		}
 	}
 }

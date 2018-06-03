@@ -7,6 +7,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Assets.draco18s.artificer.quests;
+using Koopakiller.Numerics;
+using Assets.draco18s.artificer.upgrades;
 
 namespace Assets.draco18s.artificer.items {
 	[Serializable]
@@ -47,29 +49,38 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public string getDisplayName() {
+			string firstNon = "";
+			int c = GetPlusValue(ref firstNon);
 			if(relicData != null) {
 				RelicInfo ri = relicData.OrderByDescending(o => o.notoriety).First();
-				return ri.relicName + " " + Main.ToTitleCase(item.name);
+				return (c > 0 ? "+" + c + " " : "") + ri.relicName + " " + Main.ToTitleCase(item.name);
 			}
 			else if(enchants.Count > 0) {
-				if(enchants[0] == Enchantments.ENHANCEMENT) {
-					int c = 0;
-					Enchantment firstNon = null;
-					foreach(Enchantment ench1 in enchants) {
-						if(ench1 == Enchantments.ENHANCEMENT) {
-							c++;
-						}
-						else if(firstNon == null) {
-							firstNon = ench1;
-						}
-					}
-					return "+" + c + " " + (firstNon != null ? firstNon.name : "") + Main.ToTitleCase(item.name);
-				}
-				else {
-					return enchants[0].name + " " + Main.ToTitleCase(item.name);
-				}
+				return (c > 0 ? "+" + c + " " : "") + firstNon + Main.ToTitleCase(item.name);
 			}
 			return Main.ToTitleCase(item.name);
+		}
+
+		private int GetPlusValue(ref string firstNonStr) {
+			if(enchants.Count > 0) {
+				int c = 0;
+				Enchantment firstNon = null;
+				foreach(Enchantment ench1 in enchants) {
+					if(ench1 == Enchantments.ENHANCEMENT) {
+						c++;
+					}
+					else if(firstNon == null) {
+						firstNon = ench1;
+					}
+				}
+				firstNonStr = (firstNon != null ? firstNon.name + " " : "");
+				return c;
+				//return "+" + c + " " + (firstNon != null ? firstNon.name : "") + Main.ToTitleCase(item.name);
+			}
+			else {
+				return 0;
+				//return enchants[0].name + " " + Main.ToTitleCase(item.name);
+			}
 		}
 
 		public bool doesStackHave(RequirementType type) {
@@ -190,10 +201,10 @@ namespace Assets.draco18s.artificer.items {
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
 			info.AddValue("is_produced", (item.industry != null));
 			if(item.industry != null) {
-				info.AddValue("item_id", item.industry.ID);
+				info.AddValue("item_id", item.industry.saveName);
 			}
 			else {
-				info.AddValue("item_id", item.ID);
+				info.AddValue("item_id", item.name);
 			}
 			info.AddValue("stacksize", stackSize);
 			info.AddValue("relic", relicData != null);
@@ -208,20 +219,32 @@ namespace Assets.draco18s.artificer.items {
 			info.AddValue("isIDedByPlayer", isIDedByPlayer);
 			info.AddValue("enchantsSize", enchants.Count);
 			for(int i = 0; i < enchants.Count; i++) {
-				info.AddValue("enchants_" + i, enchants[i].ID, typeof(Enchantment));
+				info.AddValue("enchants_" + i, enchants[i].name, typeof(Enchantment));
 			}
 			info.AddValue("wasAddedByJourneyman", wasAddedByJourneyman);
 		}
 
 		public ItemStack(SerializationInfo info, StreamingContext context) {
-			int i = info.GetInt32("item_id");
 			bool b = info.GetBoolean("is_produced");
-			if(b) {
-				industry = GameRegistry.GetIndustryByID(i);
-				item = industry.industryItem;
+			if(Main.saveVersionFromDisk >= 14) {
+				string i = info.GetString("item_id");
+				if(b) {
+					industry = GameRegistry.GetIndustryByID(i);
+					item = industry.industryItem;
+				}
+				else {
+					item = GameRegistry.GetItemByID(i);
+				}
 			}
 			else {
-				item = GameRegistry.GetItemByID(i);
+				int i = info.GetInt32("item_id");
+				if(b) {
+					industry = GameRegistry.GetIndustryByID(i);
+					item = industry.industryItem;
+				}
+				else {
+					item = GameRegistry.GetItemByID(i);
+				}
 			}
 			stackSize = info.GetInt32("stacksize");
 			int num;
@@ -238,7 +261,12 @@ namespace Assets.draco18s.artificer.items {
 			num = info.GetInt32("enchantsSize");
 			enchants = new List<Enchantment>();
 			for(int o = 0; o < num; o++) {
-				enchants.Add(GameRegistry.GetEnchantmentByID(info.GetInt32("enchants_"+o)));
+				if(Main.saveVersionFromDisk >= 15) {
+					enchants.Add(GameRegistry.GetEnchantmentByID(info.GetString("enchants_" + o)));
+				}
+				else {
+					enchants.Add(GameRegistry.GetEnchantmentByID(info.GetInt32("enchants_" + o)));
+				}
 			}
 			if(Main.saveVersionFromDisk >= 6) {
 				wasAddedByJourneyman = info.GetBoolean("wasAddedByJourneyman");
@@ -259,6 +287,26 @@ namespace Assets.draco18s.artificer.items {
 				ty |= en.reqTypes;
 			}*/
 			return ty;
+		}
+
+		public static BigRational GetRelicValue(ItemStack examinedStack) {
+			BigRational val = examinedStack.item.getBaseValue() * 2000 * BigRational.Pow(1.1f, examinedStack.enchants.Count + examinedStack.antiquity);
+			if(examinedStack.relicData != null) {
+				RelicInfo ri = examinedStack.relicData.OrderByDescending(o => o.notoriety).First();
+				if(ri != null) {
+					UpgradeValueWrapper wrap;
+					Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out wrap);
+					BigRational b = examinedStack.item.getBaseValue() * BigRational.Pow(1.5f, ri.notoriety) * 1000;
+					b *= ((UpgradeFloatValue)wrap).value;
+					val += b;
+				}
+				if(examinedStack.relicData.Any(x => x.relicName == "Lost")) {
+					val /= 10000;
+				}
+				val *= Main.instance.GetRelicSellMultiplier();
+			}
+			val = BigRational.Truncate(val, 6, false);
+			return val;
 		}
 	}
 }

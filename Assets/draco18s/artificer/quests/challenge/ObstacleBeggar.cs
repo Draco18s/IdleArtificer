@@ -32,7 +32,6 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				case EnumResult.SUCCESS: //just a beggar
 					break;
 				case EnumResult.CRIT_SUCCESS: //genie
-					Debug.Log("Crit!");
 					theQuest.addTime(-30);
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Sub.GENIE, questBonus + 1));
 					break;

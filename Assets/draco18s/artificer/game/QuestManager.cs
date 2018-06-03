@@ -3,21 +3,26 @@ using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.quests;
 using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.artificer.quests.challenge.goals;
+using Assets.draco18s.artificer.quests.challenge.goals.DeepGoals;
 using Assets.draco18s.artificer.quests.requirement;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
 using Assets.draco18s.artificer.upgrades;
+using Assets.draco18s.config;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Assets.draco18s.artificer.game {
 	public class QuestManager {
+		IPointerDownHandler l;
 		public static List<Quest> availableQuests = new List<Quest>();
 		public static List<Quest> activeQuests = new List<Quest>();
 		//public static List<ItemStack> allRelics = new List<ItemStack>();
@@ -27,20 +32,39 @@ namespace Assets.draco18s.artificer.game {
 		private static float newQuestDelayTimer = 0;
 		private static float newQuestMaxTime = 1200; //20 minutes
 		private static Transform activeQuestList;
+		private static Transform regularQuests;
+		private static Transform deepGoal;
 		private static Transform questList;
 		private static Transform inventoryList;
 		private static Transform miscInventoryList;
+		private static Transform filters;
 		private static Industry selectedIndustry;
 		private static ItemStack selectedStack;
 
 		private static Dictionary<Industry, GameObject> questInvenList = new Dictionary<Industry, GameObject>();
+		private static Dictionary<ItemStack, GameObject> miscInvenList = new Dictionary<ItemStack, GameObject>();
 
 		public static void setupUI() {
 			if(questList == null) {
-				questList = GuiManager.instance.questArea.transform.FindChild("Available").GetChild(0).GetChild(0);
-				activeQuestList = GuiManager.instance.questArea.transform.FindChild("Active").GetChild(0).GetChild(0);
+				regularQuests = GuiManager.instance.questArea.transform.FindChild("Quests");
+				questList = regularQuests.FindChild("Available").GetChild(0).GetChild(0);
+				activeQuestList = regularQuests.FindChild("Active").GetChild(0).GetChild(0);
 				inventoryList = GuiManager.instance.questArea.transform.FindChild("Inventory1").GetChild(0).GetChild(0);
 				miscInventoryList = GuiManager.instance.questArea.transform.FindChild("Inventory2").GetChild(0).GetChild(0);
+				deepGoal = GuiManager.instance.questArea.transform.FindChild("DeepQuest");
+				filters = GuiManager.instance.questArea.transform.FindChild("Filters");
+				GameObject img = GuiManager.instance.questArea.transform.FindChild("Filters").GetChild(0).gameObject;
+				int v = 1;
+				foreach(RequirementType t in Enum.GetValues(typeof(RequirementType))) {
+					GameObject go = Main.Instantiate(img, img.transform.position + new Vector3(v % 13,v / -13,0)*18, Quaternion.identity, filters) as GameObject;
+					go.GetComponent<Image>().sprite = GuiManager.instance.req_icons[v];
+					go.name = "Req" + v;
+					int j = v;
+					go.GetComponent<Button>().onClick.AddListener(delegate { FilterInventory(j); });
+					v++;
+				}
+				img.GetComponent<Button>().onClick.AddListener(delegate { FilterInventory(-1); });
+				GuiManager.instance.questHeader.transform.FindChild("FilterBtn").GetComponent<Button>().onClick.AddListener(delegate { showHideFilters(); });
 			}
 			int i = 0;
 			validateQuests();
@@ -50,7 +74,14 @@ namespace Assets.draco18s.artificer.game {
 			miscInventoryList.hierarchyCapacity = 100 * 30;
 			questList.hierarchyCapacity = 50 * 30 + 1500;
 			activeQuestList.hierarchyCapacity = 50 * 30 + 1500;
+			activeQuestList.transform.localPosition = new Vector3(activeQuestList.transform.localPosition.x, 0, activeQuestList.transform.localPosition.z);
 			i = 0;
+			if(Main.instance.player.builtItems.Count < questInvenList.Count) {
+				foreach(GameObject go in questInvenList.Values) {
+					Main.Destroy(go);
+				}
+				questInvenList.Clear();
+			}
 			foreach(Industry ind in Main.instance.player.builtItems) {
 				if(ind.industryItem.canBeGivenToQuests) {
 					GameObject go;
@@ -61,12 +92,12 @@ namespace Assets.draco18s.artificer.game {
 						Industry newInd = ind;
 						questInvenList.Add(newInd, go);
 						//ind.questInvenListObj = go;
-						go.name = ind.name;
+						go.name = ind.saveName;
 						Text tx = go.transform.FindChild("Title").GetComponent<Text>();
-						tx.text = Main.ToTitleCase(ind.name);
+						tx.text = Main.ToTitleCase(Localization.translateToLocal(ind.unlocalizedName));
 						tx.fontSize = 28;
 						go.transform.FindChild("Quantity").GetComponent<Text>().text = "0 / " + Main.AsCurrency(ind.quantityStored);
-						go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.name);
+						go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.saveName);
 						int req_num = 1;
 						long ty = (long)ind.industryItem.getAllReqs();
 						bool abort = false;
@@ -99,6 +130,60 @@ namespace Assets.draco18s.artificer.game {
 			refreshMiscInventory();
 			selectedIndustry = null;
 			selectedStack = null;
+			IDeepGoal goal = Main.instance.player.getActiveDeepGoal();
+			//Transform filters = GuiManager.instance.questArea.transform.FindChild("Filters");
+			if(goal == DeepGoalsTypes.NONE) {
+				deepGoal.gameObject.SetActive(false);
+				((RectTransform)regularQuests).offsetMax = new Vector2(((RectTransform)regularQuests).offsetMax.x, 0);
+				//filters.position = new Vector3(0,0,0);
+			}
+			else {
+				deepGoal.gameObject.SetActive(true);
+				deepGoal.GetChild(0).GetComponent<Text>().text = goal.name;
+				deepGoal.GetChild(1).GetComponent<Text>().text = goal.description;
+				((RectTransform)regularQuests).offsetMax = new Vector2(((RectTransform)regularQuests).offsetMax.x, -100);
+			}
+			FilterInventory(-1);
+			filters.gameObject.SetActive(false);
+		}
+
+		private static void showHideFilters() {
+			filters.gameObject.SetActive(!filters.gameObject.activeSelf);
+		}
+
+		private static int lastFilter = -1;
+
+		private static void FilterInventory(int v) {
+			if(lastFilter == v) v = -1;
+			lastFilter = v;
+			int i = 0;
+			foreach(Industry ind in Main.instance.player.builtItems) {
+				GameObject go;
+				questInvenList.TryGetValue(ind, out go);
+				if(go == null) continue;
+				if(v < 0 || ind.hasReqType((RequirementType)(1L<<v))) {
+					go.SetActive(true);
+					go.transform.localPosition = new Vector3(7, (i * -125) - 5, 0);
+					i++;
+				}
+				else {
+					go.SetActive(false);
+				}
+			}
+			i = 0;
+			foreach(ItemStack ind in Main.instance.player.miscInventory) {
+				GameObject go;
+				miscInvenList.TryGetValue(ind, out go);
+				if(go == null) continue;
+				if(v < 0 || ind.doesStackHave((RequirementType)(1L << v))) {
+					go.SetActive(true);
+					go.transform.localPosition = new Vector3(7, (i * -125) - 5, 0);
+					i++;
+				}
+				else {
+					go.SetActive(false);
+				}
+			}
 		}
 
 		private static void CreateNewQuestGuiItem(Quest q, int i) {
@@ -107,6 +192,14 @@ namespace Assets.draco18s.artificer.game {
 			q.guiItem = go;
 			//go.transform.SetParent(questList);
 			go.transform.localPosition = new Vector3(7, (i * -150) - 7, 0);
+			if(q.obstacles[q.obstacles.Length - 1].type == null) {
+				throw new Exception("!!!");
+				/*Debug.Log(q.getOriginalGoal());
+				Main.Destroy(go);
+				q.questComplete = true;
+				q.timeUntilQuestExpires = -100;*/
+				return;
+			}
 			go.transform.FindChild("Name").GetComponent<Text>().text = ToTitleCase(q.obstacles[q.obstacles.Length - 1].type.name);
 			go.transform.FindChild("Hero").GetComponent<Text>().text = "Hero: " + q.heroName;
 			for(int r = 1; r <= 6; r++) {
@@ -115,14 +208,23 @@ namespace Assets.draco18s.artificer.game {
 					go.transform.FindChild("Req" + r).gameObject.SetActive(false);
 				}
 				else {
-					go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num];
+					Transform rq = go.transform.FindChild("Req" + r);
+					rq.GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num];
+					int v = req_num;
+					Button bb = rq.GetComponent<Button>();
+					bb.onClick.AddListener(delegate { FilterInventory(v); });
+					bb.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(bb.transform.parent.FindChild("ReqHover").position + Vector3.right * 60, "Items that supply these traits will surely aid the hero.\nClick to filter.", 5); }, false);
 				}
 			}
 			Button b1 = go.transform.FindChild("Start").GetComponent<Button>();
 			b1.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b1.transform.position + Vector3.right*45, "Start the quest now with the the inventory shown above.\nYou do not have to supply any items, but the quest will likely fail.\nSuccessful quests will generate additional rewards.", 6.5F); }, false);
 			b1.onClick.AddListener(delegate { startQuest(theQuest, go); });
 			Button b2 = go.transform.FindChild("Cancel").GetComponent<Button>();
-			b2.onClick.AddListener(delegate { removeQuest(theQuest, go); newQuestDelayTimer -= 300; });
+			b2.onClick.AddListener(delegate {
+				Main.instance.player.getActiveDeepGoal().onFailedQuest(q);
+				removeQuest(theQuest, go);
+				newQuestDelayTimer -= 300;
+			});
 			b2.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b2.transform.position + Vector3.right * 45, "Ignore the quest. Reduces the time until the next quest by " + Main.SecondsToTime(300) + ".", 3.5f); }, false);
 			for(int r = 1; r <= 6; r++) {
 				Transform btn = go.transform.FindChild("Inven" + r);
@@ -153,7 +255,7 @@ namespace Assets.draco18s.artificer.game {
 			Button b3 = go.transform.FindChild("RewardLabel").GetChild(0).GetComponent<Button>();
 			b3.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b3.transform.position + Vector3.right * 92, "You will get these items when the quest is started.", 3); }, false);
 			Button b4 = go.transform.FindChild("ReqHover").GetComponent<Button>();
-			b4.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b4.transform.position + Vector3.right * 60, "Items that supply these traits will surely aid the hero.", 5); }, false);
+			b4.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b4.transform.position + Vector3.right * 60, "Items that supply these traits will surely aid the hero.\nClick to filter.", 5); }, false);
 		}
 
 		private static void CreateNewActiveQuestGuiItem(Quest q) {
@@ -192,10 +294,12 @@ namespace Assets.draco18s.artificer.game {
 
 		private static void SelectItem(ItemStack stack) {
 			selectedStack = stack;
+			selectedIndustry = null;
 		}
 
 		private static void SelectItem(Industry ind) {
 			selectedIndustry = ind;
+			selectedStack = null;
 		}
 
 		private static void AddRemoveItemFromQuest(Quest theQuest, int slot) {
@@ -221,7 +325,6 @@ namespace Assets.draco18s.artificer.game {
 					}
 				}
 				else if(selectedStack != null) {
-					//TODO: update UI
 					if(slot < theQuest.inventory.Count) {
 						theQuest.inventory[slot] = selectedStack;
 					}
@@ -279,11 +382,13 @@ namespace Assets.draco18s.artificer.game {
 			for(i = 0; i < miscInventoryList.childCount; i++) {
 				Main.Destroy(miscInventoryList.GetChild(i).gameObject);
 			}
+			miscInvenList.Clear();
 			i = 0;
 			foreach(ItemStack stack in Main.instance.player.miscInventory) {
-				if(stack.item.canBeGivenToQuests) {
+				if(stack.item.canBeGivenToQuests && (stack.relicData == null || stack.isIDedByPlayer)) {
 					ItemStack s = stack;
 					GameObject go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM, miscInventoryList) as GameObject;
+					miscInvenList.Add(stack, go);
 					//go.transform.SetParent(miscInventoryList);
 					go.transform.localPosition = new Vector3(7, (i * -125) - 5, 0);
 					//ind.invenListObj = go;
@@ -334,10 +439,10 @@ namespace Assets.draco18s.artificer.game {
 			foreach(Industry ind in Main.instance.player.builtItems) {
 				GameObject go;// = ind.questInvenListObj;
 				questInvenList.TryGetValue(ind, out go);
-				if(go != null) {
+				if(go != null && go.activeSelf) {
 					go.transform.localPosition = new Vector3(7, (i * -125) - 7, 0);
-					go.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(ind.name);
-					go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.name);
+					go.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(Localization.translateToLocal(ind.unlocalizedName));
+					go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.saveName);
 					int total = 0;
 					foreach(Quest q in availableQuests) {
 						foreach(ItemStack stack in q.inventory) {
@@ -356,17 +461,28 @@ namespace Assets.draco18s.artificer.game {
 
 
 			foreach(Quest q in availableQuests) {
-				bool questReady = true;
-				long totalForQuest = 0;
-				foreach(ItemStack stack in q.inventory) {
-					totalForQuest = 0;
-					if(stack.item.industry != null && stack.enchants.Count == 0 && stack.relicData == null) {
-						totalForQuest += stack.stackSize;
-						questReady &= (stack.item.industry.quantityStored >= totalForQuest);
+				
+				q.guiItem.transform.FindChild("Start").GetComponent<Button>().interactable = isQuestReady(q);
+			}
+		}
+
+		private static bool isQuestReady(Quest q) {
+			bool questReady = true;
+			Hashtable data = new Hashtable();
+			foreach(ItemStack stack in q.inventory) {
+				if(stack.enchants.Count == 0 && stack.relicData == null && stack.item.industry != null) {
+					if(data.Contains(stack.item.industry)) {
+						data[stack.item.industry] = (int)data[stack.item.industry] + stack.stackSize;
+					}
+					else {
+						data[stack.item.industry] = stack.stackSize;
 					}
 				}
-				q.guiItem.transform.FindChild("Start").GetComponent<Button>().interactable = questReady;
 			}
+			foreach(Industry ind in data.Keys) {
+				questReady &= (ind.quantityStored >= (int)data[ind]);
+			}
+			return questReady;
 		}
 
 		public static bool IsIndustryOnQuest(Industry item) {
@@ -398,7 +514,10 @@ namespace Assets.draco18s.artificer.game {
 				i++;
 			}
 			((RectTransform)questList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, i * 150 + 10);
-			questList.transform.localPosition = Vector3.zero;
+			if((i * 150 + 10 - ((RectTransform)questList.parent).rect.height) < questList.transform.localPosition.y) {
+				questList.transform.localPosition = new Vector3(0, Math.Max((i * 150 + 10) - ((RectTransform)questList.parent).rect.height,0), 0);
+			}
+			//questList.transform.localPosition = Vector3.zero;
 			selectedIndustry = null;
 		}
 
@@ -407,14 +526,15 @@ namespace Assets.draco18s.artificer.game {
 			activeQuests.Add(theQuest);
 
 			foreach(ItemStack stack in theQuest.inventory) {
+				UpgradeValueWrapper wrap;
+				Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_GOODS_VALUE, out wrap);
 				if(stack.item.industry != null && stack.relicData == null && stack.enchants.Count == 0) {
 					stack.item.industry.quantityStored -= stack.stackSize;
 
-					UpgradeValueWrapper wrap;
-					Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_GOODS_VALUE, out wrap);
-					Main.instance.player.money += BigRational.ToBigInt(new BigRational(stack.stackSize) * ((UpgradeFloatValue)wrap).value);
+					Main.instance.player.money += BigRational.ToBigInt(new BigRational(stack.stackSize) * ((UpgradeFloatValue)wrap).value * stack.item.getBaseValue());
 
 					//Debug.Log(stack.GetHashCode());
+					stack.setToMaxSize();
 				}
 				else {
 					Main.instance.player.miscInventory.Remove(stack);
@@ -423,11 +543,12 @@ namespace Assets.draco18s.artificer.game {
 						Main.instance.player.addItemToInventory(toPlayer);
 					}
 					else {
-						ItemStack toPlayer = stack.split(stack.stackSize - stack.item.getStackSizeForQuest());
+						ItemStack toPlayer = stack.split(stack.stackSize - 1);
 						Main.instance.player.addItemToInventory(toPlayer);
 					}
+					//BigRational val = stack.item.getBaseValue() * BigRational.Pow(1.1f, stack.enchants.Count + stack.antiquity);
+					//Main.instance.player.money += BigRational.ToBigInt(val * 0.001f * ((UpgradeFloatValue)wrap).value);
 				}
-				stack.setToMaxSize();
 			}
 			theQuest.questStarted();
 			Main.instance.player.addItemToInventory(theQuest.rewards[0]);
@@ -436,9 +557,11 @@ namespace Assets.draco18s.artificer.game {
 			selectedStack = null;
 			//setupUI();
 			refreshMiscInventory();
+			FilterInventory(lastFilter);
 			validateQuests();
 			CreateNewActiveQuestGuiItem(theQuest);
 			updateActiveQuestList();
+			Main.instance.player.getActiveDeepGoal().finalizeQuest(ref theQuest);
 		}
 
 		public static void updateLists() {
@@ -457,7 +580,7 @@ namespace Assets.draco18s.artificer.game {
 			//inventoryList.transform.localPosition = Vector3.zero;
 
 			GuiManager.instance.questHeader.transform.FindChild("MoneyArea").GetChild(0).GetComponent<Text>().text = "$" + Main.AsCurrency(Main.instance.player.money, 12);
-			GuiManager.instance.questHeader.transform.FindChild("QuestArea").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(Main.instance.player.totalQuestsCompleted, 12);
+			GuiManager.instance.questHeader.transform.FindChild("QuestArea").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(StatisticsTracker.questsCompleted.serializedValue, 12);
 		}
 
 		protected static void updateActiveQuestList() {
@@ -470,6 +593,7 @@ namespace Assets.draco18s.artificer.game {
 				if(q.isActive()) {
 					go.transform.localPosition = new Vector3(7, (i * -68) - 7, 0);
 					QuestInfo info = go.GetComponent<QuestInfo>();
+					//Debug.Log(info);
 					info.status.text = "is " + q.getStatus();
 					for(int r = 1; r <= 4; r++) {
 						int req_num = Main.BitNum(q.getCurrentReq(r - 1)) - 1;
@@ -491,7 +615,7 @@ namespace Assets.draco18s.artificer.game {
 					ext = MathHelper.EaseOutQuadratic(0.1f, ext, 1 - per, 1);
 					img.material.SetFloat("_Cutoff", ext);
 
-					per = q.QuestTimeLeft() / 2000;
+					per = q.QuestTimeLeft() / Quest.GetQuestMaxTime();
 					img = info.MPBar.GetComponent<Image>();
 					ext = img.material.GetFloat("_Cutoff");
 					ext = MathHelper.EaseOutQuadratic(0.1f, ext, 1 - per, 1);
@@ -518,6 +642,7 @@ namespace Assets.draco18s.artificer.game {
 			foreach(Quest q in activeQuests) {
 				EnumResult res = q.doQuestStep(time);
 				if(res != EnumResult.CONTINUE) {
+					q.finalResult = res;
 					q.questComplete = true;
 					if(res == EnumResult.SUCCESS) {
 						ItemStack newRelic = q.determineRelic();
@@ -534,7 +659,7 @@ namespace Assets.draco18s.artificer.game {
 							if(st.relicData != null || st.enchants.Count > 0 && st != newRelic) {
 								//if the player gave it to the hero, then it's ID'd and can go back to the player's general inventory
 								//if it isn't, then it goes to the Unidentified Relics list
-								Debug.Log("ID? " + st.isIDedByPlayer);
+								//Debug.Log("ID? " + st.isIDedByPlayer);
 								if(st.isIDedByPlayer) {
 									Main.instance.player.addItemToInventory(st);
 								}
@@ -570,6 +695,7 @@ namespace Assets.draco18s.artificer.game {
 				availableQuests.Add(q);
 			}
 			if(newQuestDelayTimer <= 0) {
+				newQuestDelayTimer = -1;
 				GuiManager.instance.questHeader.transform.FindChild("NewQuestTime").GetComponent<Text>().text = "---";
 			}
 			else {
@@ -580,6 +706,7 @@ namespace Assets.draco18s.artificer.game {
 				if(q.guiItem != null)
 					q.guiItem.transform.FindChild("Expire").GetComponent<Text>().text = "Expires in " + Main.SecondsToTime((int)q.timeUntilQuestExpires);
 				if(q.timeUntilQuestExpires <= 0) {
+					Main.instance.player.getActiveDeepGoal().onFailedQuest(q);
 					Main.Destroy(q.guiItem);
 				}
 			}
@@ -589,22 +716,12 @@ namespace Assets.draco18s.artificer.game {
 				if(j < availableQuests.Count) {
 					Quest jq = availableQuests[j];
 					if(jq.timeUntilQuestExpires < 30 && jq.inventory.Count > 0) {
-						bool questReady = true;
-						long totalForQuest = 0;
-						foreach(ItemStack stack in jq.inventory) {
-							totalForQuest = 0;
-							if(stack.item.industry != null) {
-								totalForQuest += stack.stackSize;
-								questReady &= (stack.item.industry.quantityStored >= totalForQuest);
-							}
-						}
-						if(questReady) {
+						if(isQuestReady(jq)) {
 							questsToStart.Add(jq);
 						}
 					}
 				}
 			}
-
 			foreach(Quest q in questsToStart) {
 				startQuest(q, q.guiItem);
 			}
@@ -615,11 +732,15 @@ namespace Assets.draco18s.artificer.game {
 			questEquipTimer += (time * Main.instance.player.currentGuildmaster.journeymenRateMultiplier());
 			//journeyman equip loop
 			float tim = (questEquipTimerMax - questEquipTimer) / Main.instance.player.currentGuildmaster.journeymenRateMultiplier();
-			GuiManager.instance.questHeader.transform.FindChild("JourneymanTime").GetComponent<Text>().text = "Auto-Equip in " + Main.SecondsToTime(tim);
+			Transform timer = GuiManager.instance.questHeader.transform.FindChild("JourneymanTime");
+			timer.GetComponent<Text>().text = "Auto-Equip in " + Main.SecondsToTime((int)tim);
+			timer.gameObject.SetActive(Main.instance.player.journeymen > 0);
+			int adjustQuestTime = 0;
 			if(questEquipTimer >= questEquipTimerMax) {
 				questEquipTimer -= questEquipTimerMax;
 				int questIndex = 0;
 				for(int j = 0; j < Main.instance.player.journeymen*2; j++) {
+					bool didAnything = false;
 					if(questIndex < availableQuests.Count) {
 						Quest jq = availableQuests[questIndex];
 						for(int r = 1; r <= 6; r++) {
@@ -632,15 +753,18 @@ namespace Assets.draco18s.artificer.game {
 										Main.instance.player.addItemToInventory(toPlayer);
 										stack.wasAddedByJourneyman = true;
 										jq.inventory.Add(stack);
+										didAnything = true;
 										goto foundItem;
 									}
 								}
-								foreach(Industry ind in Main.instance.player.builtItems) {
+								for(int b = Main.instance.player.builtItems.Count-1; b>=0; b--) {
+									Industry ind = Main.instance.player.builtItems[b];
 									if(ind.hasReqType(req)) {
 										int v = Mathf.RoundToInt(ind.getStackSizeForQuest() * Main.instance.GetQuestStackMultiplier(ind, jq.numQuestsBefore) * jq.getGoal().getReqScalar());
 										if(ind.quantityStored >= v) {
 											ItemStack stack = new ItemStack(ind, v);
 											jq.inventory.Add(stack);
+											didAnything = true;
 											goto foundItem;
 										}
 									}
@@ -652,7 +776,11 @@ namespace Assets.draco18s.artificer.game {
 						foundItem:
 						;
 					}
+					if(!didAnything) {
+						adjustQuestTime += 300;
+					}
 				}
+				newQuestDelayTimer -= adjustQuestTime;
 				for(int j = 0; j <= questIndex && j < availableQuests.Count; j++) {
 					Quest q = availableQuests[j];
 					if(q.guiItem != null) {
@@ -661,7 +789,9 @@ namespace Assets.draco18s.artificer.game {
 							im.sprite = GuiManager.instance.gray_square;
 							if(q.inventory.Count >= r) {
 								if(q.inventory[r - 1].item.industry != null) {
-									im.GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
+									//Debug.Log(r + ": " + q.inventory[r - 1].item.name);
+									im.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.inventory[r - 1].item.name);
+									//im.GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
 								}
 								else {
 									im.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.inventory[r - 1].item.name);
@@ -716,9 +846,7 @@ namespace Assets.draco18s.artificer.game {
 			return stack;
 		}
 
-		private static ItemStack makeRelic(ItemStack stack, Quest q) {
-			Debug.Log("Making a relic! " + stack.item.name);
-			Debug.Log(Main.instance.player.miscInventory.Contains(stack));
+		public static QuestChallenge getGoal(Quest q) {
 			int j = q.obstacles.Length;
 			do {
 				j--;
@@ -727,27 +855,37 @@ namespace Assets.draco18s.artificer.game {
 				j = q.obstacles.Length;
 				do {
 					j--;
-					Debug.Log(q.obstacles[j].type.name + ":"  + ((q.obstacles[j].type is IRelicMaker)?" is a RelicMaker":" is not"));
-				} while(j >= 0 && !(q.obstacles[j].type is IRelicMaker));
-				Debug.Log("    " + q.obstacles[j].type.name);
+					//Debug.Log(q.obstacles[j].type + ":" + ((q.obstacles[j].type is IRelicMaker) ? " is a RelicMaker" : " is not"));
+				} while(j >= 1 && !(q.obstacles[j].type is IRelicMaker));
+				//Debug.Log("    " + q.obstacles[j].type.name);
 				if(q.obstacles[j].type is IDescriptorData) {
-					object namewrap;
-					q.miscData.TryGetValue(((IDescriptorData)q.obstacles[j].type).getDescValue(), out namewrap);
-					return makeRelic(stack, q.obstacles[j].type, (string)namewrap, q.heroName);
+					return q.obstacles[j];
 				}
 				else {
-					return makeRelic(stack, q.obstacles[j].type, q.heroName);
+					return q.obstacles[j];
 				}
 			}
 			else {
-				if(q.obstacles[j].type is IDescriptorData) {
-					object namewrap;
-					q.miscData.TryGetValue(((IDescriptorData)q.obstacles[j].type).getDescValue(), out namewrap);
-					return makeRelic(stack, q.obstacles[j].type, (string)namewrap, q.heroName);
-				}
-				else {
-					return makeRelic(stack, q.obstacles[j].type, q.heroName);
-				}
+				return q.obstacles[j];
+			}
+		}
+
+		private static ItemStack makeRelic(ItemStack stack, Quest q) {
+			Debug.Log("Making a relic! " + stack.item.name);
+			Debug.Log("Already have? " + Main.instance.player.miscInventory.Contains(stack));
+			if(Main.instance.player.miscInventory.Contains(stack)) {
+				Debug.Log(q.heroName + ":" + q.getGoal().name);
+				Debug.Log("UnIDed? " + Main.instance.player.unidentifiedRelics.Contains(stack));
+				Debug.Log("Available? " + QuestManager.availableRelics.Contains(stack));
+			}
+			QuestChallenge goal = getGoal(q);
+			if(goal.type is IDescriptorData) {
+				object namewrap;
+				q.miscData.TryGetValue(((IDescriptorData)goal.type).getDescValue(), out namewrap);
+				return makeRelic(stack, goal.type, (string)namewrap, q.heroName);
+			}
+			else {
+				return makeRelic(stack, goal.type, q.heroName);
 			}
 		}
 
@@ -776,7 +914,7 @@ namespace Assets.draco18s.artificer.game {
 		public static float getNewQuestMaxTime() {
 			UpgradeValueWrapper wrap;
 			Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_SPEED, out wrap);
-			return (newQuestMaxTime - (((UpgradeFloatValue)wrap).value)) * (1 / Main.instance.player.currentGuildmaster.newQuestRateMultiplier());
+			return (newQuestMaxTime - (((UpgradeFloatValue)wrap).value) - (10 * ((AchievementMulti)StatisticsTracker.vendorsPurchasedAch).getNumAchieved())) * (1 / Main.instance.player.currentGuildmaster.newQuestRateMultiplier());
 		}
 
 		public static float getEquipRate() {

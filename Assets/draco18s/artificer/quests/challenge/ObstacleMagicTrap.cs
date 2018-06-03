@@ -8,7 +8,7 @@ using System.Text;
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleMagicTrap : ObstacleType {
 		DamageType damage;
-		public ObstacleMagicTrap(DamageType trapDamageType) : base("dealing with a magic trap", trapDamageType.getImmunityType().ToString(), new RequireWrapper(RequirementType.SPELL_RESIST, RequirementType.DETECTION)) {
+		public ObstacleMagicTrap(DamageType trapDamageType) : base("dealing with a magic trap", trapDamageType.getImmunityType().ToString(), new RequireWrapper(RequirementType.DANGER_SENSE, RequirementType.DETECTION)) {
 			damage = trapDamageType;
 		}
 

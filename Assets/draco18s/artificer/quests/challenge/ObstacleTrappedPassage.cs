@@ -9,7 +9,7 @@ using System.Text;
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleTrappedPassage : ObstacleType {
 		DamageType damage;
-		public ObstacleTrappedPassage(DamageType trapDamageType) : base("in a trapped passage", trapDamageType.getImmunityType().ToString(), new RequireWrapper(RequirementType.DETECTION, RequirementType.AGILITY)) {
+		public ObstacleTrappedPassage(DamageType trapDamageType) : base("in a trapped passage", trapDamageType.getImmunityType().ToString(), new RequireWrapper(RequirementType.DANGER_SENSE, RequirementType.DETECTION)) {
 			damage = trapDamageType;
 		}
 
@@ -18,8 +18,8 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			if(partials > 0) result = EnumResult.MIXED;
 			else if(fails > 0) result = EnumResult.FAIL;
 			else result = EnumResult.SUCCESS;
-
-			if(theQuest.testAgility(questBonus)) {
+			int mod = theQuest.doesHeroHave(RequirementType.TOOLS) ? 4 : 0;
+			if(theQuest.testAgility(questBonus + mod)) {
 				result += 1;
 			}
 

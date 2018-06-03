@@ -8,6 +8,7 @@ public class PrefabManager : MonoBehaviour {
 	public GameObject GRID_GUI_ARROW;
 	public GameObject QUEST_GUI_LISTITEM;
 	public GameObject INVEN_GUI_LISTITEM;
+	public GameObject INGRED_GUI_LISTITEM;
 	public GameObject UPGRADE_GUI_LISTITEM;
 	public GameObject ACTIVE_QUEST_GUI_LISTITEM;
 	public GameObject INVEN_GUI_LISTITEM_SELLABALE;

@@ -40,7 +40,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
 			switch(result-1) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.inventory.Add(new ItemStack(Industries.POT_HEALTH, 2));
+					theQuest.inventory.Add(new ItemStack(Industries.POT_SM_HEALTH, 2));
 					break;
 				case EnumResult.FAIL:
 					//theQuest.inventory.Add(new ItemStack(Industries.SWORD, 1));

@@ -930,7 +930,9 @@ namespace Koopakiller.Numerics
                 case SpecialValues.NaN:
                     return BigInteger.NaN;
             }
-            return value.Numerator / value.Denominator;
+			BigRational roundUp = value + 0.5;
+
+			return roundUp.Numerator / roundUp.Denominator;
         }
 
         /// <summary>

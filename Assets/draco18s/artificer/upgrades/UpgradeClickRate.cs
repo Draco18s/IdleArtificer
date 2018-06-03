@@ -27,7 +27,9 @@ namespace Assets.draco18s.artificer.upgrades {
 		}
 
 		public override string getTooltip() {
-			return "Increases the effectiveness of clicking, including Apprentices.";
+			UpgradeValueWrapper wrap;
+			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
+			return "Increases the effectiveness of clicking by " + time + "sec, including Apprentices.\nThe base value is 0.2sec, currently it is " + (Main.instance.player.getClickRate()) + "sec, and with this upgrade it would be " + (Main.instance.player.getClickRate() + time) + "sec";
 		}
 
 		public override string getIconName() {

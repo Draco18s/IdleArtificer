@@ -7,6 +7,13 @@ namespace Assets.draco18s.artificer.statistics {
 	public class StatHighscore : StatBase {
 		protected int bestValue;
 		private int initialValue = 0;
+
+		public override object serializedValue {
+			get {
+				return statValue;
+			}
+		}
+
 		public override int value {
 			get {
 				return bestValue;
@@ -22,7 +29,10 @@ namespace Assets.draco18s.artificer.statistics {
 			}
 		}
 
-		public StatHighscore(string name):base(name, true) {
+		public StatHighscore(string name):base(name, EnumResetType.SHOP) {
+		}
+
+		public StatHighscore(string name, EnumResetType reset) : base(name, reset) {
 		}
 
 		public override void addValue(int v) {

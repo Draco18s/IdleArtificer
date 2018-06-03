@@ -16,7 +16,8 @@ namespace Assets.draco18s.artificer.statistics {
 		public string description {
 			get { return Localization.translateToLocal(_description); }
 		}
-		public readonly bool shouldResetOnNewLevel;
+		public readonly bool _shouldResetOnNewLevel;
+		public readonly bool _shouldResetOnNewGuildmaster;
 		protected bool shouldReadAsFloat = false;
 		private int dispOrd = -1;
 		public int displayOrder {
@@ -56,6 +57,17 @@ namespace Assets.draco18s.artificer.statistics {
 		}
 		public bool isHidden { get; set; }
 
+		public bool shouldResetOnNewLevel {
+			get {
+				return _shouldResetOnNewLevel;
+			}
+		}
+		public bool shouldResetOnNewGuildmaster {
+			get {
+				return _shouldResetOnNewGuildmaster;
+			}
+		}
+
 		public virtual string getDisplay() {
 			return Main.AsCurrency(shouldReadAsFloat?value/1000:value,12);
 			//return (shouldReadAsFloat ? floatValue.ToDecimalString(3) : value.ToString(10,true));
@@ -68,11 +80,14 @@ namespace Assets.draco18s.artificer.statistics {
 			_statName = "stat." + name + ".name";
 			_description = "stat." + name + ".desc";
 			statValue = 0;
-			shouldResetOnNewLevel = false;
+			_shouldResetOnNewLevel = false;
 		}
 
-		protected StatBint(string name, bool resets) : this(name) {
-			shouldResetOnNewLevel = resets;
+		protected StatBint(string name, EnumResetType resets) : this(name) {
+			if((resets & EnumResetType.SHOP) > 0)
+				_shouldResetOnNewLevel = true;
+			if((resets & EnumResetType.GUILDMASTER) > 0)
+				_shouldResetOnNewGuildmaster = true;
 		}
 
 		/// <summary>

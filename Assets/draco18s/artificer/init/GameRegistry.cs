@@ -38,21 +38,36 @@ namespace Assets.draco18s.artificer.init {
 		public static void RegisterObstacle(ObstacleType i) {
 			allObstacles.Add(i.name, i);
 		}
-
+		[Obsolete]
 		public static Item GetItemByID(int i) {
 			return allItems[i];
 		}
+
+		public static Item GetItemByID(string i) {
+			return allItems.Find(x => x.name == i);
+		}
+		[Obsolete]
 		public static Industry GetIndustryByID(int i) {
 			return allIndustries[i];
+		}
+		public static Industry GetIndustryByID(string i) {
+			return allIndustries.Find(x => x.saveName == i);
 		}
 		public static ObstacleType GetObstacleByID(string i) {
 			ObstacleType obs;
 			allObstacles.TryGetValue(i, out obs);
+			if(obs == null) {
+				throw new Exception("Failed to deserialize missing Obstacle/Goal '" + i + "'");
+			}
 			return obs;
 		}
 
 		public static Enchantment GetEnchantmentByID(int i) {
 			return allEnchants[i];
+		}
+
+		public static Enchantment GetEnchantmentByID(string i) {
+			return allEnchants.Find(x => x.name == i);
 		}
 
 		public static Enchantment GetEnchantmentByItem(Item i) {

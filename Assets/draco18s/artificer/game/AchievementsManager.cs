@@ -22,7 +22,7 @@ namespace Assets.draco18s.artificer.game {
 			while(list.MoveNext()) {
 				GameObject obj;
 				StatAchievement item = list.Current;
-				if(item.isHidden) continue;
+				if(item.isHidden && !item.isSecret) continue;
 				if(item is AchievementMulti) {
 					obj = GameObject.Instantiate(PrefabManager.instance.ACHIEVEMENT_MULTI_LISTITEM, achievList) as GameObject;
 				}
@@ -34,8 +34,12 @@ namespace Assets.draco18s.artificer.game {
 				obj.transform.FindChild("Name").GetComponent<Text>().text = Localization.translateToLocal(item.achieveName);
 				obj.transform.FindChild("Description").GetComponent<Text>().text = Localization.translateToLocal(item.description);
 				obj.transform.FindChild("Image").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource(item.achieveImage + (item.isAchieved() ? "":"_off"));
-				h++;
 				achLookup.Add(item, obj);
+				if(item.isSecret) {
+					obj.SetActive(false);
+					continue;
+				}
+				h++;
 			}
 			((RectTransform)achievList.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 50 * h + 18);
 
@@ -56,13 +60,14 @@ namespace Assets.draco18s.artificer.game {
 				obj.transform.FindChild("Progress").GetComponent<Text>().text = item.getDisplay();
 				obj.transform.FindChild("Image").gameObject.SetActive(false);
 				obj.transform.FindChild("BG").gameObject.SetActive(false);
-				h++;
 				statLookup.Add(item, obj);
+				h++;
 			}
 			((RectTransform)statsList.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 50 * h + 18);
 		}
 
 		public static void setupUI() {
+			bool redraw = false;
 			Dictionary<StatAchievement, GameObject>.Enumerator achlist = achLookup.GetEnumerator();
 			while(achlist.MoveNext()) {
 				KeyValuePair<StatAchievement, GameObject> item = achlist.Current;
@@ -86,12 +91,48 @@ namespace Assets.draco18s.artificer.game {
 				else {
 					item.Value.transform.FindChild("Progress").GetComponent<Text>().text = item.Key.isAchieved() ? "Completed" : "In progress";
 				}
+				if(!item.Key.isHidden && !item.Value.activeSelf) {
+					redraw = true;
+				}
 			}
 			Dictionary<IStat, GameObject>.Enumerator statlist = statLookup.GetEnumerator();
 			while(statlist.MoveNext()) {
 				KeyValuePair<IStat, GameObject> item = statlist.Current;
 				item.Value.transform.FindChild("Progress").GetComponent<Text>().text = item.Key.getDisplay();
 				item.Value.transform.FindChild("Description").GetComponent<Text>().text = item.Key.description;
+				if(!item.Key.isHidden && !item.Value.activeSelf) redraw = true;
+			}
+			if(redraw) {
+				IEnumerator<StatAchievement> list = StatisticsTracker.getAchievementsList();
+				int h = 0;
+				while(list.MoveNext()) {
+					StatAchievement item = list.Current;
+					if(!achLookup.ContainsKey(item)) continue;
+					GameObject obj = achLookup[item];
+					obj.transform.localPosition = new Vector3(11, -50 * h - 11, 0);
+					if(item.isHidden) {
+						obj.SetActive(false);
+						continue;
+					}
+					obj.SetActive(true);
+					h++;
+				}
+				((RectTransform)achievList.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 50 * h + 18);
+				IEnumerator<IStat> list2 = StatisticsTracker.getStatsList();
+				h = 0;
+				while(list2.MoveNext()) {
+					IStat item = list2.Current;
+					if(!statLookup.ContainsKey(item)) continue;
+					GameObject obj = statLookup[item];
+					obj.transform.localPosition = new Vector3(11, -50 * h - 11, 0);
+					if(item.isHidden) {
+						obj.SetActive(false);
+						continue;
+					}
+					obj.SetActive(true);
+					h++;
+				}
+				((RectTransform)statsList.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 50 * h + 18);
 			}
 		}
 

@@ -51,7 +51,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		}
 
 		public string relicDescription(ItemStack stack) {
-			return "Aided in defending the innocents";
+			return "Defended civilians from attack";
 		}
 
 		public string relicNames(ItemStack stack) {

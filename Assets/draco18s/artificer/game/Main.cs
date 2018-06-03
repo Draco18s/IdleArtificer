@@ -24,7 +24,7 @@ namespace Assets.draco18s.artificer.game {
 	public class Main : MonoBehaviour {
 		public static int saveVersionFromDisk;
 		public static Main instance;
-		public PlayerInfo player;
+		public readonly PlayerInfo player = new PlayerInfo();
 
 		public bool debugMode;
 		public bool debugAutoBuild;
@@ -51,7 +51,7 @@ namespace Assets.draco18s.artificer.game {
 			csv_st.WriteLine("TotalTime,TimeToNextBuilding,Income/Sec,CashOnHand,LastPurchase");*/
 			instance = this;
 			Application.runInBackground = true;
-			player = new PlayerInfo();
+			//player = new PlayerInfo();
 			//money = new BigInteger(10000);
 			GuiManager.instance.mainCanvas.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.FacilityUnselected(); });
 			Localization.initialize();
@@ -69,7 +69,10 @@ namespace Assets.draco18s.artificer.game {
 			panel.BuildToggle.onValueChanged.AddListener(delegate { CraftingManager.ToggleAutoBuild(); });
 			
 			Button btn;
-			GuiManager.instance.infoPanel.transform.FindChild("Output").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.AdvanceTimer(); });
+			btn = GuiManager.instance.infoPanel.transform.FindChild("Output").GetComponent<Button>();
+			btn.onClick.AddListener(delegate { CraftingManager.AdvanceTimer(); });
+			btn.OnRightClick(delegate { CraftingManager.AdvanceTimer(); });
+
 			btn = GuiManager.instance.infoPanel.transform.FindChild("SellAll").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { CraftingManager.SellAll(); });
 			//string veryLong = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra tincidunt mi, sed volutpat est elementum id. Etiam eleifend arcu vitae sem efficitur, ut congue massa ultricies. Ut facilisis, leo id tincidunt viverra, sem metus accumsan neque, ac tristique erat quam id lacus. Vivamus quis augue eros. Maecenas non laoreet ligula. Nunc id tellus consectetur ipsum volutpat convallis nec a arcu. Phasellus fermentum sapien eget porttitor convallis.";
@@ -86,6 +89,8 @@ namespace Assets.draco18s.artificer.game {
 			info.ConfDowngradeBtn.onClick.AddListener(delegate { CraftingManager.Do_DowngradeCurrent(); });
 			info.VendNum.transform.FindChild("IncVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseVendors(); });
 			info.VendNum.transform.FindChild("DecVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseVendors(); });
+			info.StartVend.transform.FindChild("IncStVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseStartingVendors(); });
+			info.StartVend.transform.FindChild("DecStVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseStartingVendors(); });
 			GuiManager.instance.infoPanel.transform.FindChild("NumAppr").FindChild("IncAppr").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseApprentices(); });
 			GuiManager.instance.infoPanel.transform.FindChild("NumAppr").FindChild("DecAppr").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseApprentices(); });
 			info.BuildNum.transform.FindChild("IncBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseAutoBuild(); });
@@ -115,7 +120,7 @@ namespace Assets.draco18s.artificer.game {
 				BigInteger totalRenown = BigInteger.CubeRoot(Main.instance.player.lifetimeMoney);
 				totalRenown /= 10000;
 				BigInteger renown = totalRenown - spentRenown + Main.instance.player.questsCompleted;*/
-				BigInteger renown = getCachedNewRenown() + Main.instance.player.questsCompleted;
+				BigInteger renown = getCachedNewRenown() + Main.instance.player.questsCompletedRenown;
 				GuiManager.ShowTooltip(GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").transform.position, "You will gain " + Main.AsCurrency(renown) + " Renown if you reset now.", 2.5f);
 			});
 			btn = GuiManager.instance.craftHeader.transform.FindChild("SyncBtn").GetComponent<Button>();
@@ -146,6 +151,7 @@ namespace Assets.draco18s.artificer.game {
 				else {
 					writeDataToSave();
 				}
+				autosaveTimer = 0;
 				GuiManager.ShowNotification(new NotificationItem("Game saved!", "", GuiManager.instance.checkOn));
 			});
 #pragma warning disable 0219
@@ -153,6 +159,8 @@ namespace Assets.draco18s.artificer.game {
 			ObstacleType ob = ChallengeTypes.General.FESTIVAL;
 			ob = ChallengeTypes.Goals.ALCHEMY_LAB;
 			ob = ChallengeTypes.Goals.Sub.MUMMY;
+			ob = ChallengeTypes.Goals.Bonus.KRAKEN;
+			ob = ChallengeTypes.Goals.DeepGoalSpecial.HEART_TREE;
 			ob = ChallengeTypes.Initial.AT_HOME;
 			ob = ChallengeTypes.Initial.Sub.BAR_BRAWL;
 			ob = ChallengeTypes.Initial.Town.GARDENS;
@@ -163,7 +171,8 @@ namespace Assets.draco18s.artificer.game {
 			ob = ChallengeTypes.Unexpected.Sub.GENIE;
 			ob = ChallengeTypes.Unexpected.Traps.MAGIC_TRAP_ACID;
 			ob = ChallengeTypes.Unexpected.Monsters.ANIMANT_PLANT;
-			Item it11 = Items.SpecialItems.POWER_STONE;
+			Item it11 = Items.BANSHEE_WAIL; //old save compatibility!!!
+			it11 = Items.SpecialItems.POWER_STONE;
 #pragma warning restore 0219
 			bool saveExists = false;
 			if(Application.platform == RuntimePlatform.WebGLPlayer) {
@@ -288,6 +297,7 @@ namespace Assets.draco18s.artificer.game {
 			if(TimeSinceLastRequest >= 10) {
 				TimeSinceLastRequest -= 10;
 				BigInteger newRenown = BigInteger.CubeRoot(StatisticsTracker.lifetimeMoney.value);
+				newRenown -= StatisticsTracker.lastResetRenownGain.value;
 				newRenown /= 10000;
 				CachedNewRenown = newRenown;
 			}
@@ -308,7 +318,10 @@ namespace Assets.draco18s.artificer.game {
 				BinaryFormatter formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.File));
 				try {
 					readFromDisk = formatter.Deserialize(fs);
-					instance.player = (PlayerInfo)readFromDisk;
+					//instance.player = (PlayerInfo)readFromDisk;
+					//fs.Close();
+					//fs = new FileStream(path2, FileMode.OpenOrCreate);
+					//readFromDisk = formatter.Deserialize(fs);
 				}
 				catch(SerializationException e) {
 					GuiManager.ShowNotification(new NotificationItem("Failed to load", e.Message, GuiManager.instance.checkOff));
@@ -327,12 +340,30 @@ namespace Assets.draco18s.artificer.game {
 		public static void writeDataToSave() {
 			//GuiManager.ShowNotification(new NotificationItem("Saving...", "", GuiManager.instance.checkOn));
 			string path2 = Configuration.currentDirectory + "Save/savedata.dat";
+			string path3 = Configuration.currentDirectory + "Save/savedata-temp.dat";
+			if(File.Exists(path3)) {
+				File.Delete(path3);
+			}
+
+			FileStream s = new FileStream(path3, FileMode.Create);
+			IFormatter formatter = new BinaryFormatter();
+			try {
+				formatter.Serialize(s, instance.player);
+			}
+			catch(SerializationException e) {
+				DataAccess.PlatformSafeMessage("Failed to save: " + e.Message);
+				//Assets.draco18s.util.DataAccess l;
+				//GuiManager.ShowNotification(new NotificationItem("Failed to save", e.Message, GuiManager.instance.checkOff));
+				//Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+				throw;
+			}
+			finally {
+				s.Close();
+			}
 			if(File.Exists(path2)) {
 				File.Delete(path2);
 			}
-
-			FileStream s = new FileStream(path2, FileMode.Create);
-			IFormatter formatter = new BinaryFormatter();
+			s = new FileStream(path2, FileMode.Create);
 			try {
 				formatter.Serialize(s, instance.player);
 			}
@@ -368,7 +399,7 @@ namespace Assets.draco18s.artificer.game {
 		void Update() {
 			float deltaTime = Time.deltaTime * GetSpeedMultiplier();
 			autosaveTimer += Time.deltaTime;
-			autoClickTime += deltaTime;
+			autoClickTime += deltaTime * Main.instance.player.GetApprenticeClickSpeedMultiplier();
 			TimeSinceLastRequest += deltaTime;
 			bool doAutoClick = false;
 			if(autoClickTime >= 1) {
@@ -460,7 +491,7 @@ namespace Assets.draco18s.artificer.game {
 							amt = MathHelper.Min(amt, maxSell);
 						/*i.quantityStored -= amt;
 						i.quantityStored = (i.quantityStored < 0 ? 0 : i.quantityStored);*/
-						amt = MathHelper.Max(MathHelper.Min(amt, i.quantityStored), 0);
+						amt = MathHelper.Max(MathHelper.Min(amt, i.quantityStored) - i.consumeAmount, 0);
 						i.quantityStored -= amt;
 						quant -= i.quantityStored;
 						val = ((BigRational)quant * GetVendorValue());
@@ -496,7 +527,7 @@ namespace Assets.draco18s.artificer.game {
 							ret = false;
 						}
 					}
-					Debug.Log("Total autobuild time used: " + (System.DateTime.Now - start).Milliseconds);
+					//Debug.Log("Total autobuild time used: " + (System.DateTime.Now - start).Milliseconds);
 				}
 				Material mat = GuiManager.instance.autoBuildBar.GetComponent<Image>().material;
 				mat.SetFloat("_Cutoff", 1 - (autoBuildTimer / 5f));
@@ -505,6 +536,7 @@ namespace Assets.draco18s.artificer.game {
 				autoBuildTimer = 0;
 				Material mat = GuiManager.instance.autoBuildBar.GetComponent<Image>().material;
 				mat.SetFloat("_Cutoff", 1);
+				GuiManager.instance.autoBuildTarget.SetActive(false);
 			}
 			Profiler.EndSample();
 			if(Mathf.FloorToInt(Time.time * 10) % 20 == 0) {
@@ -515,7 +547,8 @@ namespace Assets.draco18s.artificer.game {
 					foreach(IndustryInput input in item.inputs) {
 						if(!item.isProductionHalted && !input.item.isConsumersHalted) {
 							float mod = (float)item.getHalveAndDouble() / input.item.getHalveAndDouble();
-							input.item.consumeAmount += Mathf.RoundToInt((input.quantity * item.getTotalLevel()) * mod);
+							float mod2 = player.getActiveDeepGoal().getSpeedModifier(item) / player.getActiveDeepGoal().getSpeedModifier(input.item);
+							input.item.consumeAmount += Mathf.RoundToInt((input.quantity * item.getTotalLevel()) * mod * mod2);
 						}
 					}
 				}
@@ -540,16 +573,16 @@ namespace Assets.draco18s.artificer.game {
 			FieldInfo[] fields = typeof(Industries).GetFields();
 			BigInteger currIncome = 0;
 			foreach(Industry indu in player.builtItems) {
-				currIncome += (BigInteger)indu.GetScaledCost() * indu.output;
+				currIncome += (BigInteger)indu.GetSellValue() * (indu.output < indu.getVendors() ? indu.output : indu.getVendors());
 			}
 			//Debug.Log("start: "  + DateTime.Now.Millisecond);
 			foreach(FieldInfo field in fields) {
 				Industry ind = (Industry)field.GetValue(null);
 				//player.itemData.TryGetValue(indBtn, out ind);
 				BigInteger seconds = currIncome > 0 ? ((BigInteger)ind.GetScaledCost() - player.money) / currIncome : -1000000;
-				if(seconds < 15 && ind.doAutobuild && ind.autoBuildLevel > ind.level && ind.autoBuildMagnitude <= (player.money.ToString().Length - 1)) {
+				if(seconds < 60 && ind.doAutobuild && ind.autoBuildLevel > ind.level * ind.getHalveAndDouble() && ind.autoBuildMagnitude <= (player.money.ToString().Length - 1)) {
 					BigInteger inputCosts = 0;
-					int bonus = (ind.GetScaledCost() <= player.money ? 3 : (seconds <= 5 ? 3 : 1));
+					int bonus = (ind.GetScaledCost() <= player.money ? 3 : (seconds <= 5 ? 5 : (seconds <= 30 ? 3 : 1)));
 					double penalty = 1;
 					foreach(IndustryInput input in ind.inputs) {
 						if(input.item.level == 0) {
@@ -562,7 +595,7 @@ namespace Assets.draco18s.artificer.game {
 						inputCosts += (input.item.GetBaseSellValue() * input.quantity);
 					}
 					if(ind.consumeAmount > ind.output * ind.level) {
-						bonus *= 2;
+						bonus *= 10;
 					}
 					if(ind.level == 0 && ind.GetScaledCost() <= player.money) {
 						compares.Add(new CostBenefitRatio(1, ((ind.GetBaseSellValue() * ind.output) - inputCosts) * bonus, ind));
@@ -574,19 +607,12 @@ namespace Assets.draco18s.artificer.game {
 			}
 			//Debug.Log("mid: " + DateTime.Now.Millisecond);
 			compares.Sort();
-			/*if(level == 8) {
-				Debug.Log("1: " + compares[0].indust.name + " " + (compares[0].cost + "/" + compares[0].benefit));
-				Debug.Log("2: " + compares[1].indust.name + " " + (compares[1].cost + "/" + compares[1].benefit));
-				Debug.Log("3: " + compares[2].indust.name + " " + (compares[2].cost + "/" + compares[2].benefit));
-				Debug.Log("4: " + compares[3].indust.name + " " + (compares[3].cost + "/" + compares[3].benefit));
-				Debug.Log("5: " + compares[4].indust.name + " " + (compares[4].cost + "/" + compares[4].benefit));
-				if(compares[0].indust != Industries.WOOD) {
-					foreach(IndustryInput input in compares[0].indust.inputs) {
-						Debug.Log("   :" + input.item.level);
-					}
-					throw new Exception();
+			//Debug.Log("Current income/sec: " + currIncome);
+			//if(level == 8) {
+				for(int i=0; i < compares.Count; i++) {
+					Debug.Log("    " + i + ": " + compares[i].indust.unlocalizedName + " " + (compares[i].cost + "/" + compares[i].benefit) + "|" + (((BigInteger)compares[i].indust.GetScaledCost() - player.money)));
 				}
-			}*/
+			//}
 			Industry indust = (compares.Count > 0 ? compares[0].indust : null);
 			if(indust != null && indust.GetScaledCost() <= player.money) {
 				timeSinceLastPurchase = 0;
@@ -599,6 +625,17 @@ namespace Assets.draco18s.artificer.game {
 				//compares[0].indust.vendors = (compares[0].indust.vendors > 0)? compares[0].indust.vendors : compares[0].indust.vendors * -1;
 				//lastPurchase += indust.name + " ";
 				ret = true;
+			}
+			if(indust != null) {
+				GuiManager.instance.autoBuildTarget.SetActive(true);
+				Debug.Log(indust.unlocalizedName);
+				//if(indust.craftingGridGO != null)
+					GuiManager.instance.autoBuildTarget.transform.localPosition = indust.getGridPos();
+				//else
+					//GuiManager.instance.autoBuildTarget.transform.position = Vector3.zero;
+			}
+			else {
+				GuiManager.instance.autoBuildTarget.SetActive(false);
 			}
 			/*float dtt = dt;
 			do {
@@ -618,7 +655,7 @@ namespace Assets.draco18s.artificer.game {
 				//csv_st.Close();
 			}*/
 			//Debug.Log("end: " + DateTime.Now.Millisecond);
-			
+
 			return ret;
 		}
 
@@ -847,29 +884,35 @@ namespace Assets.draco18s.artificer.game {
 		public static string SecondsToTime(float timeIn) {
 			long time = (int)timeIn;
 			float frac = timeIn - time;
-			int fracInt = Mathf.RoundToInt(100 * frac);
-			if(fracInt == 100) fracInt = 0;
+			int fracInt = Mathf.RoundToInt(10 * frac);
+			if(fracInt == 10) fracInt = 0;
 			long seconds = (time % 60);
 			long minutes = ((time - seconds) / 60) % 60;
 			long hours = ((time - seconds - (minutes * 60)) / 3600);
+			long days = ((time - seconds - (minutes * 60) - ((hours % 24) * 3600)) / 86400);
 			if(hours > 0) {
 				if(seconds > 30) minutes++;
 				if(minutes > 59) {
 					minutes = 0;
 					hours++;
 				}
+				if(days > 0) {
+					hours = hours % 24;
+					return days + ":" + (hours < 10L ? "0" : "") + hours + "d";
+				}
 				return hours + ":" + (minutes < 10L ? "0" : "") + minutes + "h";
 			}
 			if(minutes > 0)
 				return minutes + ":" + (seconds < 10L ? "0" : "") + seconds + "m";
-			return seconds + (fracInt > 0 ? (fracInt >= 10 ? "." + fracInt : ".0" + fracInt) : ".00") + "s";
+			//return seconds + (fracInt > 0 ? (fracInt >= 10 ? "." + fracInt : ".0" + fracInt) : ".00") + "s";
+			return seconds + "." + fracInt + "s";
 		}
 
 		public void writeCSVLine(string text) {
 			//FieldInfo[] fields = typeof(Industries).GetFields();
 			//csv_st.WriteLine(Mathf.FloorToInt(timeTotal) + "," + Mathf.FloorToInt(timeSinceLastPurchase) + "," + ApproximateIncome(fields) + "," + player.money + "," + text);
 		}
-		private class FirstRelics : IRelicMaker {
+		public class FirstRelics : IRelicMaker {
 			public string relicDescription(ItemStack stack) {
 				return "This relic predates recorded history.";
 			}

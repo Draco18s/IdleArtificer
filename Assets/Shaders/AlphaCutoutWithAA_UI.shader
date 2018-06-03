@@ -6,11 +6,11 @@
 		_Blend ("Blend Range", Range(0,.2)) = 0.1
 
 		[HideInInspector]_StencilComp("Stencil Comparison", Float) = 8
-		[HideInInspector]_Stencil("Stencil ID", Float) = 0
+		[HideInInspector]_Stencil("Stencil ID", Float) = 1
 		[HideInInspector]_StencilOp("Stencil Operation", Float) = 0
 		[HideInInspector]_StencilWriteMask("Stencil Write Mask", Float) = 255
 		[HideInInspector]_StencilReadMask("Stencil Read Mask", Float) = 255
-		/*[HideInInspector]_ColorMask("Color Mask", Float) = 15*/  //adding this breaks everything
+		[HideInInspector]_ColorMask("Color Mask", Float) = 15  //adding this breaks everything
 	}
 	SubShader {
 		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="TransparentCutout"}
@@ -18,6 +18,16 @@
 		LOD 100
 	
 		Lighting Off
+
+		Stencil
+		{
+			Ref[_Stencil]
+			Comp[_StencilComp]
+			Pass[_StencilOp]
+			ReadMask[_StencilReadMask]
+			WriteMask[_StencilWriteMask]
+		}
+		//ColorMask[_ColorMask]
 	
 		Pass {  
 			CGPROGRAM

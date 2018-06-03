@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleChurchyard : ObstacleType {
-		public ObstacleChurchyard() : base("in a churchyard", new RequireWrapper(RequirementType.UNHOLY_IMMUNE)) {
+		public ObstacleChurchyard() : base("in a churchyard", new RequireWrapper(RequirementType.UNHOLY_IMMUNE, RequirementType.WEAPON)) {
 
 		}
 

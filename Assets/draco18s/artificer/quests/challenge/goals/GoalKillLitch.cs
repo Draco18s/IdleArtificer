@@ -14,7 +14,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		protected int monsterMaxHealth;
 		private static FantasyNameSettings fantasyNameSettings = new FantasyNameSettings(Classes.Warrior, Race.Dragon, true, true, Gender.Male);
 		private static IFantasyNameGenerator fantasyNameGenerator = FantasyNameGenerator.FromSettingsInfo(fantasyNameSettings);
-		public GoalKillLitch() : base("slaying a itch", new RequireWrapper(RequirementType.SPELL_RESIST),new RequireWrapper(RequirementType.DISRUPTION)) {
+		public GoalKillLitch() : base("slaying a itch", new RequireWrapper(RequirementType.SPELL_RESIST, RequirementType.DISPELLING),new RequireWrapper(RequirementType.DISRUPTION)) {
 			monsterMaxHealth = 500;
 		}
 
@@ -28,7 +28,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			}
 			else result = EnumResult.MIXED;
 
-			int mod = questBonus + (theQuest.doesHeroHave(AidType.WEAPON) ? 2 : 0);
+			int mod = questBonus + (theQuest.doesHeroHave(AidType.WEAPON) ? 2 : 0) + (partials > 0 ? 2 : 0);
 
 			if(theQuest.testStrength(mod)) {
 				result += 1;

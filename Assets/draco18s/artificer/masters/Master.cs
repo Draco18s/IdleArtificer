@@ -39,10 +39,10 @@ namespace Assets.draco18s.artificer.masters {
 					newMaster.cash += (float)Math.Round(amt) / 100f;
 					break;
 				case 1:
-					newMaster.renown += (float)Math.Round(amt) / 100f * 0.1f;
+					newMaster.renown += (float)Math.Round(amt * 10) / 100f * 0.1f;
 					break;
 				case 2:
-					newMaster.ingredient += (float)Math.Round(amt * 21) / 100f;
+					newMaster.ingredient += (float)Math.Round(amt * (49f / 3f)) / 100f;
 					break;
 				case 3:
 					newMaster.relic += (float)Math.Round(amt * 2.1) / 100f * 0.1f;
@@ -61,7 +61,7 @@ namespace Assets.draco18s.artificer.masters {
 					newMaster.vendors += (float)Math.Round(amt * 7 / 3) / 100f;
 					break;
 				case 8:
-					newMaster.apprentice += (float)Math.Round(amt) / 100f;
+					newMaster.apprentice += (float)Math.Round(amt * 5) / 100f;
 					break;
 				case 9:
 					newMaster.journeymen += (float)Math.Round(amt * 7 / 3) / 100f;
@@ -177,7 +177,7 @@ namespace Assets.draco18s.artificer.masters {
 			return relic;
 		}
 		public float researchMultiplier() {
-			return relic;
+			return research;
 		}
 		public float industryTypeMultiplier(Industries.IndustryTypesEnum forType) {
 			return industry[(int)forType];

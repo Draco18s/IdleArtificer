@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleVampireTradingHouse : ObstacleType {
-		public ObstacleVampireTradingHouse() : base("visiting vampire market", new RequireWrapper(RequirementType.UNHOLY_IMMUNE), new RequireWrapper(RequirementType.CHARISMA)) {
+		public ObstacleVampireTradingHouse() : base("visiting vampire market", new RequireWrapper(RequirementType.UNHOLY_IMMUNE, RequirementType.HEALING), new RequireWrapper(RequirementType.CHARISMA)) {
 
 		}
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {

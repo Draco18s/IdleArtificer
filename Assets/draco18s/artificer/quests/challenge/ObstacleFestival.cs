@@ -40,7 +40,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.hastenQuestEnding(60);
 					break;
 				case EnumResult.MIXED:
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, 1));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_HEALTH, 1));
 					break;
 				case EnumResult.SUCCESS:
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Loot.getRandom(theQuest.questRand, true), 0));

@@ -44,6 +44,8 @@ public class GuiManager : MonoBehaviour {
 	public GameObject tooltip;
 	public GameObject notification;
 
+	public GameObject autoBuildTarget;
+
 	public Sprite gray_square;
 	public Sprite inner_item_bg;
 	public Sprite selTab;
@@ -51,12 +53,14 @@ public class GuiManager : MonoBehaviour {
 	public Sprite checkOn;
 	public Sprite checkOff;
 	public Sprite[] req_icons;
+	public Sprite[] equip_icons;
 
 	private static List<NotificationItem> notificationQueue = new List<NotificationItem>();
 
 	void Start() {
 		instance = this;
 		req_icons = Resources.LoadAll<Sprite>("items/req_icons");
+		equip_icons = Resources.LoadAll<Sprite>("items/equip_icons");
 		notification.transform.position = new Vector3(Screen.width - 5, Screen.height + 2, 0);
 	}
 
@@ -70,14 +74,16 @@ public class GuiManager : MonoBehaviour {
 		((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 160);
 		((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 64);
 		instance.tooltip.transform.position = pos;
-		Text t = instance.tooltip.transform.FindChild("Text").GetComponent<Text>();
-		t.text = v;
+		Text textArea = instance.tooltip.transform.FindChild("Text").GetComponent<Text>();
+		textArea.text = v;
 		//width + 7.5
 		//height + 6
 		bool fits = false;
-		if(t.preferredWidth < 610) {
-			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (t.preferredWidth / 4) + 8);
-			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (t.preferredHeight / 4) + 7.5f);
+		if(textArea.preferredWidth < 610) {
+			((RectTransform)textArea.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textArea.preferredWidth);
+			((RectTransform)textArea.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, textArea.preferredHeight);
+			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (textArea.preferredWidth / 2) + 8);
+			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (textArea.preferredHeight / 2) + 7.5f);
 			fits = true;
 		}
 		/*if(t.preferredHeight < 232) {
@@ -89,15 +95,15 @@ public class GuiManager : MonoBehaviour {
 			float h = 68;
 			do {
 				w += 64;
-				((RectTransform)t.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
-				h = t.preferredHeight;
+				((RectTransform)textArea.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
+				h = textArea.preferredHeight;
 			} while(h * ratio > w);
 
-			((RectTransform)t.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
-			((RectTransform)t.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
-			h = t.preferredHeight;
-			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (w / 4) + 8);
-			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (h / 4) + 7.5f);
+			((RectTransform)textArea.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
+			((RectTransform)textArea.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
+			h = textArea.preferredHeight;
+			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (w / 2) + 8);
+			((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (h / 2) + 7.5f);
 		}
 		float wid = ((RectTransform)instance.tooltip.transform).rect.width;
 		float hig = ((RectTransform)instance.tooltip.transform).rect.height;

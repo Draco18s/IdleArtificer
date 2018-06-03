@@ -10,7 +10,11 @@ namespace Assets.draco18s.artificer.statistics {
 		protected int bestValue;
 		private int initialValue = 0;
 
-		public StatResetable(string name):base(name, true) {
+		public StatResetable(string name):base(name, EnumResetType.SHOP) {
+		}
+
+
+		public StatResetable(string name, EnumResetType resets) : base(name, resets) {
 		}
 
 		public StatResetable setInitialValue(int v) {

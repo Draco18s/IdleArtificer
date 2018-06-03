@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.draco18s.artificer.quests.requirement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleHitchRide : ObstacleType {
-		public ObstacleHitchRide() : base("hitching a ride") {
+		public ObstacleHitchRide() : base("hitching a ride", new RequireWrapper(0, RequirementType.CHARISMA)) {
 
 		}
 

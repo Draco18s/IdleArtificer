@@ -83,6 +83,19 @@ namespace Assets.draco18s.artificer.init {
 				public static ObstacleType SKELETONS = new GoalExploreTomb_Skeletons();
 			}
 
+			public static class DeepGoalSpecial {
+				public static ObstacleType SOW_CHAOS = new GoalSowChaos().setRewardScalar(3);
+				public static ObstacleType HEART_TREE = new GoalHeartTree().setRewardScalar(21);
+				public static ObstacleType BURN_FOREST = new GoalClearBackWoods().setRewardScalar(18);
+				public static ObstacleType RESCUE_TAKEN = new GoalRescueCaptured().setRewardScalar(21);
+				public static ObstacleType CLEANS_CORRUPTION = new GoalCleansCorruption().setRewardScalar(18);
+
+				public static ObstacleType EQUIP_ARMY = new GoalEquipArmy().setRewardScalar(4);
+				public static ObstacleType COMBAT = new GoalEngageInWar().setRewardScalar(6);
+
+				public static ObstacleType HUNT_SPIRITS = new GoalHuntSpirits().setRewardScalar(8);
+			}
+
 			public static ObstacleType getRandom(Random rand) {
 				FieldInfo[] fields = typeof(Goals).GetFields();
 				int min = StatisticsTracker.minQuestDifficulty.value;
@@ -101,6 +114,7 @@ namespace Assets.draco18s.artificer.init {
 
 		public static class Initial {
 			public static ObstacleType AT_HOME = new ObstacleHome();
+			//cover of darkness [light]
 			public static ObstacleType BUY_EQUIPMENT = new ObstacleBuyEquipment("starting");
 			public static ObstacleType TOWN_OUTSKIRTS = new ObstacleOutskirts();
 			public static ObstacleType DECYPHER_MAP = new ObstacleDecypherMap();
@@ -108,7 +122,6 @@ namespace Assets.draco18s.artificer.init {
 			public static ObstacleType EXPLORE_TOWN = new ObstacleExploreTown();
 			public static ObstacleType TAVERN = new ObstacleTavern();
 			public static ObstacleType DETAINED = new ObstacleDetained();
-
 			public static class Sub {
 				public static ObstacleType BAR_BRAWL = new ObstacleDrunkenFight();
 			}
@@ -286,7 +299,7 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static void AddCommonResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 0, 10);
+				Item i = Items.getRandom(theQuest.questRand, 0, 11);
 				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
 				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
@@ -294,7 +307,7 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static void AddUncommonResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 10, 22);
+				Item i = Items.getRandom(theQuest.questRand, 11, 23);
 				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
 				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));
@@ -302,7 +315,7 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static void AddRareResource(Quest theQuest) {
-				Item i = Items.getRandom(theQuest.questRand, 22, 33);
+				Item i = Items.getRandom(theQuest.questRand, 23, 34);
 				int s = ResourceQuantity(theQuest.questRand, i.minStackSize, i.maxStackSize);
 				s += checkHerbalism(theQuest, i);
 				//NotificationItem notify = new NotificationItem(theQuest.heroName, "Found: " + Main.ToTitleCase(i.name) + "\nAdded to your stocks", SpriteLoader.getSpriteForResource("items/" + i.name));

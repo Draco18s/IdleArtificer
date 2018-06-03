@@ -115,5 +115,12 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			if(v >= type.requirements.Length) return (RequirementType)0;
 			return type.requirements[v].req;
 		}
+
+		public RequirementType getAltReq(int v) {
+			//UnityEngine.Debug.Log(type);
+			if(type == null) return (RequirementType)0;
+			if(v >= type.requirements.Length) return (RequirementType)0;
+			return type.requirements[v].alt;
+		}
 	}
 }

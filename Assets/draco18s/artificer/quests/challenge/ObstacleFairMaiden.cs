@@ -31,10 +31,10 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.addTime(60);
 					break;
 				case EnumResult.FAIL:
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, 1));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_HEALTH, 1));
 					break;
 				case EnumResult.MIXED:
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_MANA, 1));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_MANA, 1));
 					break;
 				case EnumResult.SUCCESS:
 					theQuest.raiseCharisma(1);

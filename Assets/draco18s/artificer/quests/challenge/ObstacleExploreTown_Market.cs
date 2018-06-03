@@ -48,7 +48,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					break;
 				case EnumResult.SUCCESS:
 					ChallengeTypes.Loot.AddRareResource(theQuest);
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, 1));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_HEALTH, 1));
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Initial.Town.SHOPPING, 0));
 					break;
 				case EnumResult.CRIT_SUCCESS:

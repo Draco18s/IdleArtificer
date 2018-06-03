@@ -23,6 +23,7 @@ public class InfoPanel : MonoBehaviour {
 	//public Text BuildText;
 	public Text BuildNum;
 	public Text MagnitudeNum;
+	public Text StartVend;
 
 	public Toggle ProduceToggle;
 	public Toggle ConsumeToggle;

@@ -9,7 +9,7 @@ using System.Text;
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleGraveyard : ObstacleType {
 
-		public ObstacleGraveyard() : base("having an encounter in a graveyard", new RequireWrapper(RequirementType.UNHOLY_IMMUNE), new RequireWrapper(RequirementType.HOLY_DAMAGE, RequirementType.DISRUPTION)) {
+		public ObstacleGraveyard() : base("having an encounter in a graveyard", new RequireWrapper(RequirementType.UNHOLY_IMMUNE, RequirementType.DISPELLING), new RequireWrapper(RequirementType.HOLY_DAMAGE, RequirementType.DISRUPTION)) {
 
 		}
 
@@ -20,14 +20,12 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				if(fails > 1) {
 					result = EnumResult.CRIT_FAIL;
 				}
-				else if(partials > 0) {
-					result = EnumResult.MIXED;
-				}
 				else {
 					result = EnumResult.FAIL;
 				}
+				result += partials > 0 ? 1 : 0;
 			}
-			else if(partials > 0) result = EnumResult.MIXED;
+			//else if(partials > 0) result = EnumResult.MIXED;
 			else result = EnumResult.SUCCESS;
 
 			int mod = questBonus + (theQuest.doesHeroHave(AidType.WEAPON) ? 2 : 0);

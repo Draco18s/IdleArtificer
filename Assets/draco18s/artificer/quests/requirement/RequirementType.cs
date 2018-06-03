@@ -31,7 +31,7 @@ namespace Assets.draco18s.artificer.quests.requirement {
 		DISRUPTION =			(1L << 21), //qe
 		VORPAL =				(1L << 22), //qe
 		BRILIANT_ENERGY =		(1L << 23), //e //may remove
-		DISPELLING =			(1L << 24),
+		DISPELLING =			(1L << 24), //qe
 		FREE_MOVEMENT =			(1L << 25), //qe
 		PHASE_LOCK =			(1L << 26),     //may remove?
 		DETECTION =				(1L << 27), //qe
@@ -71,22 +71,22 @@ namespace Assets.draco18s.artificer.quests.requirement {
 	[Flags]
 	public enum AidType {
 		WEAPON =			(1 << 0), //i
-		RANGED_WEAPON =		(1 << 1),
+		RANGED_WEAPON =		(1 << 1), //i
 		LIGHT_ARMOR =		(1 << 2), //i
-		MEDIUM_ARMOR =		(1 << 3),
+		MEDIUM_ARMOR =		(1 << 3), //i
 		HEAVY_ARMOR =		(1 << 4),
-		LIGHT_SHIELD =		(1 << 5),
+		LIGHT_SHIELD =		(1 << 5), //i
 		HEAVY_SHIELD =		(1 << 6),
-		BARKSKIN =			(1 << 7),
+		BARKSKIN =			(1 << 7), //i
 		HEALING_TINY =		(1 << 8), //i
 		HEALING_SMALL =		(1 << 9), //i
-		HEALING_MEDIUM =	(1 << 10),
-		HEALING_LARGE =		(1 << 11),
+		HEALING_MEDIUM =	(1 << 10), //i
+		HEALING_LARGE =		(1 << 11), //i
 		MANA_TINY =			(1 << 12), //i
 		MANA_SMALL =		(1 << 13), //i
-		MANA_MEDIUM =		(1 << 14),
-		MANA_LARGE =		(1 << 15),
-		RESSURECTION =		(1 << 16),
-		RETRY_FAILURE =		(1 << 17)
+		MANA_MEDIUM =		(1 << 14), //i
+		MANA_LARGE =		(1 << 15), //i
+		RESSURECTION =		(1 << 16), //i
+		RETRY_FAILURE =		(1 << 17) //i
 	}
 }

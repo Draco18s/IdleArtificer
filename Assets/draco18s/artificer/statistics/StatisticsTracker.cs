@@ -18,19 +18,22 @@ namespace Assets.draco18s.artificer.statistics {
 		#region stat list
 		public static readonly StatBint numClicks = new StatBint("numClicks").register();
 		public static readonly StatBase moneyMagnitude = new StatHighscore("moneyMagnitude").register();
+		public static readonly StatBint lastResetRenownGain = new StatBint("lastResetRenownGain").register().setHidden();
 		public static readonly StatBint lifetimeMoney = new StatBint("lifetimeMoney").register();
 		public static readonly StatBint lifetimeRenown = new StatBint("lifetimeRenown").register();
 		public static readonly StatBase lastDailyLogin = new StatBase("lastDailyLogin").register().setHidden();
 		public static readonly StatBase sequentialDaysPlayed = new StatLogin("sequentialDaysPlayed").register();
-		public static readonly StatBase vendorsPurchased = new StatHighscore("vendorsPurchased").register();
-		public static readonly StatBase apprenticesPurchased = new StatHighscore("apprenticesPurchased").register();
-		public static readonly StatBase journeymenPurchased = new StatHighscore("journeymenPurchased").register();
+		public static readonly StatBase vendorsPurchased = new StatHighscore("vendorsPurchased", EnumResetType.GUILDMASTER).register();
+		public static readonly StatBase apprenticesPurchased = new StatHighscore("apprenticesPurchased", EnumResetType.GUILDMASTER).register();
+		public static readonly StatBase journeymenPurchased = new StatHighscore("journeymenPurchased", EnumResetType.GUILDMASTER).register();
 		public static readonly StatBase minQuestDifficulty = new StatResetable("minQuestDifficulty").setInitialValue(0).register();
 		public static readonly StatBase maxQuestDifficulty = new StatResetable("maxQuestDifficulty").setInitialValue(3).register();
 		public static readonly StatBase questsCompleted = new StatHighscore("questsCompleted").register();
 		public static readonly StatBase relicsMade = new StatBase("relicsMade").register();
-		public static readonly StatBase relicAntiquity = new StatHighscore("relicAntiquity").register();
+		public static readonly StatBase relicsIdentified = new StatHighscore("relicsIdentified", EnumResetType.GUILDMASTER).register();
+		public static readonly StatBase relicAntiquity = new StatHighscore("relicAntiquity", EnumResetType.GUILDMASTER).register();
 		public static readonly StatBase guildmastersElected = new StatBase("guildmastersElected").register();
+		public static readonly StatBase timeSinceLastWar = new StatBase("timeSinceLastWar").register().setHidden();
 		//total play duration
 		#endregion
 		#region achieve list
@@ -41,10 +44,11 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatAchievement clicksAch = new AchievementMulti("clicksAch", numClicks, new object[] { 1000, 2000, 4000, 8000, 16000, 32000, 100000, 250000, 500000, 1000000 }).register();
 		public static readonly StatAchievement sequentialLogin = new AchievementMulti("sequentialLogin", sequentialDaysPlayed, new object[] { 5, 10, 15, 30, 60, 90, 120, 180, 270, 365 }).register();
 		public static readonly StatAchievement allQuestsUnlocked = new StatAchievement("allQuestsUnlocked").register();
-		public static readonly StatAchievement firstQuestCompleted = new StatAchievement("firstQuestCompleted").register().setHidden();
+		public static readonly StatAchievement firstQuestCompleted = new StatAchievement("firstQuestCompleted").register();
 		public static readonly StatAchievement twentiethQuestCompleted = new StatAchievement("twentiethQuestCompleted").register().setHidden();
 		public static readonly StatAchievement questsCompletedAch = new AchievementMulti("questsCompleted", questsCompleted, new object[] { 1, 20, 50, 100, 500, 1000, 10000, 100000, 1000000, 10000000 }).register();
 		public static readonly StatAchievement relicFromGenie = new StatAchievement("relicFromGenie").register().setSecret();
+		public static readonly StatAchievement relicHoarder = new StatAchievement("relicHoarder").register().setSecret();
 		public static readonly StatAchievement defeatKraken = new StatAchievement("defeatKraken").register().setSecret();
 		public static readonly StatAchievement impressiveAntiquity = new StatAchievement("impressiveAntiquity").register();
 		public static readonly StatAchievement firstEnchantment = new StatAchievement("firstEnchantment").register();
@@ -54,6 +58,7 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatAchievement vendorsPurchasedAch = new AchievementMulti("vendorsPurchasedAch", vendorsPurchased, new object[] { 10, 25, 50, 75, 100, 150, 200, 250, 500, 1000 }).register();
 		public static readonly StatAchievement apprenticesPurchasedAch = new AchievementMulti("apprenticesPurchasedAch", apprenticesPurchased, new object[] { 1, 5, 10, 25, 50, 75, 100, 150, 200, 250 }).register();
 		public static readonly StatAchievement journeymenPurchasedAch = new AchievementMulti("journeymenPurchasedAch", journeymenPurchased, new object[] { 1, 5, 10, 25, 50, 75, 100, 150, 200, 250 }).register();
+		public static readonly StatAchievement guildmastersElectedAch = new AchievementMulti("guildmastersElectedAch", guildmastersElected, new object[] { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }).register().setSecret();
 		#endregion
 		//unlocked all quests
 		//built all buildings - have ever built x
@@ -78,8 +83,16 @@ namespace Assets.draco18s.artificer.statistics {
 		}
 
 		public static void newLevelReset() {
-			foreach(StatBase stat in allStatistics) {
+			foreach(IStat stat in allStatistics) {
 				if(stat.shouldResetOnNewLevel) {
+					stat.resetValue();
+				}
+			}
+		}
+
+		public static void newGuildmasterReset() {
+			foreach(IStat stat in allStatistics) {
+				if(stat.shouldResetOnNewGuildmaster) {
 					stat.resetValue();
 				}
 			}
@@ -89,7 +102,7 @@ namespace Assets.draco18s.artificer.statistics {
 			foreach(IStat s in allStatistics) {
 				info.AddValue(s.statName, s.serializedValue);
 				if(s is StatHighscore) {
-					info.AddValue(s.statName + "_best", s.serializedValue);
+					info.AddValue(s.statName + "_best", ((StatHighscore)s).value);
 				}
 			}
 			foreach(StatAchievement s in allAchievements) {

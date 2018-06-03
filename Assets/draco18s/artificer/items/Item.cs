@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Assets.draco18s.artificer.quests;
 using System;
 using Assets.draco18s.artificer.game;
+using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.items {
 	public class Item {
@@ -29,7 +30,9 @@ namespace Assets.draco18s.artificer.items {
 
 		public Item(Industry indust) {
 			industry = indust;
-			name = indust.name;
+
+			//TODO: change this?
+			name = indust.saveName;
 			//GameRegistry.RegisterItem(this);
 		}
 
@@ -45,6 +48,13 @@ namespace Assets.draco18s.artificer.items {
 		public Item setStackSizeForQuest(int size) {
 			questSize = size;
 			return this;
+		}
+
+		public virtual BigInteger getBaseValue() {
+			if(industry != null) {
+				return (BigInteger)industry.GetSellValue();
+			}
+			return 1000;
 		}
 
 		public int getStackSizeForQuest() {

@@ -7,6 +7,14 @@ namespace Assets.draco18s.artificer.statistics {
 	public class AchievementMulti : StatAchievement {
 		protected readonly IStat stat;
 		protected readonly object[] achievementValues;
+
+		public override bool isHidden {
+			get {
+				if(secret && getNumAchieved() > 0) return false;
+				return _hidden;
+			}
+		}
+
 		public AchievementMulti(string name, IStat linkedStat, object[] values) : base(name) {
 			stat = linkedStat;
 			achievementValues = values;

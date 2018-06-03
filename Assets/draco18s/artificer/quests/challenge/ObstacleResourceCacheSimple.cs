@@ -43,8 +43,8 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.addItemToInventory(new ItemStack(Industries.LIGHT_CLOAK, 1));
 					break;
 				case EnumResult.SUCCESS:
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, 2));
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_MANA, 1));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_HEALTH, 2));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_MANA, 1));
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					ChallengeTypes.Loot.AddUncommonResource(theQuest);

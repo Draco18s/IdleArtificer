@@ -6,11 +6,12 @@ using Assets.draco18s.util;
 using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.game;
 using Koopakiller.Numerics;
+using Assets.draco18s.config;
 
 namespace Assets.draco18s.artificer.upgrades {
 	public class UpgradeHalveDouble : Upgrade {
 		public readonly Industry affectedIndustry;
-		public UpgradeHalveDouble(BigInteger upgradeCost, Industry affects, string saveName) : base(UpgradeType.MISC, upgradeCost, "Halve-and-Double " + Main.ToTitleCase(affects.name), saveName) {
+		public UpgradeHalveDouble(BigInteger upgradeCost, Industry affects, string saveName) : base(UpgradeType.MISC, upgradeCost, "Halve-and-Double " + Main.ToTitleCase(Localization.translateToLocal(affects.unlocalizedName)), saveName) {
 			affectedIndustry = affects;
 		}
 		public override void applyUpgrade() {
@@ -23,7 +24,7 @@ namespace Assets.draco18s.artificer.upgrades {
 		}
 
 		public override string getIconName() {
-			return affectedIndustry.name;
+			return affectedIndustry.saveName;
 		}
 
 		public override string getTooltip() {

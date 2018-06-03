@@ -14,7 +14,8 @@ namespace Assets.draco18s.artificer.statistics {
 		public virtual string description {
 			get { return Localization.translateToLocal(_description); }
 		}
-		public readonly bool shouldResetOnNewLevel;
+		public readonly bool _shouldResetOnNewLevel;
+		public readonly bool _shouldResetOnNewGuildmaster;
 		protected bool shouldReadAsFloat = false;
 		public virtual int value {
 			get {
@@ -37,13 +38,24 @@ namespace Assets.draco18s.artificer.statistics {
 			}
 		}
 
-		public object serializedValue {
+		public virtual object serializedValue {
 			get {
 				return value;
 			}
 		}
 
 		public bool isHidden { get; set; }
+
+		public bool shouldResetOnNewLevel {
+			get {
+				return _shouldResetOnNewLevel;
+			}
+		}
+		public bool shouldResetOnNewGuildmaster {
+			get {
+				return _shouldResetOnNewGuildmaster;
+			}
+		}
 
 		public virtual string getDisplay() {
 			return "" + (shouldReadAsFloat ? floatValue : value);
@@ -56,11 +68,15 @@ namespace Assets.draco18s.artificer.statistics {
 			_statName = "stat." + name + ".name";
 			_description = "stat." + name + ".desc";
 			statValue = 0;
-			shouldResetOnNewLevel = false;
+			_shouldResetOnNewLevel = false;
+			_shouldResetOnNewGuildmaster = false;
 		}
 
-		protected StatBase(string name, bool resets):this(name) {
-			shouldResetOnNewLevel = resets;
+		protected StatBase(string name, EnumResetType resets):this(name) {
+			if((resets & EnumResetType.SHOP) > 0)
+				_shouldResetOnNewLevel = true;
+			if((resets & EnumResetType.GUILDMASTER) > 0)
+				_shouldResetOnNewGuildmaster = true;
 		}
 
 		/// <summary>

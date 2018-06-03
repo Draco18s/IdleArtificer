@@ -21,7 +21,7 @@ namespace RPGKit.FantasyNameGenerator.Generators
 		public DragonPostfixGenerator() {
 			_namePostfixes = new string[] { "Crazed", "Terrible", "Cruel", "Gruesome", "Gnarled", "Avenger", "Juggernaut", "Slayer", "Fierce", "Destroyer",
 				"Mighty", "Unavoidable", "Archmage","Deathless", "Margrave", "Vanquisher", "Hoarder", "Vintner", "Harbinger", "Haruspex", "Encroacher",
-				"Eggsitter", "Frightful", "Clever", "Firestarter", "Ancient", "Grumpy", "Hotblood", "Lewd", "Green", "Red", "Gold", "Black", "Mottled" };
+				"Eggsitter", "Frightful", "Clever", "Firestarter", "Ancient", "Grumpy", "Hotblood", "Lewd", "Green", "Red", "Gold", "Black", "Mottled", "Heartstriker" };
 		}//Moneybags
 
 		public override string GetName() {

@@ -3,6 +3,8 @@ using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.quests;
 using Assets.draco18s.artificer.statistics;
 using Assets.draco18s.artificer.ui;
+using Assets.draco18s.artificer.upgrades;
+using Assets.draco18s.config;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
 using System;
@@ -36,10 +38,10 @@ namespace Assets.draco18s.artificer.game {
 				it.transform.SetParent(GuiManager.instance.buildingList.transform);
 				it.transform.localPosition = new Vector3(6, i * -141 - 5, 0);
 				it.name = field.Name;
-				it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.name);
+				it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(Localization.translateToLocal(item.unlocalizedName));
 				it.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.cost);
 				it.transform.FindChild("Value").GetComponent<Text>().text = "$" + Main.AsCurrency(item.GetSellValue());
-				it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.name);
+				it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.saveName);
 				Transform outnum = it.transform.FindChild("OutNum");
 				outnum.GetComponent<Text>().text = "x" + Main.AsCurrency(item.output);
 				outnum.GetChild(0).GetComponent<Text>().text = "x" + Main.AsCurrency(item.output);
@@ -48,7 +50,7 @@ namespace Assets.draco18s.artificer.game {
 					Transform go = it.transform.FindChild("Input" + j);
 					if(item.inputs.Count >= j) {
 						IndustryInput input = item.inputs[j - 1];
-						go.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + input.item.name);
+						go.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + input.item.saveName);
 						go.GetChild(0).GetComponent<Text>().text = "x" + item.inputs[j-1].quantity;
 						go.GetChild(0).GetChild(0).GetComponent<Text>().text = "x" + item.inputs[j-1].quantity;
 					}
@@ -138,6 +140,7 @@ namespace Assets.draco18s.artificer.game {
 					if(Mathf.FloorToInt(Time.time * 10) % 20 == 0) {
 						Transform t;
 						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico1");
+						t.gameObject.SetActive(QuestManager.IsIndustryOnQuest(item));
 						if(QuestManager.IsIndustryOnQuest(item)) {
 							int totalForQuest = 0;
 							int totalReady = 0;
@@ -145,9 +148,9 @@ namespace Assets.draco18s.artificer.game {
 							foreach(Quest q in QuestManager.availableQuests) {
 								bool questReady = true;
 								bool needed = false;
-								totalForQuest = 0;
+								//totalForQuest = 0;
 								foreach(ItemStack stack in q.inventory) {
-									if(stack.item == item.industryItem) {
+									if(stack.item == item.industryItem && stack.enchants.Count == 0 && stack.relicData == null) {
 										totalForQuest += stack.stackSize;
 										questReady &= (item.quantityStored >= totalForQuest);
 										needed = true;
@@ -169,8 +172,9 @@ namespace Assets.draco18s.artificer.game {
 							else {
 								t.GetComponent<Image>().color = Color.red;
 							}
+							if(totalNeed <= 0)
+								t.gameObject.SetActive(false);
 						}
-						t.gameObject.SetActive(QuestManager.IsIndustryOnQuest(item));
 						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");
 						if(item.getRawVendors() > 0) {
 							BigInteger avaialbleToSell = item.output * item.level + (item.isSellingStores?item.quantityStored:0) - item.consumeAmount;
@@ -220,6 +224,12 @@ namespace Assets.draco18s.artificer.game {
 			if(skip || fromSave || Main.instance.player.money >= item.GetScaledCost()) {
 				if(!fromSave && !skip) {
 					Main.instance.player.money -= (BigInteger)item.GetScaledCost();
+					if(item.level == 0) {
+						int num = item.startingVendors;
+						int maxAdd = Main.instance.player.maxVendors - Main.instance.player.currentVendors;
+						num = Math.Min(num, maxAdd);
+						item.AdjustVendors(num);
+					}
 					item.level++;
 				}
 				if(!Main.instance.player.builtItems.Contains(item)) {
@@ -229,18 +239,20 @@ namespace Assets.draco18s.artificer.game {
 					if(!fromSave)
 						item.setTimeRemaining(float.MinValue);
 					GameObject it = Main.Instantiate(PrefabManager.instance.BUILDING_GUI_GRIDITEM, GuiManager.instance.gridArea.transform.GetChild(1)) as GameObject;
-					it.name = "Grid_Icon_" + item.name;
+					it.name = "Grid_Icon_" + item.saveName;
 					//it.transform.SetParent(GuiManager.instance.gridArea.transform);
 					it.transform.localPosition = new Vector3(0, 0, 0);
 					int y = (Screen.height - 128) / 2;
 					y = MathHelper.snap(y, 24);
-					it.transform.GetChild(0).localPosition = new Vector3(0, y, 0);
-
-					if(fromSave || skip) {
-						it.transform.GetChild(0).localPosition = item.getGridPos();
+					//it.transform.GetChild(0).localPosition = new Vector3(0, y, 0);
+					
+					Vector3 loc = item.getGridPos();
+					if(loc == Vector3.zero) {
+						loc = new Vector3(0, y, 0);
 					}
+					it.transform.GetChild(0).localPosition = loc;
 
-					it.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.name);
+					it.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.saveName);
 					item.craftingGridGO = it;
 					Image img = it.transform.GetChild(0).GetChild(0).FindChild("Progress").GetComponent<Image>();
 					img.material = Main.Instantiate(img.material);
@@ -248,6 +260,7 @@ namespace Assets.draco18s.artificer.game {
 					Industry ind = item;
 					selObj.selectListener(delegate { FacilitySelected(ind); });
 					selObj.deselectListener(delegate { FacilityUnselected(ind); });
+					selObj.GetComponent<Button>().OnRightClick(delegate { AdvanceTimer(item); });
 					Main.instance.player.itemData.Add(it, item);
 					/*Industry item2;
 					Main.instance.player.itemData.TryGetValue(it, out item2);
@@ -341,7 +354,7 @@ namespace Assets.draco18s.artificer.game {
 					t.GetComponent<Button>().OnRightClick(delegate { DecreaseApprentices(item); });
 				}
 				Main.instance.mouseDownTime += 1;
-				Transform tBtn = GuiManager.instance.buildingList.transform.FindChild(item.name.ToUpper());
+				Transform tBtn = GuiManager.instance.buildingList.transform.FindChild(item.saveName.ToUpper());
 				if(tBtn != null) {
 					tBtn.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.GetScaledCost());
 				}
@@ -383,7 +396,7 @@ namespace Assets.draco18s.artificer.game {
 				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().DowngradeBtn.gameObject.SetActive(true);
 				selectedIcon = go;
 				//lastPos = selectedIcon.craftingGridGO.transform.GetChild(0).localPosition;
-				GuiManager.instance.infoPanel.transform.FindChild("Output").gameObject.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + selectedIcon.name);
+				GuiManager.instance.infoPanel.transform.FindChild("Output").gameObject.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + selectedIcon.saveName);
 			}
 			else {
 				lastLevel = -1;
@@ -393,7 +406,7 @@ namespace Assets.draco18s.artificer.game {
 				//GuiManager.instance.infoPanel.transform.localPosition = new Vector3(-1465, 55, 0);
 				//Industry item;
 				//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-				GuiManager.instance.infoPanel.transform.FindChild("Output").gameObject.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + selectedIcon.name);
+				GuiManager.instance.infoPanel.transform.FindChild("Output").gameObject.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + selectedIcon.saveName);
 			}
 		}
 
@@ -439,7 +452,7 @@ namespace Assets.draco18s.artificer.game {
 						needs += consumers[i].quantity;
 						img = child.GetChild(0).gameObject;
 						img.transform.parent.localPosition = new Vector3((i % 3 * 32), -(i / 3 * vMod), 0);
-						img.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + consumers[i].item.name);
+						img.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + consumers[i].item.saveName);
 					}
 					i++;
 				}
@@ -474,10 +487,21 @@ namespace Assets.draco18s.artificer.game {
 					}
 					needs += inp.quantity;
 					img.transform.parent.localPosition = new Vector3((i % 3 * 32), -(i / 3 * vMod), 0);
-					img.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + inp.item.name);
+					img.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + inp.item.saveName);
 					i++;
 				}
 			}
+		}
+
+		public static void IncreaseStartingVendors() {
+			if(selectedIcon != null) {
+				IncreaseStartingVendors(selectedIcon);
+				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().StartVend.text = "" + selectedIcon.startingVendors;
+			}
+		}
+		public static void IncreaseStartingVendors(Industry item) {
+			int num = (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
+			item.startingVendors += num;
 		}
 
 		public static void IncreaseVendors() {
@@ -489,7 +513,7 @@ namespace Assets.draco18s.artificer.game {
 			}
 		}
 		public static void IncreaseVendors(Industry item) {
-			if(Main.instance.player.currentVendors < Main.instance.player.maxVendors) {
+			if(Main.instance.player.currentVendors < Main.instance.player.maxVendors && item.craftingGridGO != null) {
 				int num = (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
 				int maxAdd = Main.instance.player.maxVendors - Main.instance.player.currentVendors;
 				num = Math.Min(num, maxAdd);
@@ -514,6 +538,18 @@ namespace Assets.draco18s.artificer.game {
 				}
 			}
 			numVendors.text = Main.instance.player.currentVendors + " of " + Main.instance.player.maxVendors + " vendors in use";
+		}
+
+		public static void DecreaseStartingVendors() {
+			if(selectedIcon != null) {
+				DecreaseStartingVendors(selectedIcon);
+				GuiManager.instance.infoPanel.GetComponent<InfoPanel>().StartVend.text = "" + selectedIcon.startingVendors;
+			}
+		}
+		public static void DecreaseStartingVendors(Industry item) {
+			int num = (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
+			num = Math.Min(num, item.startingVendors);
+			item.startingVendors -= num;
 		}
 
 		public static void DecreaseVendors() {
@@ -622,6 +658,11 @@ namespace Assets.draco18s.artificer.game {
 			selectedIcon.addTimeRaw(-Main.instance.GetClickRate());
 		}
 
+		public static void AdvanceTimer(Industry ind) {
+			StatisticsTracker.numClicks.addValue(1);
+			ind.addTimeRaw(-Main.instance.GetClickRate());
+		}
+
 		public static void SellAll() {
 			//Industry item;
 			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
@@ -633,7 +674,7 @@ namespace Assets.draco18s.artificer.game {
 			//Industry item;
 			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
 			//Debug.Log(selectedIcon.GetSellValue() + " * " + selectedIcon.quantityStored + " = " + selectedIcon.GetSellValue() * selectedIcon.quantityStored);
-			return ((BigInteger)(selectedIcon.GetSellValue() * selectedIcon.quantityStored));
+			return ((BigInteger)selectedIcon.GetSellValue()) * selectedIcon.quantityStored;
 		}
 
 		public static BigInteger GetQuantity() {
@@ -645,7 +686,7 @@ namespace Assets.draco18s.artificer.game {
 		public static string GetName() {
 			//Industry item;
 			//Main.instance.player.itemData.TryGetValue(selectedIcon, out item);
-			return selectedIcon.name;
+			return selectedIcon.saveName;
 		}
 		public static BigInteger ValueSoldByVendors() {
 			//Industry item;
@@ -710,7 +751,7 @@ namespace Assets.draco18s.artificer.game {
 					BuildIndustry(selectedIcon, false, true);
 				}
 				selectedIcon.level+=buyNum;
-				Transform tBtn = GuiManager.instance.buildingList.transform.FindChild(selectedIcon.name.ToUpper());
+				Transform tBtn = GuiManager.instance.buildingList.transform.FindChild(selectedIcon.saveName.ToUpper());
 				if(tBtn != null) {
 					tBtn.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(selectedIcon.GetScaledCost());
 				}
@@ -866,7 +907,36 @@ namespace Assets.draco18s.artificer.game {
 				}
 				info.StorageTxt.text = "Change:\n" + Main.AsCurrency(ch, 6) + " / cycle\n" + Main.AsCurrency(selectedIcon.quantityStored);
 			}
-			if(!Input.GetMouseButton(0) && Main.instance.mouseDownTime > 0 && Main.instance.mouseDownTime < 0.3f) {
+
+			Transform needTxt = info.transform.FindChild("NeedByQuests");
+			if(QuestManager.IsIndustryOnQuest(selectedIcon)) {
+				needTxt.gameObject.SetActive(true);
+				
+				int totalForQuest = 0;
+				foreach(Quest q in QuestManager.availableQuests) {
+					foreach(ItemStack stack in q.inventory) {
+						if(stack.item == selectedIcon.industryItem && stack.enchants.Count == 0 && stack.relicData == null) {
+							totalForQuest += stack.stackSize;
+						}
+					}
+				}
+				int stored = (selectedIcon.quantityStored > totalForQuest) ? totalForQuest : (selectedIcon.quantityStored < int.MaxValue ? BigInteger.ToInt32(selectedIcon.quantityStored) : int.MaxValue);
+				needTxt.FindChild("Value").GetComponent<Text>().text = Main.AsCurrency(totalForQuest, 9);
+				if(ch <= 0) {
+					needTxt.FindChild("Time").GetComponent<Text>().text = "∞";
+				}
+				else {
+					int secs = Mathf.CeilToInt((totalForQuest - stored) / ch) * 10;
+					needTxt.FindChild("Time").GetComponent<Text>().text = Main.SecondsToTime((secs >= 10 || secs <= 0) ? secs: 10);
+				}
+				if(totalForQuest <= 0)
+					needTxt.gameObject.SetActive(false);
+			}
+			else {
+				needTxt.gameObject.SetActive(false);
+			}
+
+			if(!Input.GetMouseButton(0) && Main.instance.mouseDownTime > 0 && Main.instance.mouseDownTime < 0.2f) {
 				if(selectedIcon.craftingGridGO != null) {
 					Vector3 pos = selectedIcon.craftingGridGO.transform.GetChild(0).localPosition;//new Vector3(selectedIcon.transform.localPosition.x, selectedIcon.transform.localPosition.y + 50, 0);
 
@@ -892,7 +962,7 @@ namespace Assets.draco18s.artificer.game {
 					pos.x = Mathf.Clamp(pos.x, -1 * (minx - 128), minx - 16);
 					GuiManager.instance.infoPanel.transform.localPosition = pos;
 				}
-				info.Title.text = Main.ToTitleCase(selectedIcon.name);
+				info.Title.text = Main.ToTitleCase(Localization.translateToLocal(selectedIcon.unlocalizedName));
 				info.PricePer.text = "$" + Main.AsCurrency(selectedIcon.GetSellValue());
 				info.SellToggle.interactable = false;
 				info.ConsumeToggle.interactable = false;
@@ -903,6 +973,7 @@ namespace Assets.draco18s.artificer.game {
 				info.ConsumeToggle.interactable = true;
 				info.VendNum.text = "" + selectedIcon.getRawVendors();
 				info.BuildToggle.isOn = selectedIcon.doAutobuild;
+				info.StartVend.text = "" + selectedIcon.startingVendors;
 				info.BuildNum.text = "" + selectedIcon.autoBuildLevel;
 				info.MagnitudeNum.text = "10 E" + selectedIcon.autoBuildMagnitude;
 				BigInteger num = 0;
@@ -916,8 +987,8 @@ namespace Assets.draco18s.artificer.game {
 					}
 				}
 				else {
-					if(selectedIcon.output * selectedIcon.level < selectedIcon.getVendors() * Main.instance.GetVendorSize())
-						num = selectedIcon.output * selectedIcon.level;
+					if(selectedIcon.output * selectedIcon.level - selectedIcon.consumeAmount < selectedIcon.getVendors() * Main.instance.GetVendorSize())
+						num = Math.Max(selectedIcon.output * selectedIcon.level - selectedIcon.consumeAmount,0);
 					else
 						num = selectedIcon.getVendors() * Main.instance.GetVendorSize();
 				}
@@ -1015,7 +1086,7 @@ namespace Assets.draco18s.artificer.game {
 				if(selectedIcon.inputs.Count >= j) {
 					go.gameObject.SetActive(true);
 					IndustryInput input = selectedIcon.inputs[j - 1];
-					go.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + input.item.name);
+					go.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + input.item.saveName);
 
 					info.SetInputINum(j, true, "x" + Main.AsCurrency(input.quantity * selectedIcon.level, 3, true));
 				}
@@ -1049,21 +1120,30 @@ namespace Assets.draco18s.artificer.game {
 
 		private static Color GetColorForProductivity(Industry item, IndustryInput input) {
 			int t = Mathf.RoundToInt(Time.time * 5);
-			int quantPerCycle = input.item.output * input.item.level;
 			int needPerCycle = input.quantity * item.level;
-
-			quantPerCycle *= input.item.getHalveAndDouble();
-			needPerCycle *= item.getHalveAndDouble();
-
-			if((input.item.isConsumersHalted || (input.item.quantityStored < needPerCycle && item.getTimeRemaining()  <= 0)) && t % 4 != 0)
+			if((input.item.isConsumersHalted || (input.item.quantityStored < needPerCycle && item.getTimeRemaining() <= 0)) && t % 4 != 0)
 				return ColorHelper.PURPLE;
-			//Debug.Log("--> " + needPerCycle + ">" + quantPerCycle);
-			if(needPerCycle > quantPerCycle) {
-				if(input.item.quantityStored >= needPerCycle) {
+
+			int ch = ((input.item.output * input.item.level) - input.item.consumeAmount);
+			int q = input.item.getVendors() * Main.instance.GetVendorSize();
+			if(q > ch && !input.item.isSellingStores) {
+				q = ch;
+			}
+			ch -= q;
+
+			if(ch < 0) {
+				if(input.item.quantityStored >= Math.Abs(ch)) {
+					if(input.item.quantityStored / Math.Abs(ch) > 500) {
+						return Color.green;
+					}
+					if(input.item.quantityStored / Math.Abs(ch) > 100) {
+						return Color.yellow;
+					}
 					return ColorHelper.ORANGE;
 				}
 				return Color.red;
 			}
+
 			return Color.green;
 		}
 	}

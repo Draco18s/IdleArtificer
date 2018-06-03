@@ -57,7 +57,7 @@ namespace Assets.draco18s.artificer.game {
 				BigInteger renown = totalRenown - spentRenown;*/
 				BigInteger renown = Main.instance.getCachedNewRenown();
 
-				GuiManager.ShowTooltip(p, "Renown from cash on hand: " + Main.AsCurrency(renown) + RENOWN_SYMBOL + "\nRenown from completed quests: " + Main.AsCurrency(Main.instance.player.questsCompleted) + RENOWN_SYMBOL, 5f);
+				GuiManager.ShowTooltip(p, "Renown from cash earned: " + Main.AsCurrency(renown) + RENOWN_SYMBOL + "\nRenown from completed quests: " + Main.AsCurrency(Main.instance.player.questsCompletedRenown) + RENOWN_SYMBOL, 5f);
 			});
 			skillDisp = GuiManager.instance.guildHeader.transform.FindChild("SkillPts").GetChild(0).GetComponent<Text>();
 			cashList = GuiManager.instance.guildArea.transform.FindChild("CashUpgrades").GetChild(0).GetChild(0);
@@ -174,7 +174,7 @@ namespace Assets.draco18s.artificer.game {
 				((RectTransform)go.transform).anchorMax = new Vector2(1,1);
 				((RectTransform)go.transform).offsetMax = new Vector2(-3, ((RectTransform)go.transform).offsetMax.y);
 				go.transform.FindChild("Name").GetComponent<Text>().text = Localization.translateToLocal(sk.name);
-				go.transform.FindChild("Description").GetComponent<Text>().text = Localization.translateToLocal(sk.description);
+				go.transform.FindChild("Description").GetComponent<Text>().text = string.Format(Localization.translateToLocal(sk.description), sk.getMultiplierForDisplay());
 				go.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
 				Transform t1 = go.transform.FindChild("BuyOne");
 				t1.GetComponent<Button>().onClick.AddListener(delegate {
@@ -204,13 +204,19 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void electGuildmaster(Master master) {
+			foreach(Industry ind in Main.instance.player.builtItems) {
+				ind.apprentices = 0;
+			}
 			Main.instance.player.reset();
 			BigInteger renown = Main.instance.player.totalRenown;
+			Debug.Log(Main.instance.player.totalRenown + " | " + Main.instance.player.renown);
 			Main.instance.player.skillPoints += renown / 10000;
 			Main.instance.player.totalSkillPoints += renown / 10000;
 			Main.instance.player.currentGuildmaster = master;
 			Main.instance.player.totalRenown = 0;
 			Main.instance.player.renown = 0;
+			Main.instance.player.journeymen = 0;
+			Main.instance.player.maxApprentices = 0;
 
 			List<ItemStack> allRelics = new List<ItemStack>();
 			allRelics.AddRange(QuestManager.availableRelics);
@@ -250,8 +256,14 @@ namespace Assets.draco18s.artificer.game {
 					StatisticsTracker.impressiveAntiquity.setAchieved();
 				}
 				stack.isIDedByPlayer = false;
-				stack.relicData = null;
-				QuestManager.availableRelics.Add(QuestManager.makeRelic(stack, new AntiquityRelics(), 1, "Unknown"));
+				if(stack.relicData.Any(x => x.relicName == "Lost")) {
+					stack.relicData = null;
+					QuestManager.makeRelic(stack, new Main.FirstRelics(), 1, "Unknown");
+				}
+				else {
+					stack.relicData = null;
+					QuestManager.availableRelics.Add(QuestManager.makeRelic(stack, new AntiquityRelics(), 1, "Unknown"));
+				}
 			}
 			StatisticsTracker.relicAntiquity.resetValue();
 			StatisticsTracker.relicAntiquity.setValue(best);
@@ -272,9 +284,11 @@ namespace Assets.draco18s.artificer.game {
 			skillDisp.transform.parent.gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
 			StatisticsTracker.guildmastersElected.addValue(1);
+			closeNewGuildmaster();
 		}
 
 		public static void setupUI() {
+			hasListChanged = true;
 			Transform gmb = GuiManager.instance.resetGuildWindow.transform.GetChild(1).FindChild("CurrentMaster");
 			gmb.GetChild(0).GetComponent<Text>().text = "";
 			gmb.GetChild(1).GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
@@ -288,6 +302,14 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.guildArea.transform.FindChild("SkillPanel").FindChild("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.transform.parent.gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
+
+			IEnumerator<Skill> list = SkillList.getSkillList();
+			Transform skillListParent = GuiManager.instance.skillPanel.transform;
+			while(list.MoveNext()) {
+				Skill sk = list.Current;
+				GameObject go = sk.guiItem;
+				go.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
+			}
 		}
 
 		public static void update() {
@@ -297,7 +319,7 @@ namespace Assets.draco18s.artificer.game {
 			BigInteger totalRenown = BigInteger.CubeRoot(Main.instance.player.lifetimeMoney);
 			totalRenown /= 10000;
 			BigInteger renown = totalRenown - spentRenown + Main.instance.player.questsCompleted;*/
-			BigInteger renown = Main.instance.getCachedNewRenown() + Main.instance.player.questsCompleted;// + Main.instance.player.totalRenown - spentRenown;
+			BigInteger renown = Main.instance.getCachedNewRenown() + Main.instance.player.questsCompletedRenown;// + Main.instance.player.totalRenown - spentRenown;
 
 			newRenownDisp.text = Main.AsCurrency(renown + Main.instance.player.renown) + RENOWN_SYMBOL;//𐍈☼
 
@@ -315,8 +337,9 @@ namespace Assets.draco18s.artificer.game {
 			
 			vendeffTxt.text = (Main.instance.player.GetVendorValue() * 100).ToDecimalString(0) + "%";
 			if(Main.instance.player.currentGuildmaster.apprenticeRateMultiplier() != 1) {
-				float v = Mathf.Round(Main.instance.GetClickRate() * Main.instance.player.currentGuildmaster.apprenticeRateMultiplier() * 100) / 100f;
-				appeffTxt.text = Main.instance.GetClickRate() + "sec / sec, (app: " + v + "sec)";
+				float v = Main.instance.player.GetApprenticeClickAmount();
+				v *= Main.instance.player.GetApprenticeClickSpeedMultiplier();
+				appeffTxt.text = Main.instance.GetClickRate() + "sec / sec, (app: " + Mathf.Round(v*100)/100 + "sec)";
 			}
 			else {
 				appeffTxt.text = Main.instance.GetClickRate() + "sec / sec";
@@ -368,6 +391,14 @@ namespace Assets.draco18s.artificer.game {
 						else {
 							item.upgradListGui.GetComponent<Button>().interactable = true;
 							//item.upgradListGui.GetComponent<Image>().color = Color.white;
+						}
+						//Hide half-doubles until the industry is level 100
+						if(item is UpgradeHalveDouble) {
+							UpgradeHalveDouble upgrade = (UpgradeHalveDouble)item;
+							if(upgrade.affectedIndustry.level < 100) {
+								i--;
+								Main.Destroy(item.upgradListGui);
+							}
 						}
 
 						i++;

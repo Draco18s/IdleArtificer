@@ -2128,10 +2128,14 @@ namespace Koopakiller.Numerics
             return this.ToString(10,false);
         }
 
-        /// <summary>
-        /// Liefert den kombinierten Hashcode der Instanzrelevanten Member zurück.
-        /// </summary>
-        public override int GetHashCode()
+		public string ToString(int v) {
+			return this.ToString(10, false);
+		}
+
+		/// <summary>
+		/// Liefert den kombinierten Hashcode der Instanzrelevanten Member zurück.
+		/// </summary>
+		public override int GetHashCode()
         {
             if (this.IsZero)
                 return 0;

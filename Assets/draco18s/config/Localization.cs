@@ -29,6 +29,9 @@ namespace Assets.draco18s.config {
 				if(parts.Length == 2) {
 					entries.Add(parts[0], parts[1]);
 				}
+				if(parts.Length > 2) {
+					entries.Add(parts[0], entry.Substring(parts[0].Length + 1));
+				}
 			}
 			file = Resources.Load<TextAsset>("lang/en_US");
 			fs = file.text;
@@ -39,6 +42,9 @@ namespace Assets.draco18s.config {
 				string[] parts = entry.Split('=');
 				if(parts.Length == 2) {
 					enUS.Add(parts[0], parts[1]);
+				}
+				if(parts.Length > 2) {
+					enUS.Add(parts[0], entry.Substring(parts[0].Length+1));
 				}
 			}
 		}
@@ -65,7 +71,24 @@ namespace Assets.draco18s.config {
 			}
 			entries.TryGetValue(input, out v);
 			if(v == null || v.Equals("")) {
-				if(s.Length >= 3) {
+				enUS.TryGetValue(input, out v);
+				if(v == null || v.Equals("")) {
+					if(s.Length >= 3) {
+						v = s[s.Length - 2];
+						if(v.Length <= 1) return v;
+						List<string> vv = new List<string>();
+						for(int i = 1; i < s.Length - 1; i++) {
+							vv.Add(s[i]);
+						}
+						s = vv.ToArray();
+						v = string.Join(".", s);
+					}
+					Debug.Log("Missing Localization entry for '" + input + "' for current language and en_US");
+				}
+				else {
+					Debug.Log("Missing Localization entry for '" + input + "' for current language");
+				}
+				/*if(s.Length >= 3) {
 					v = s[s.Length - 2];
 					if(v.Length <= 1) return v;
 					List<string> vv = new List<string>();
@@ -82,7 +105,7 @@ namespace Assets.draco18s.config {
 						v = input;
 					}
 					Debug.Log("Missing Localization entry for '" + input + "'");
-				}
+				}*/
 			}
 			return v;
 		}

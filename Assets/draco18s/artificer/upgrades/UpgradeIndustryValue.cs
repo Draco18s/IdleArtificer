@@ -1,5 +1,6 @@
 ﻿using Assets.draco18s.artificer.game;
 using Assets.draco18s.artificer.items;
+using Assets.draco18s.config;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
 using System;
@@ -12,7 +13,7 @@ namespace Assets.draco18s.artificer.upgrades {
 		public readonly Industry affectedIndustry;
 		public readonly float multiplier;
 
-		public UpgradeIndustryValue(BigInteger upgradeCost, float moneyMultiplier, Industry affects, string saveName) : base(UpgradeType.MISC, upgradeCost, moneyMultiplier + "x " + Main.ToTitleCase(affects.name) + " Value", saveName) {
+		public UpgradeIndustryValue(BigInteger upgradeCost, float moneyMultiplier, Industry affects, string saveName) : base(UpgradeType.MISC, upgradeCost, moneyMultiplier + "x " + Main.ToTitleCase(Localization.translateToLocal(affects.unlocalizedName)) + " Value", saveName) {
 			affectedIndustry = affects;
 			multiplier = moneyMultiplier;
 		}
@@ -26,7 +27,7 @@ namespace Assets.draco18s.artificer.upgrades {
 		}
 
 		public override string getIconName() {
-			return affectedIndustry.name;
+			return affectedIndustry.saveName;
 		}
 	}
 }

@@ -78,5 +78,9 @@ namespace Assets.draco18s.artificer.upgrades {
 		public double getMultiplier() {
 			return ranks * multiplier;
 		}
+
+		public virtual string getMultiplierForDisplay() {
+			return Mathf.RoundToInt((float)multiplier*100).ToString();
+		}
 	}
 }

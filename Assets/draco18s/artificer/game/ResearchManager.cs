@@ -7,6 +7,7 @@ using Assets.draco18s.artificer.upgrades;
 using Assets.draco18s.util;
 using Koopakiller.Numerics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,7 +43,7 @@ namespace Assets.draco18s.artificer.game {
 			btn.onClick.AddListener(delegate { SellItem(); });
 			btn.AddHover(delegate (Vector3 p) {
 				if(examinedStack != null) {
-					BigInteger val = BigRational.ToBigInt(GetRelicValue(examinedStack));
+					BigInteger val = BigRational.ToBigInt(ItemStack.GetRelicValue(examinedStack));
 					GuiManager.ShowTooltip(btn.transform.position + Vector3.up * 30,"Sell for $" + Main.AsCurrency(val));
 				}
 			}, false);
@@ -56,9 +57,10 @@ namespace Assets.draco18s.artificer.game {
 			moneyDisp = GuiManager.instance.researchHeader.transform.FindChild("MoneyArea").GetChild(0).GetComponent<Text>();
 			relicInfoText = relicInfo.FindChild("Info Scroll View").GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>();
 			for(int r = 1; r <= 20; r++) {
+				int rr = r;
 				Image igm = relicInfo.transform.FindChild("Req" + r).GetComponent<Image>();
-					igm.AddHover(delegate (Vector3 p) {
-					GuiManager.ShowTooltip(igm.transform.position + Vector3.up * 20, displayReqDetails(r));
+				igm.AddHover(delegate (Vector3 p) {
+					GuiManager.ShowTooltip(igm.transform.position + Vector3.up * 20, displayReqDetails(rr));
 				},false);
 			}
 		}
@@ -75,6 +77,7 @@ namespace Assets.draco18s.artificer.game {
 						req_num = req_num << 1;
 						ty = ty >> 1;
 					}
+					if(ty > 0) ty--;
 					r--;
 				} while(r > 0);
 				return ((RequirementType)req_num).ToString();
@@ -85,16 +88,25 @@ namespace Assets.draco18s.artificer.game {
 		public static void setupUI() {
 			int i = 0;
 			int X = Mathf.FloorToInt((((RectTransform)relicList).rect.width - 10) / 98);
+			foreach(ItemStack stack in relicsList.Keys) {
+				if(!Main.instance.player.miscInventory.Contains(stack) || !stack.isIDedByPlayer) {
+					Main.Destroy(relicsList[stack]);
+				}
+			}
+			i = 0;
 			foreach(ItemStack stack in Main.instance.player.miscInventory) {
 				//Debug.Log("i: " + i);
 				//Debug.Log(stack.item.name);
-				if(stack.relicData != null) {
+				if(stack.relicData != null && stack.isIDedByPlayer) {
 					//Debug.Log("Relic data");
 					GameObject go;
 					relicsList.TryGetValue(stack, out go);
 					if(go == null) {
 						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM_SELLABALE, relicList) as GameObject;
 						//go.transform.SetParent(relicList);
+						if(relicsList.ContainsKey(stack)) {
+							relicsList.Remove(stack);
+						}
 						relicsList.Add(stack, go);
 					}
 					go.transform.localPosition = new Vector3((i % X) * 98 + 5, ((i / X) * -125) - 5, 0);
@@ -106,16 +118,33 @@ namespace Assets.draco18s.artificer.game {
 					ItemStack s = stack;
 					Button btn = go.GetComponent<Button>();
 					btn.AddHover(delegate (Vector3 p) {
-						string str = "";
-						foreach(RelicInfo ri in s.relicData) {
-							str += ri.questDescription + " (" + ri.notoriety + ")\n";
-						}
+
+						List<string> strList = new List<string>();
 						if(s.enchants.Count > 0) {
-							str += "Enchanted:\n";
-							foreach(Enchantment en in s.enchants) {
-								str += en.name + "\n";
+							//strList.Add("Enchanted:");
+							foreach(string en in s.enchants.Select(x => x.name).Distinct()) {
+								int num = s.enchants.Count(x => x.name == en);
+								if(num > 1) {
+									strList.Add(en + " (x" + num + ")");
+								}
+								else {
+									strList.Add(en);
+								}
 							}
 						}
+						string str = string.Join(", ", strList.ToArray());
+						strList.Clear();
+						strList.Add(s.antiquity + " Antiquity");
+						if(s.enchants.Count > 0) {
+							strList.Add("Enchanted:");
+							strList.Add(" - " + str);
+						}
+						foreach(RelicInfo inf in s.relicData) {
+							strList.Add(inf.heroName + "\n   " + inf.questDescription + " (" + inf.notoriety + ")");
+							if(strList.Count > 3) break;
+						}
+						str = string.Join("\n", strList.ToArray());
+
 						GuiManager.ShowTooltip(btn.transform.position+Vector3.down*100, str);
 					}, false);
 					btn.onClick.AddListener(delegate { ShowInfo(s); });
@@ -151,6 +180,7 @@ namespace Assets.draco18s.artificer.game {
 				UpgradeValueWrapper wrap;
 				Main.instance.player.upgrades.TryGetValue(UpgradeType.RESEARCH_RATE, out wrap);
 				float multi = ((UpgradeFloatValue)wrap).value * Main.instance.player.currentGuildmaster.researchMultiplier() * (float)(1 + SkillList.ResearchRate.getMultiplier());
+				multi *= 1 + (0.05f * ((AchievementMulti)StatisticsTracker.apprenticesPurchasedAch).getNumAchieved());
 				Main.instance.player.researchTime += dt * multi;
 				if(Main.instance.player.researchTime >= maxResearchTime) {
 					Main.instance.player.researchTime -= maxResearchTime;
@@ -159,9 +189,13 @@ namespace Assets.draco18s.artificer.game {
 					Main.instance.player.unidentifiedRelics.Remove(s);
 					Main.instance.player.addItemToInventory(s);
 					relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
+					StatisticsTracker.relicsIdentified.addValue(1);
 					setupUI();
+					if(Main.instance.player.miscInventory.Count(x => x.relicData != null && x.isIDedByPlayer) >= 20) {
+						StatisticsTracker.relicHoarder.setAchieved();
+					}
 				}
-				timeLeftTxt.text = Main.SecondsToTime((maxResearchTime - Main.instance.player.researchTime) / ((UpgradeFloatValue)wrap).value * multi);
+				timeLeftTxt.text = Main.SecondsToTime((maxResearchTime - Main.instance.player.researchTime) / (((UpgradeFloatValue)wrap).value * multi));
 				progressBarMat.SetFloat("_Cutoff", 1-Main.instance.player.researchTime / maxResearchTime);
 			}
 			else {
@@ -207,20 +241,27 @@ namespace Assets.draco18s.artificer.game {
 				}
 			}
 			List<string> strList = new List<string>();
-
+			strList.Add(stack.antiquity + " Antiquity\n");
 			if(stack.enchants.Count > 0) {
-				strList.Add("Enchanted:");
-				foreach(Enchantment en in stack.enchants) {
-					strList.Add("   " + en.name);
+				strList.Add("Enchanted with:");
+				foreach(string en in stack.enchants.Select(x => x.name).Distinct()) {
+					int num = stack.enchants.Count(x => x.name == en);
+					if(num > 1) {
+						strList.Add(en + " (x" + num + ")");
+					}
+					else {
+						strList.Add(en);
+					}
 				}
+				strList.Add(" ");
 			}
 
 			foreach(RelicInfo inf in stack.relicData) {
-				strList.Add(inf.heroName + " (" + inf.notoriety + ")\n   " + inf.questDescription);
+				strList.Add(inf.heroName+ "\n   " + inf.questDescription + " (" + inf.notoriety + ")");
 			}
 			relicInfoText.text = string.Join("\n", strList.ToArray());
 			((RectTransform)relicInfoText.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, relicInfoText.preferredHeight + 1);
-			((RectTransform)relicInfoText.transform.parent).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, relicInfoText.preferredHeight + 5);
+			((RectTransform)relicInfoText.transform.parent).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, relicInfoText.preferredHeight/2 + 5);
 		}
 
 		private static void CloseInfo() {
@@ -233,34 +274,12 @@ namespace Assets.draco18s.artificer.game {
 			GameObject go;
 			relicsList.TryGetValue(examinedStack, out go);
 			Main.Destroy(go);
-			BigRational val = GetRelicValue(examinedStack);
+			BigRational val = ItemStack.GetRelicValue(examinedStack);
 			Main.instance.player.AddMoney(BigRational.ToBigInt(val));
 			examinedStack.onSoldByPlayer();
 			examinedStack = null;
 			relicInfo.parent.gameObject.SetActive(false);
 			setupUI();
-		}
-
-		private static BigRational GetRelicValue(ItemStack examinedStack) {
-			if(examinedStack.item.industry == null) {
-				return 1000;
-			}
-			BigRational val = examinedStack.item.industry.GetSellValue() * 2000 * BigRational.Pow(1.1f, examinedStack.enchants.Count + examinedStack.antiquity);
-			UpgradeValueWrapper wrap;
-			Main.instance.player.upgrades.TryGetValue(UpgradeType.QUEST_SCALAR, out wrap);
-			RelicInfo ri = examinedStack.relicData.OrderByDescending(o => o.notoriety).First();
-			if(ri != null) {
-				BigRational b = BigRational.Pow(1.5f, ri.notoriety) * 1000;
-				b *= ((UpgradeFloatValue)wrap).value;
-				val += b;
-				if(ri.relicName.Equals("Lost")) {
-					Debug.Log("Lost");
-					val /= 100000;
-				}
-			}
-			val *= Main.instance.GetRelicSellMultiplier();
-			val = BigRational.Truncate(val, 6, false);
-			return val;
 		}
 
 		private static void DiscardItem() {

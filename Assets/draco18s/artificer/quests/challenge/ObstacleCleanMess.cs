@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleCleanMess : ObstacleType { //TODO: this makes no sense
-		public ObstacleCleanMess() : base("picking up dropped items", new RequireWrapper(RequirementType.CLUMSINESS)) {
+		public ObstacleCleanMess() : base("picking up dropped items", new RequireWrapper(RequirementType.CLUMSINESS, RequirementType.AGILITY)) {
 
 		}
 

@@ -23,11 +23,14 @@ namespace Assets.draco18s.artificer.statistics {
 		protected int idVal = -1;
 		protected bool secret = false;
 		protected bool _hidden;
-		public bool isHidden {
+		public virtual bool isHidden {
 			get {
-				if(secret && achieved) return true;
+				if(secret && achieved) return false;
 				return _hidden;
 			}
+		}
+		public virtual bool isSecret {
+			get { return secret; }
 		}
 
 		public StatAchievement(string name) {

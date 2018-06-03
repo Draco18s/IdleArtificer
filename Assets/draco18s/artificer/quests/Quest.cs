@@ -3,8 +3,11 @@ using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.items;
 using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.artificer.quests.challenge.goals;
+using Assets.draco18s.artificer.quests.challenge.goals.DeepGoals;
 using Assets.draco18s.artificer.quests.hero;
 using Assets.draco18s.artificer.quests.requirement;
+using Assets.draco18s.artificer.statistics;
+using Assets.draco18s.artificer.upgrades;
 using Assets.draco18s.util;
 using RPGKit.FantasyNameGenerator;
 using RPGKit.FantasyNameGenerator.Generators;
@@ -22,12 +25,37 @@ namespace Assets.draco18s.artificer.quests {
 		private static FantasyNameSettings fantasyNameSettings = new FantasyNameSettings(Classes.Cleric, Race.None, true, true, Gender.Male);
 		private static IFantasyNameGenerator fantasyNameGenerator = FantasyNameGenerator.FromSettingsInfo(fantasyNameSettings);
 		public static Quest GenerateNewQuest() {
+			ObstacleType goal = ChallengeTypes.Goals.getRandom(rand);
+			IDeepGoal deepGoal = Main.instance.player.getActiveDeepGoal();
+			if(rand.Next(4) == 0 && deepGoal.minQuestDifficulty() <= StatisticsTracker.maxQuestDifficulty.value) {
+				//Debug.Log(Main.instance.player.getActiveDeepGoal().name);
+				if(!QuestManager.availableQuests.Any(x => x.originalGoal == deepGoal.getQuestType())
+					&& !QuestManager.activeQuests.Any(x => x.originalGoal == deepGoal.getQuestType()))
+						goal = deepGoal.getQuestType();
+			}
 			FantasyName[] names = fantasyNameGenerator.GetFantasyNames(1);
-			return GenerateNewQuest(ChallengeTypes.Goals.getRandom(rand), names[0].FirstName + " " + names[0].Land);
+			Quest quest = GenerateNewQuest(goal, names[0].FirstName + " " + names[0].Land);
+			if(goal == deepGoal.getQuestType()) {
+				deepGoal.modifyQuest(quest);
+			}
+			return quest;
 		}
 
 		public static Quest GenerateNewQuest(string heroName) {
-			return GenerateNewQuest(ChallengeTypes.Goals.getRandom(rand), heroName);
+			ObstacleType goal = ChallengeTypes.Goals.getRandom(rand);
+			if(rand.Next(4) == 0) {
+				ObstacleType agoal = Main.instance.player.getActiveDeepGoal().getQuestType();
+				//bool exists = false;
+				foreach(Quest q in QuestManager.availableQuests) {
+					if(q.originalGoal == agoal) {
+						//exists = true;
+						goto alreadyExists;
+					}
+				}
+				goal = agoal;
+				alreadyExists:;
+			}
+			return GenerateNewQuest(goal, heroName);
 		}
 
 		public static Quest GenerateNewQuest(ObstacleType withGoal) {
@@ -36,11 +64,15 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public static Quest GenerateNewQuest(ObstacleType withGoal, string heroName) {
+			Debug.Log("Creating new quest with goal" + withGoal);
+			if(withGoal == null) {
+				throw new Exception("Error creating quest wtih null goal!");
+			}
 			//TODO: moar detail
 			List<QuestChallenge> arr = new List<QuestChallenge>();
 
 			QuestChallenge goal = new QuestChallenge(withGoal, 0);
-
+			
 			int total = ((IQuestGoal)goal.type).getNumTotalEncounters();
 			if(total < 7) total = 7;
 
@@ -66,15 +98,16 @@ namespace Assets.draco18s.artificer.quests {
 			}
 			//end
 			arr.Add(goal);
-
-			//TODO: make reward items scale
+			
 			QuestChallenge[] list = arr.ToArray();
 			long v;
 			if(!Main.instance.player.questTypeCompletion.TryGetValue(list[list.Length - 1].type.name, out v)) {
 				v = 0;
 			}
 			Quest q = new Quest(v, rand.Next(), list);
-			Item i = Items.getRandom(rand, 0, 4);
+			int min = 0 + (StatisticsTracker.minQuestDifficulty.value / 3);
+			int max = 4 + (StatisticsTracker.minQuestDifficulty.value / 3);
+			Item i = Items.getRandom(rand, min, max);
 			q.rewards[0] = new ItemStack(i, rand.Next(i.maxStackSize - i.minStackSize) + i.minStackSize);
 			i = Items.getRandom(rand, 4, 7);
 			q.rewards[1] = new ItemStack(i, rand.Next(i.maxStackSize - i.minStackSize) + i.minStackSize);
@@ -86,6 +119,10 @@ namespace Assets.draco18s.artificer.quests {
 			//Debug.Log(debugName);
 			q.timeUntilQuestExpires = 18000; //5 hours
 			return q;
+		}
+
+		public static float GetQuestMaxTime() {
+			return 2000 + (float)SkillList.QuestTime.getMultiplier() + ((UpgradeIntValue)Main.instance.player.upgrades[UpgradeType.HERO_STAMINA]).value;
 		}
 
 		public QuestChallenge[] obstacles {
@@ -107,6 +144,7 @@ namespace Assets.draco18s.artificer.quests {
 		public bool questComplete = false;
 		public float timeUntilQuestExpires;
 		public readonly System.Random questRand;
+		public EnumResult finalResult = EnumResult.CONTINUE;
 		
 		protected QuestChallenge[] _obstacles;
 		protected ObstacleType originalGoal;
@@ -124,12 +162,12 @@ namespace Assets.draco18s.artificer.quests {
 			if(challenges.Length > 0)
 				originalGoal = challenges[challenges.Length - 1].type;
 			numQuestsBefore = prior;
-			heroMaxHealth = 100;
+			heroMaxHealth = 100 + ((UpgradeIntValue)Main.instance.player.upgrades[UpgradeType.HERO_HEALTH]).value;
 			heroCurHealth = heroMaxHealth;
 			inventory = new List<ItemStack>();
 			questStep = 0;
 			questTimer = 60;
-			questTotalTime = 0;
+			questTotalTime = GetQuestMaxTime();
 			questRand = new System.Random(seed);
 			HarrowDeck deck = new HarrowDeck();
 			STR = deck.STR.tokens;
@@ -223,6 +261,17 @@ namespace Assets.draco18s.artificer.quests {
 						}
 						v.count++;
 					}
+					kr = (long)chall.getAltReq(ki);
+					if(kr != 0) {
+						IntWrapper v;
+						if(!counts.TryGetValue(kr, out v)) {
+							v = new IntWrapper();
+							v.KRval = kr;
+							v.count = 0;
+							counts.Add(kr, v);
+						}
+						v.count++;
+					}
 				}
 				q++;
 			}
@@ -251,19 +300,29 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public bool testAgility(int mod) {
-			return testAttribute(AGL+mod);
+			return testAttribute(AGL + mod, RequirementType.AGILITY);
 		}
 
 		public bool testStrength(int mod) {
-			return testAttribute(STR+mod);
+			return testAttribute(STR + mod, RequirementType.STRENGTH);
 		}
 
 		public bool testCharisma(int mod) {
-			return testAttribute(CHA + mod);
+			return testAttribute(CHA + mod, RequirementType.CHARISMA);
 		}
 
 		internal bool testIntelligence(int mod) {
-			return testAttribute(INT + mod);
+			return testAttribute(INT + mod, RequirementType.INTELLIGENCE);
+		}
+
+		protected bool testAttribute(int value, RequirementType type) {
+			bool baseVal = questRand.Next(20) <= value;
+			if(!baseVal && type > 0) {
+				if(doesHeroHave(type, questRand.Next(3)==0)) {
+					return true;
+				}
+			}
+			return baseVal;
 		}
 
 		protected bool testAttribute(int value) {
@@ -321,7 +380,7 @@ namespace Assets.draco18s.artificer.quests {
 				timeAftercomplete += t;
 				return EnumResult.CONTINUE;
 			}
-			questTotalTime += (1.5f * t);
+			questTotalTime -= (1.5f * t);
 			if(questTimer > 0) {
 				questTimer -= t;
 				return EnumResult.CONTINUE;
@@ -334,33 +393,42 @@ namespace Assets.draco18s.artificer.quests {
 				}
 			}
 			QuestChallenge ob = obstacles[questStep];
-
-			while(questTotalTime > questMaxTime() && doesHeroHave(RequirementType.MANA)) {
-				if(doesHeroHave(AidType.MANA_LARGE)) {
-					questTotalTime -= 240;
+			List<ItemStack> used = new List<ItemStack>();
+			while(questTotalTime <= 0 && doesHeroHave(RequirementType.MANA)) {
+				if(doesHeroHave(AidType.MANA_LARGE, ref used)) {
+					questTotalTime += 240;
 				}
-				else if(doesHeroHave(AidType.MANA_MEDIUM)) {
-					questTotalTime -= 180;
+				else if(doesHeroHave(AidType.MANA_MEDIUM, ref used)) {
+					questTotalTime += 180;
 				}
-				else if(doesHeroHave(AidType.MANA_SMALL)) {
-					questTotalTime -= 120;
+				else if(doesHeroHave(AidType.MANA_SMALL, ref used)) {
+					questTotalTime += 120;
 				}
-				else if(doesHeroHave(AidType.MANA_TINY)) {
-					questTotalTime -= 60;
+				else if(doesHeroHave(AidType.MANA_TINY, ref used)) {
+					questTotalTime += 60;
 				}
 				else {
 					break;
 				}
 			}
-			if(questTotalTime > questMaxTime() || heroCurHealth <= 0) {
+			int healing = 0;
+			foreach(ItemStack st in used) {
+				healing += (st.doesStackHave(AidType.HEALING_TINY) ? 5 : 0);
+				healing += (st.doesStackHave(AidType.HEALING_SMALL) ? 10 : 0);
+				healing += (st.doesStackHave(AidType.HEALING_MEDIUM) ? 20 : 0);
+				healing += (st.doesStackHave(AidType.HEALING_LARGE) ? 50 : 0);
+			}
+			heal(healing);
+			if(questTotalTime <= 0 || heroCurHealth <= 0) {
 				//hero dies
 				Debug.Log("FAIL " + heroName + ": " + ob.type.name + " | " + questTotalTime + ", " + heroCurHealth);
 				object corwrap;
 				int cor = 0;
-				if(miscData != null && miscData.TryGetValue("corruption", out corwrap)) {
+				if(miscData != null && miscData.TryGetValue("cursed_corruption", out corwrap)) {
 					cor = (int)corwrap;
 					Debug.Log("Corrupted: " + doesHeroHave(RequirementType.SPELL_RESIST) + ", "  + cor);
 				}
+				Main.instance.player.getActiveDeepGoal().onFailedQuest(this);
 				//Debug.Log("     " + obstacles[questStep-1].type.name);
 				return EnumResult.FAIL;
 			}
@@ -373,8 +441,10 @@ namespace Assets.draco18s.artificer.quests {
 			RequirementType lastType = 0;
 			ItemStack lastStack = null;
 			ItemStack altStack = null;
+			//RequirementType statPot = RequirementType.AGILITY | RequirementType.STRENGTH | RequirementType.CHARISMA | RequirementType.INTELLIGENCE;
 			foreach(RequireWrapper rw in ob.type.requirements) {
 				bool foundAlt = false;
+				bool altIsConsumed = true;
 				foreach(ItemStack stack in inventory) {
 					//forces requiring two *different* stacks for same-type requirements if not consumable
 					if(lastType == rw.req && (stack == lastStack /*&& stack.item.isConsumable*/)) continue;
@@ -388,6 +458,7 @@ namespace Assets.draco18s.artificer.quests {
 					if(stack.item.hasReqType(rw.alt) && stack.stackSize > 0) {
 						foundAlt = true; //alt items are ok, but we'd rather find the required one
 						altStack = stack;
+						altIsConsumed = rw.req != 0;
 					}
 				}
 				//this looks so janky
@@ -397,7 +468,7 @@ namespace Assets.draco18s.artificer.quests {
 				}
 				else {
 					//decrement used alt-type stack, as it was used
-					if(altStack.item.isConsumable)
+					if(altStack.item.isConsumable && altIsConsumed)
 						altStack.stackSize--;
 					altStack.onUsedDuringQuest(this);
 					partials++;
@@ -427,16 +498,14 @@ namespace Assets.draco18s.artificer.quests {
 				if(result < EnumResult.MIXED && ob.type is IQuestGoal) {
 					//rare ending
 					Debug.Log("QUEST FAILURE " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+					Main.instance.player.getActiveDeepGoal().onFailedQuest(this);
 					return EnumResult.FAIL;
 				}
 				Debug.Log("SUCCESS " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+				Main.instance.player.getActiveDeepGoal().onSuccessfulQuest(this);
 				return EnumResult.SUCCESS;
 			}
 			return EnumResult.CONTINUE;
-		}
-
-		private float questMaxTime() {
-			return 2000 + (float)SkillList.ClickRate.getMultiplier();
 		}
 
 		public ItemStack determineRelic() {
@@ -592,8 +661,17 @@ namespace Assets.draco18s.artificer.quests {
 			return doesHeroHave(aid, true);
 		}
 		public bool doesHeroHave(AidType aid, bool consume) {
+			List<ItemStack> used = null;
+			return doesHeroHave(aid, true, ref used);
+		}
+
+		public bool doesHeroHave(AidType aid, ref List<ItemStack> used) {
+			return doesHeroHave(aid, true, ref used);
+		}
+		public bool doesHeroHave(AidType aid, bool consume, ref List<ItemStack> used) {
 			foreach(ItemStack stack in inventory) {
 				if(stack.doesStackHave(aid)) {
+					if(used != null) used.Add(stack);
 					if(consume && stack.item.isConsumable && stack.stackSize > 0) {
 						stack.stackSize--;
 					}
@@ -660,13 +738,24 @@ namespace Assets.draco18s.artificer.quests {
 
 		private void tryToHeal() {
 			int needed = heroMaxHealth - heroCurHealth;
+			List<ItemStack> used = new List<ItemStack>();
 			do {
-				if(needed >= 100)	 needed -= doesHeroHave(AidType.RESSURECTION)  ? heal(100) : heal(-needed);
-				else if(needed >= 50) needed -= doesHeroHave(AidType.HEALING_LARGE)  ? heal(50) : heal(-30);
-				else if(needed >= 20) needed -= doesHeroHave(AidType.HEALING_MEDIUM) ? heal(20) : heal(-10);
-				else if(needed >= 10) needed -= doesHeroHave(AidType.HEALING_SMALL)  ? heal(10) : heal(-5);
-				else if(needed > 0)  needed -= doesHeroHave(AidType.HEALING_TINY)   ? heal(5) : heal(-5);
-				else return;
+				if(needed >= 100)	 needed -= doesHeroHave(AidType.RESSURECTION, ref used)  ? heal(100) : heal(-needed);
+				else if(needed >= 50) needed -= doesHeroHave(AidType.HEALING_LARGE, ref used)  ? heal(50) : heal(-30);
+				else if(needed >= 20) needed -= doesHeroHave(AidType.HEALING_MEDIUM, ref used) ? heal(20) : heal(-10);
+				else if(needed >= 10) needed -= doesHeroHave(AidType.HEALING_SMALL, ref used)  ? heal(10) : heal(-5);
+				else if(needed > 0)  needed -= doesHeroHave(AidType.HEALING_TINY, ref used)   ? heal(5) : heal(-5);
+				else {
+					int stamina = 0;
+					foreach(ItemStack st in used) {
+						stamina += (st.doesStackHave(AidType.MANA_TINY) ? 60 : 0);
+						stamina += (st.doesStackHave(AidType.MANA_SMALL) ? 120 : 0);
+						stamina += (st.doesStackHave(AidType.MANA_MEDIUM) ? 180 : 0);
+						stamina += (st.doesStackHave(AidType.MANA_LARGE) ? 240 : 0);
+					}
+					questTotalTime += stamina;
+					return;
+				}
 			} while(true);
 		}
 
@@ -686,7 +775,7 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public void hastenQuestEnding(int v) {
-			questTotalTime += v;
+			questTotalTime -= v;
 		}
 
 		public void questStarted() {
@@ -697,17 +786,31 @@ namespace Assets.draco18s.artificer.quests {
 				}
 			}
 			if(inventory.Count <= 0) {
-				high--;
+				high -= 2;
 			}
 			foreach(QuestChallenge obs in _obstacles) {
 				//every challenge is given a luck factor based on the antiquity of the best relic
-				//and penalized by 1 for having no equipment at all
-				obs.questBonus += high;
+				//and penalized by 2 for having no equipment at all
+
+				//0     -> 0
+				//1     -> 1
+				//2-4   -> 2
+				//5-12  -> 3
+				//13-33 -> 4
+				//34-90 -> 5
+
+				obs.questBonus += high > 0 ? Mathf.RoundToInt(Mathf.Log(high) + 1) : high;
 			}
+			//Debug.Log(originalGoal);
+		}
+
+		public string getOriginalGoal() {
+			if(originalGoal == null) return "null";
+			return originalGoal.name;
 		}
 
 		public float QuestTimeLeft() {
-			return questMaxTime()-questTotalTime;
+			return questTotalTime;
 		}
 
 		public float GetCompletion() {
@@ -727,12 +830,14 @@ namespace Assets.draco18s.artificer.quests {
 
 		internal string getStatus() {
 			if(questStep >= _obstacles.Length) {
-				return "basking in glory";
+				if(finalResult >= EnumResult.MIXED)
+					return "basking in glory";
+				return "bemoaning failure";
 			}
 			if(heroCurHealth <= 0) {
 				return "bleeding out";
 			}
-			if(questTotalTime > questMaxTime()) {
+			if(questTotalTime <= 0) {
 				return "wallowing in defeat";
 			}
 			return _obstacles[questStep].type.desc;
@@ -767,6 +872,7 @@ namespace Assets.draco18s.artificer.quests {
 			info.AddValue("hasMiscData", miscData != null);
 			if(miscData != null)
 				info.AddValue("miscData", miscData, typeof(Dictionary<string, object>));
+			info.AddValue("finalResult", (int)finalResult);
 		}
 
 		public Quest(SerializationInfo info, StreamingContext context) {
@@ -797,7 +903,7 @@ namespace Assets.draco18s.artificer.quests {
 			}
 			timeUntilQuestExpires = (float)info.GetDouble("timeUntilQuestExpires");
 			numQuestsBefore = info.GetInt64("numQuestsBefore");
-			
+
 			rewards = new ItemStack[2];
 			rewards[0] = (ItemStack)info.GetValue("reward_0", typeof(ItemStack));
 			rewards[1] = (ItemStack)info.GetValue("reward_1", typeof(ItemStack));
@@ -805,6 +911,9 @@ namespace Assets.draco18s.artificer.quests {
 				if(info.GetBoolean("hasMiscData")) {
 					miscData = (Dictionary<string, object>)info.GetValue("miscData", typeof(Dictionary<string, object>));
 				}
+			}
+			if(Main.saveVersionFromDisk >= 16) {
+				finalResult = (EnumResult)info.GetInt32("finalResult");
 			}
 		}
 

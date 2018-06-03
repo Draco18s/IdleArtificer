@@ -10,6 +10,8 @@ namespace Assets.draco18s.artificer.statistics {
 		int ID { get; set; }
 		string statName { get; }
 		bool isHidden { get; }
+		bool shouldResetOnNewLevel { get; }
+		bool shouldResetOnNewGuildmaster { get; }
 
 		string getDisplay();
 		void setValue(object v);

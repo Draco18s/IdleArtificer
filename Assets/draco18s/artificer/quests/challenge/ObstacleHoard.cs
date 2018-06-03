@@ -43,13 +43,13 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					ChallengeTypes.Loot.AddRandomStatPotion(theQuest, 2);
 					break;
 				case EnumResult.SUCCESS:
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, 2));
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_MANA, 1));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_HEALTH, 2));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_MANA, 1));
 					ChallengeTypes.Loot.AddResource(theQuest, Items.ItemType.GEM);
 					break;
 				case EnumResult.CRIT_SUCCESS:
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, 3));
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_MANA, 2));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_HEALTH, 3));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_MANA, 2));
 					ChallengeTypes.Loot.AddResource(theQuest, Items.ItemType.GEM);
 					ChallengeTypes.Loot.AddRelic(theQuest);
 					break;

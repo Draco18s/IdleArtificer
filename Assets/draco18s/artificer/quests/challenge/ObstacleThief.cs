@@ -44,7 +44,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				case EnumResult.SUCCESS:
 					break;
 				case EnumResult.CRIT_SUCCESS:
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, 1));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_HEALTH, 1));
 					break;
 			}
 		}

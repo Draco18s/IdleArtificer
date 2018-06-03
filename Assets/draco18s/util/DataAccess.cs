@@ -34,7 +34,7 @@ namespace Assets.draco18s.util {
 				if(Application.platform == RuntimePlatform.WebGLPlayer) {
 					SyncFiles();
 				}
-				GuiManager.ShowNotification(new NotificationItem("Saved!", "", GuiManager.instance.checkOn));
+				//GuiManager.ShowNotification(new NotificationItem("Saved!", "", GuiManager.instance.checkOn));
 			}
 			catch(Exception e) {
 				PlatformSafeMessage("Failed to Save: " + e.Message);
@@ -52,7 +52,10 @@ namespace Assets.draco18s.util {
 
 					gameDetails = (PlayerInfo)binaryFormatter.Deserialize(fileStream);
 					fileStream.Close();
-					Main.instance.player = gameDetails;
+					//Main.instance.player = gameDetails;
+
+					//fileStream = File.Open(dataPath, FileMode.Open);
+					//gameDetails = (PlayerInfo)binaryFormatter.Deserialize(fileStream);
 				}
 			}
 			catch(Exception e) {

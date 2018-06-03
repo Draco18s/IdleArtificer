@@ -7,13 +7,14 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.quests.challenge {
 	public class ObstacleRiver : ObstacleType {
-		public ObstacleRiver() : base("river rafting", new RequireWrapper(RequirementType.AGILITY)) {
+		public ObstacleRiver() : base("river rafting", new RequireWrapper(RequirementType.AGILITY,RequirementType.WATER_BREATH)) {
 
 		}
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
 			EnumResult result;// = EnumResult.CRIT_FAIL;
 			if(fails > 0) result = EnumResult.MIXED;
 			else result = EnumResult.SUCCESS;
+			int mod = partials > 0 ? 6 : 0;
 
 			if(theQuest.testAgility(questBonus)) {
 				if(theQuest.testLuck(questBonus + 1) != 0) {
@@ -21,7 +22,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				}
 			}
 			else {
-				if(!theQuest.testAgility(2)) {
+				if(!theQuest.testAgility(2 + mod)) {
 					result -= 1;
 				}
 				result -= 1;

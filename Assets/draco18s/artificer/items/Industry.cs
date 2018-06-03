@@ -8,6 +8,7 @@ using Assets.draco18s.artificer.init;
 using Assets.draco18s.artificer.game;
 using System.Runtime.Serialization;
 using Koopakiller.Numerics;
+using Assets.draco18s.artificer.upgrades;
 
 namespace Assets.draco18s.artificer.items {
 	[Serializable]
@@ -18,7 +19,8 @@ namespace Assets.draco18s.artificer.items {
 		protected readonly BigInteger value;
 		public readonly List<IndustryInput> inputs;
 		public readonly int output;
-		public readonly String name;
+		public readonly String saveName;
+		public readonly String unlocalizedName;
 
 		public int level;
 		public BigInteger quantityStored = new BigInteger(0);
@@ -29,6 +31,7 @@ namespace Assets.draco18s.artificer.items {
 		public bool isProductionHalted = false;
 		public bool doAutobuild = false;
 		public int autoBuildLevel = 0;
+		public int startingVendors = 0;
 		public int autoBuildMagnitude;
 		public int bonusLevel = 0;
 		protected int vendors;
@@ -65,7 +68,8 @@ namespace Assets.draco18s.artificer.items {
 		protected Vector3 gridPos = Vector3.zero;
 
 		public Industry(String name, BigInteger price, BigInteger sell, int outnum, Scalar scale) {
-			this.name = name;
+			this.saveName = name;
+			unlocalizedName = "item." + name;
 			cost = price;
 			value = sell;
 			output = outnum;
@@ -80,7 +84,8 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public Industry(String name, BigInteger price, BigInteger sell, int outnum, Scalar scale, params IndustryInput[] list) {
-			this.name = name;
+			this.saveName = name;
+			unlocalizedName = "item." + name;
 			cost = price;
 			value = sell;
 			output = outnum;
@@ -148,10 +153,11 @@ namespace Assets.draco18s.artificer.items {
 		/// <param name="t"></param>
 		/// <returns></returns>
 		public bool addTime(float t) {
+			t *= Main.instance.player.getActiveDeepGoal().getSpeedModifier(this);
 			bool ret = false;
 			if(CraftingManager.doSynchronize && apprentices == 0) {
-				int intTime = Mathf.FloorToInt(Time.time*Main.instance.GetSpeedMultiplier() * halvesAndDoubles);
-				float synchTime = (intTime % 10) + (Time.time * Main.instance.GetSpeedMultiplier() * halvesAndDoubles) - intTime;
+				int intTime = Mathf.FloorToInt(Time.time*Main.instance.GetSpeedMultiplier() * halvesAndDoubles * Main.instance.player.getActiveDeepGoal().getSpeedModifier(this));
+				float synchTime = (intTime % 10) + (Time.time * Main.instance.GetSpeedMultiplier() * halvesAndDoubles * Main.instance.player.getActiveDeepGoal().getSpeedModifier(this)) - intTime;
 
 				int diff = Mathf.Abs((100 - Mathf.RoundToInt(timeRemaining * 10)) - Mathf.RoundToInt(synchTime * 10));
 
@@ -170,20 +176,6 @@ namespace Assets.draco18s.artificer.items {
 					ret = true;
 					//Debug.Log(name + ": still syncing (micro) " + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime * 10));
 				}
-				/*if(100 - Mathf.RoundToInt(timeRemaining * 10) > Mathf.RoundToInt(synchTime *10)) {
-					t *= 0.5f;
-					ret = true;
-					Debug.Log(name + ": still syncing (fast)" + (100 - Mathf.RoundToInt(timeRemaining * 10)) + "~" + Mathf.RoundToInt(synchTime*10));
-				}*/
-				/*synchTime = 100 - Mathf.RoundToInt(synchTime * 10);
-				if(Mathf.RoundToInt(timeRemaining * 10) > synchTime) {
-					t *= 2;
-					ret = true;
-				}
-				else if(Mathf.RoundToInt(timeRemaining * 10) < synchTime) {
-					t /= 2;
-					ret = true;
-				}*/
 			}
 			timeRemaining += (t * halvesAndDoubles);
 			return ret;
@@ -228,11 +220,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public virtual BigRational GetSellValue() {
-			//BigRational sell = ;
-			return Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue() * Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType) * SkillList.getScalarTypeMulti(productType);
-			//BigInteger frac = (BigInteger)(Main.instance.GetSellMultiplierMicro() * valueMulti * (BigRational)GetBaseSellValue());
-			//BigInteger ret = (BigInteger)(valueMulti * (BigRational)GetBaseSellValue() * Main.instance.GetSellMultiplier()) + frac;
-			//return ret;
+			return Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue() * Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType) * SkillList.getScalarTypeMulti(productType) * Main.instance.player.getActiveDeepGoal().getValuedModifier(this);
 		}
 
 		public Industry setIndustryType(Industries.IndustryTypesEnum type) {
@@ -353,6 +341,10 @@ namespace Assets.draco18s.artificer.items {
 		public Vector3 getGridPos() {
 			return gridPos;
 		}
+
+		public void setGridPos(Vector3 v) {
+			gridPos = v;
+		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
 			info.AddValue("level", level);
 			info.AddValue("bonusLevel", bonusLevel);
@@ -362,6 +354,7 @@ namespace Assets.draco18s.artificer.items {
 			info.AddValue("isProductionHalted", isProductionHalted);
 			info.AddValue("doAutobuild", doAutobuild);
 			info.AddValue("autoBuildLevel", autoBuildLevel);
+			info.AddValue("startingVendors", startingVendors);
 			info.AddValue("autoBuildMagnitude", autoBuildMagnitude);
 			info.AddValue("apprentices", apprentices);
 			info.AddValue("vendors", vendors);
@@ -379,6 +372,9 @@ namespace Assets.draco18s.artificer.items {
 			isProductionHalted = info.GetBoolean("isProductionHalted");
 			doAutobuild = info.GetBoolean("doAutobuild");
 			autoBuildLevel = info.GetInt32("autoBuildLevel");
+			if(Main.saveVersionFromDisk >= 18) {
+				startingVendors = info.GetInt32("startingVendors");
+			}
 			if(Main.saveVersionFromDisk >= 3) {
 				autoBuildMagnitude = info.GetInt32("autoBuildMagnitude");
 			}
@@ -393,6 +389,8 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public void ReadFromCopy(Industry copy) {
+			// THIS DOES NOT HANDLE UNBUILT INDUSTRIES
+			// SEE PlayerInfo's SERIALIZATION "allIndustries"
 			level = copy.level;
 			quantityStored = copy.quantityStored;
 			if(quantityStored == null) quantityStored = 0;
@@ -401,6 +399,7 @@ namespace Assets.draco18s.artificer.items {
 			isProductionHalted = copy.isProductionHalted;
 			doAutobuild = copy.doAutobuild;
 			autoBuildLevel = copy.autoBuildLevel;
+			startingVendors = copy.startingVendors;
 			autoBuildMagnitude = copy.autoBuildMagnitude;
 			apprentices = copy.apprentices;
 			vendors = copy.vendors;

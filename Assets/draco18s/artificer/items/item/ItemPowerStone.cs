@@ -5,6 +5,7 @@ using Assets.draco18s.artificer.quests.challenge;
 using Assets.draco18s.artificer.quests.challenge.goals;
 using Assets.draco18s.artificer.quests.requirement;
 using Assets.draco18s.artificer.statistics;
+using Koopakiller.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,15 @@ namespace Assets.draco18s.artificer.items {
 	public class ItemPowerStone : Item {
 		private AidType[] healingTypes = { AidType.RESSURECTION, AidType.HEALING_LARGE, AidType.HEALING_MEDIUM, AidType.HEALING_SMALL, AidType.HEALING_TINY, AidType.MANA_LARGE, AidType.MANA_MEDIUM, AidType.MANA_SMALL, AidType.MANA_TINY };
 		public ItemPowerStone():base("stone_of_power") {
+			//TODO: make it return random reqs?
 			addReqType(RequirementType.FREE_MOVEMENT);
-			addReqType(RequirementType.ETHEREALNESS);
+			addReqType(RequirementType.DANGER_SENSE);
 			addReqType(RequirementType.FIRM_RESOLVE);
 			addReqType(RequirementType.SPELL_RESIST);
+		}
+
+		public override BigInteger getBaseValue() {
+			return 0;
 		}
 
 		public override bool hasReqType(RequirementType type) {
@@ -34,14 +40,16 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public override void onUsedDuringQuest(Quest quest, ItemStack itemStack) {
-			UnityEngine.Debug.Log("Curse advances");
+			//UnityEngine.Debug.Log("Curse advances");
 			if(quest.miscData == null)
 				quest.miscData = new Dictionary<string, object>();
 			object corwrap;
 			int cor = 0;
-			if(quest.miscData.TryGetValue("corruption", out corwrap)) {
+			bool hitHere = false;
+			if(quest.miscData.TryGetValue("cursed_corruption", out corwrap)) {
 				cor = (int)corwrap;
-				quest.miscData.Remove("corruption");
+				quest.miscData.Remove("cursed_corruption");
+				hitHere = true;
 			}
 			object fallwrap;
 			bool fallen = false;
@@ -53,21 +61,26 @@ namespace Assets.draco18s.artificer.items {
 				cor++;
 			if(!quest.testCharisma(c))
 				cor++;
-			quest.miscData.Add("corruption", Math.Max(cor, 1));
+			if(quest.miscData.ContainsKey("cursed_corruption")) {
+				quest.miscData.Remove("cursed_corruption");
+				UnityEngine.Debug.Log("Data was already removed: " + hitHere);
+			}
+			quest.miscData.Add("cursed_corruption", Math.Max(cor, 1));
 			quest.harmHero(Math.Max(cor, 1), DamageType.PETRIFY);
 			if(quest.heroCurHealth <= 0 && cor >= 8 && !fallen) {
 				quest.miscData.Add("fallen", true);
 				//new corrupted hero quest goal
 				if(StatisticsTracker.maxQuestDifficulty.value >= 20) {
-					QuestManager.availableRelics.Add(QuestManager.makeRelic(itemStack, new Curse(quest.heroName), 1, this.name));
+					QuestManager.availableRelics.Add(QuestManager.makeRelic(itemStack, new Curse(quest.heroName), 1, "???"));
 					Quest q = Quest.GenerateNewQuest(ChallengeTypes.Goals.Bonus.FALLEN_HERO);
+					q.miscData = new Dictionary<string, object>();
 					q.miscData.Add(((IDescriptorData)ChallengeTypes.Goals.Bonus.FALLEN_HERO).getDescValue(), quest.heroName);
 					QuestManager.availableQuests.Add(q);
 					QuestManager.updateLists();
 					Main.instance.debugMode = false;
 				}
 			}
-			if(quest.miscData.TryGetValue("corruption", out corwrap)) {
+			if(quest.miscData.TryGetValue("cursed_corruption", out corwrap)) {
 				cor = (int)corwrap;
 				UnityEngine.Debug.Log("Corruption so far: " + cor);
 			}
@@ -88,7 +101,7 @@ namespace Assets.draco18s.artificer.items {
 			}
 
 			public string relicDescription(ItemStack stack) {
-				return "Caused " + cursedHero + " to fall";
+				return cursedHero + " turned dark while using this item.";
 			}
 		}
 	}

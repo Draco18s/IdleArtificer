@@ -55,7 +55,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					theQuest.addTime(-45);
-					theQuest.addItemToInventory(new ItemStack(Industries.POT_HEALTH, 1));
+					theQuest.addItemToInventory(new ItemStack(Industries.POT_SM_HEALTH, 1));
 					break;
 			}
 		}

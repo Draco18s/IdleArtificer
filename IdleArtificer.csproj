@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
-    <UnityBuildTarget>WebGL:20</UnityBuildTarget>
+    <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.0f3</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -27,7 +29,7 @@
     <IntermediateOutputPath>Temp\UnityVS_obj\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EDITOR_RETINA;ENABLE_RETINA_GUISTYLES;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_WEBGL;UNITY_WEBGL_API;UNITY_DISABLE_WEB_VERIFICATION;ENABLE_TEXTUREID_MAP;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_IL2CPP;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_EDITOR_RETINA;ENABLE_RETINA_GUISTYLES;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -37,7 +39,7 @@
     <IntermediateOutputPath>Temp\UnityVS_obj\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EDITOR_RETINA;ENABLE_RETINA_GUISTYLES;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_WEBGL;UNITY_WEBGL_API;UNITY_DISABLE_WEB_VERIFICATION;ENABLE_TEXTUREID_MAP;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_IL2CPP;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
+    <DefineConstants>TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_EDITOR_RETINA;ENABLE_RETINA_GUISTYLES;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_EVENT_QUEUE;ENABLE_CLUSTERINPUT;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
@@ -109,6 +111,7 @@
     <Compile Include="Assets\draco18s\artificer\init\Industries.cs" />
     <Compile Include="Assets\draco18s\artificer\init\Items.cs" />
     <Compile Include="Assets\draco18s\artificer\init\SkillList.cs" />
+    <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeHeroStamina.cs" />
     <Compile Include="Assets\draco18s\artificer\init\Upgrades.cs" />
     <Compile Include="Assets\draco18s\artificer\items\Enchantment.cs" />
     <Compile Include="Assets\draco18s\artificer\items\Industry.cs" />
@@ -121,6 +124,7 @@
     <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentLeech.cs" />
     <Compile Include="Assets\draco18s\artificer\items\item\ItemGoods.cs" />
     <Compile Include="Assets\draco18s\artificer\items\item\ItemPowerStone.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\item\ItemScepter.cs" />
     <Compile Include="Assets\draco18s\artificer\masters\Master.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\DamageType.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\EnumResult.cs" />
@@ -187,15 +191,23 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstcaleStealSupplies.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\QuestChallenge.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\CursedWood.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\DragonDispute.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\IDeepGoal.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\NoDeepGoal.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\SpiritUprising.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\WarPreparations.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalArcheryContest.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBeheadHydra.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBuildAlchemyLab.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBuildHome.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCleansCorruption.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalClearBackWoods.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalClearRatInfestation.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCombatTraining.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDefendVillage.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDelivery.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEngageInWar.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEquipArmy.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEvilBard.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreCave.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb.cs" />
@@ -207,6 +219,8 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindMcGuffin.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFreeSlaves.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalGuardTemple.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalHeartTree.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalHuntSpirits.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalInfiltrateCastle.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillDragon.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillKraken.cs" />
@@ -218,10 +232,12 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalReachSummit.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRecruitAllies.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRepairDam.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRescueCaptured.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRunForOffice.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSettleTown.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSkeletons.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSlayGorgon.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSowChaos.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSphynxRiddles.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalTargetPractice.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalUpgradeTown.cs" />
@@ -231,6 +247,7 @@
     <Compile Include="Assets\draco18s\artificer\quests\hero\HarrowDeck.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\requirement\RequirementType.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\AchievementMulti.cs" />
+    <Compile Include="Assets\draco18s\artificer\statistics\EnumResetType.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\IStat.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatAchievement.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatBase.cs" />
@@ -246,6 +263,7 @@
     <Compile Include="Assets\draco18s\artificer\ui\SelectObject.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\TooltipTrigger.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\Skill.cs" />
+    <Compile Include="Assets\draco18s\artificer\upgrades\SkillClicks.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\SkillIndustryRank.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\SkillIndustryType.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\SkillInteger.cs" />
@@ -265,6 +283,7 @@
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeStartingCash.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeTheLoots.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorEffectiveness.cs" />
+    <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorSize.cs" />
     <Compile Include="Assets\draco18s\config\Configuration.cs" />
     <Compile Include="Assets\draco18s\config\Localization.cs" />
     <Compile Include="Assets\draco18s\util\ColorHelper.cs" />

@@ -1,4 +1,5 @@
 ﻿using Assets.draco18s.artificer.quests.challenge.goals.DeepGoals;
+using Assets.draco18s.artificer.upgrades;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,10 +10,20 @@ using System.Text;
 namespace Assets.draco18s.artificer.init {
 	public class DeepGoalsTypes {
 		private static List<IDeepGoal> allDeepGoals = new List<IDeepGoal>();
-		public static IDeepGoal THE_CURSED_WOODS = new CursedWood();
+		public static IDeepGoal NONE = new NoDeepGoal().register();
+		public static IDeepGoal WAR_PREPARATIONS = new WarPreparations().register();
+		public static IDeepGoal SPIRIT_UPRISING = new SpiritUprising().register();
+		public static IDeepGoal THE_CURSED_WOODS = new CursedWood().register();
 
 		public static void register(IDeepGoal goal) {
 			allDeepGoals.Add(goal);
+		}
+
+		public static IDeepGoal getFirstActiveGoal() {
+			foreach(IDeepGoal goal in allDeepGoals) {
+				if(goal != NONE && goal.isActive()) return goal;
+			}
+			return NONE;
 		}
 
 		public static void serialize(ref SerializationInfo info, ref StreamingContext context) {

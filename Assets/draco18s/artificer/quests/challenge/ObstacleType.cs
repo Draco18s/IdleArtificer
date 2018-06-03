@@ -57,6 +57,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 
 		public RequireWrapper(RequirementType r) {
 			req = r;
+			alt = 0;
 		}
 
 		public RequireWrapper(RequirementType r, RequirementType a) {
