@@ -83,6 +83,9 @@ namespace Assets.draco18s.config {
 						s = vv.ToArray();
 						v = string.Join(".", s);
 					}
+					else {
+						v = s.Length > 1 ? s[1] : s[0];
+					}
 					Debug.Log("Missing Localization entry for '" + input + "' for current language and en_US");
 				}
 				else {

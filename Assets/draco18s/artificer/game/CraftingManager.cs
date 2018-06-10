@@ -229,6 +229,7 @@ namespace Assets.draco18s.artificer.game {
 						int maxAdd = Main.instance.player.maxVendors - Main.instance.player.currentVendors;
 						num = Math.Min(num, maxAdd);
 						item.AdjustVendors(num);
+						Main.instance.player.currentVendors += num;
 					}
 					item.level++;
 				}
@@ -386,7 +387,8 @@ namespace Assets.draco18s.artificer.game {
 						}
 					}
 				}
-				FacilitySelected(consumers[inputNum].item);
+				if(inputNum < consumers.Count)
+					FacilitySelected(consumers[inputNum].item);
 			}
 		}
 
@@ -724,7 +726,7 @@ namespace Assets.draco18s.artificer.game {
 					num = item.getVendors() * Main.instance.GetVendorSize();
 			}
 
-			return num;
+			return BigInteger.Max(num,0);
 		}
 
 		public static void UpgradeCurrent() {
@@ -1124,14 +1126,13 @@ namespace Assets.draco18s.artificer.game {
 			if((input.item.isConsumersHalted || (input.item.quantityStored < needPerCycle && item.getTimeRemaining() <= 0)) && t % 4 != 0)
 				return ColorHelper.PURPLE;
 
-			int ch = ((input.item.output * input.item.level) - input.item.consumeAmount);
-			int q = input.item.getVendors() * Main.instance.GetVendorSize();
-			if(q > ch && !input.item.isSellingStores) {
-				q = ch;
-			}
-			ch -= q;
-
+			int ch = ((input.item.output * input.item.level * (input.item.isProductionHalted?0:1)) - input.item.consumeAmount * (input.item.isConsumersHalted?0:1));
 			if(ch < 0) {
+				int q = input.item.getVendors() * Main.instance.GetVendorSize() * (input.item.isProductionHalted ? 0 : 1);
+				if(q > 0 && q > ch && !input.item.isSellingStores) {
+					q = ch;
+				}
+				ch -= q;
 				if(input.item.quantityStored >= Math.Abs(ch)) {
 					if(input.item.quantityStored / Math.Abs(ch) > 500) {
 						return Color.green;

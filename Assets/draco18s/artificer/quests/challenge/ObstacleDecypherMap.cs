@@ -14,16 +14,16 @@ namespace Assets.draco18s.artificer.quests.challenge {
 
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
 			EnumResult result = EnumResult.MIXED;
-
-			if(theQuest.testIntelligence(questBonus)) {
+			int mod = (fails == 0 ? 2 : 0);
+			if(theQuest.testIntelligence(questBonus+mod)) {
 				result += 1;
-				if(theQuest.testIntelligence(0)) {
+				if(theQuest.testIntelligence(mod)) {
 					result += 1;
 				}
 			}
 			else {
 				result -= 1;
-				if(!theQuest.testIntelligence(0)) {
+				if(!theQuest.testIntelligence(mod)) {
 					result -= 1;
 				}
 			}

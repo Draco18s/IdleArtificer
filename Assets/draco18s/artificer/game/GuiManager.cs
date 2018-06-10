@@ -68,6 +68,9 @@ public class GuiManager : MonoBehaviour {
 		ShowTooltip(p, v, 1);
 	}
 	public static void ShowTooltip(Vector3 pos, string v, float ratio) {
+		ShowTooltip(pos, v, ratio, 1);
+	}
+	public static void ShowTooltip(Vector3 pos, string v, float ratio, float scale) {
 		if(v.Length == 0) return;
 
 		instance.tooltip.SetActive(true);
@@ -119,6 +122,7 @@ public class GuiManager : MonoBehaviour {
 		else {
 			instance.tooltip.transform.position += new Vector3(wid / 2, 0, 0);
 		}
+		instance.tooltip.transform.localScale = new Vector3(scale, scale, scale);
 	}
 
 	public static void ShowNotification(NotificationItem item) {

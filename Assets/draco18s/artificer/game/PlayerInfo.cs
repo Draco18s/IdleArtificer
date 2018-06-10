@@ -216,7 +216,6 @@ namespace Assets.draco18s.artificer.game {
 		public void reset() {
 			foreach(Industry ind in builtItems) {
 				ind.quantityStored = 0;
-				currentVendors -= ind.getRawVendors();
 				ind.AdjustVendors(0);
 				ind.setTimeRemaining(0);
 				ind.level = 0;
@@ -227,6 +226,7 @@ namespace Assets.draco18s.artificer.game {
 				Main.Destroy(ind.craftingGridGO);
 				ind.craftingGridGO = null;
 			}
+			currentVendors = 0;
 			builtItems = new List<Industry>();
 			//Debug.Log("digits: " + digits);
 			//double digitsCur = BigInteger.Log10(money / moneyFloor);
@@ -294,11 +294,12 @@ namespace Assets.draco18s.artificer.game {
 			}
 
 			StatisticsTracker.questsCompleted.addValue(1);
+			StatisticsTracker.questsCompletedEver.addValue(1);
 			if(!StatisticsTracker.firstQuestCompleted.isAchieved()) {
 				StatisticsTracker.firstQuestCompleted.setAchieved();
 				StatisticsTracker.maxQuestDifficulty.addValue(1);
 			}
-			if(StatisticsTracker.questsCompleted.value >= 20 && !StatisticsTracker.twentiethQuestCompleted.isAchieved()) {
+			if(StatisticsTracker.questsCompletedEver.value >= 20 && !StatisticsTracker.twentiethQuestCompleted.isAchieved()) {
 				StatisticsTracker.twentiethQuestCompleted.setAchieved();
 				renown += Mathf.RoundToInt(20 * GetRenownMultiplier());
 				totalRenown += Mathf.RoundToInt(20 * GetRenownMultiplier());
@@ -576,6 +577,7 @@ namespace Assets.draco18s.artificer.game {
 			if(StatisticsTracker.guildmastersElected.value == 0) {
 				renown = totalRenown = 100000;
 			}
+			currentVendors = 0;
 			//renown = totalRenown = 100000; //for testing
 			//if(industriesFromDisk == null) return;
 			for(int o = 0; o < industriesFromDisk.Count; o++) {
@@ -587,8 +589,10 @@ namespace Assets.draco18s.artificer.game {
 					ind = GameRegistry.GetIndustryByID(industriesFromDisk[o].ID);
 				}
 				ind.ReadFromCopy(industriesFromDisk[o].ind);
-				if(ind.level > 0)
+				if(ind.level > 0) {
 					CraftingManager.BuildIndustry(ind, true, false);
+					currentVendors += ind.getRawVendors();
+				}
 			}
 			industriesFromDisk.Clear();
 			industriesFromDisk = null;

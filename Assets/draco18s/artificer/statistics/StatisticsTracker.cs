@@ -29,9 +29,10 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatBase minQuestDifficulty = new StatResetable("minQuestDifficulty").setInitialValue(0).register();
 		public static readonly StatBase maxQuestDifficulty = new StatResetable("maxQuestDifficulty").setInitialValue(3).register();
 		public static readonly StatBase questsCompleted = new StatHighscore("questsCompleted").register();
+		public static readonly StatBase questsCompletedEver = new StatBase("questsCompletedEver").register();
 		public static readonly StatBase relicsMade = new StatBase("relicsMade").register();
 		public static readonly StatBase relicsIdentified = new StatHighscore("relicsIdentified", EnumResetType.GUILDMASTER).register();
-		public static readonly StatBase relicAntiquity = new StatHighscore("relicAntiquity", EnumResetType.GUILDMASTER).register();
+		public static readonly StatBase relicAntiquity = new StatHighscore("relicAntiquity", EnumResetType.MANUAL).register();
 		public static readonly StatBase guildmastersElected = new StatBase("guildmastersElected").register();
 		public static readonly StatBase timeSinceLastWar = new StatBase("timeSinceLastWar").register().setHidden();
 		//total play duration
@@ -46,7 +47,7 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatAchievement allQuestsUnlocked = new StatAchievement("allQuestsUnlocked").register();
 		public static readonly StatAchievement firstQuestCompleted = new StatAchievement("firstQuestCompleted").register();
 		public static readonly StatAchievement twentiethQuestCompleted = new StatAchievement("twentiethQuestCompleted").register().setHidden();
-		public static readonly StatAchievement questsCompletedAch = new AchievementMulti("questsCompleted", questsCompleted, new object[] { 1, 20, 50, 100, 500, 1000, 10000, 100000, 1000000, 10000000 }).register();
+		public static readonly StatAchievement questsCompletedAch = new AchievementMulti("questsCompleted", questsCompletedEver, new object[] { 1, 20, 50, 100, 500, 1000, 2000, 4000, 10000, 100000 }).register();
 		public static readonly StatAchievement relicFromGenie = new StatAchievement("relicFromGenie").register().setSecret();
 		public static readonly StatAchievement relicHoarder = new StatAchievement("relicHoarder").register().setSecret();
 		public static readonly StatAchievement defeatKraken = new StatAchievement("defeatKraken").register().setSecret();

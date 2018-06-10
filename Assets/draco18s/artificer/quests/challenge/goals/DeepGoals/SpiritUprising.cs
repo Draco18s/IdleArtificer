@@ -73,7 +73,8 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 		}
 
 		public void modifyQuest(Quest theQuest) {
-			
+			theQuest.numQuestsBefore = Math.Min(theQuest.numQuestsBefore, 10);
+
 		}
 
 		public void finalizeQuest(ref Quest theQuest) {

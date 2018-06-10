@@ -7,7 +7,14 @@ using System.Text;
 
 namespace Assets.draco18s.artificer.statistics {
 	public class StatLogin : StatHighscore {
-		 public override string description {
+
+		public override object serializedValue {
+			get {
+				return statValue;
+			}
+		}
+
+		public override string description {
 			get {
 				long ll = StatisticsTracker.lastDailyLogin.value * 5;
 				if(ll < 1) return Localization.translateToLocal(_description);

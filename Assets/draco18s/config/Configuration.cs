@@ -8,7 +8,7 @@ namespace Assets.draco18s.config {
 		public static float PIXELS_PER_UNIT = 100;
 
 		public static void writeToErrorFile(string v1, string v2) {
-			Debug.Log(v1);
+			//Debug.Log(v2);
 		}
 	}
 }

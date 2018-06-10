@@ -80,6 +80,12 @@ namespace Assets.draco18s.artificer.game {
 				GuiManager.ShowTooltip(GuiManager.instance.infoPanel.transform.FindChild("SellAll").transform.position + Vector3.right * 45, "Sell all " + AsCurrency(CraftingManager.GetQuantity()) + " " + CraftingManager.GetName() + " for $" + AsCurrency(CraftingManager.SellAllValue()));
 			});
 
+			GuiManager.instance.craftHeader.transform.Find("MoneyArea").GetComponent<Image>().AddHover(delegate(Vector3 pos) {
+				BigInteger income = ApproximateIncome() / 10;
+				Vector3 p = GuiManager.instance.craftHeader.transform.Find("MoneyArea").position;
+				GuiManager.ShowTooltip(p + Vector3.down * 35, "$" + AsCurrency(income,9) + "/sec",1,1.5f);
+			});
+
 			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
 			info.transform.FindChild("Input1").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(1); });
 			info.transform.FindChild("Input2").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(2); });
@@ -225,31 +231,32 @@ namespace Assets.draco18s.artificer.game {
 			}
 			else {
 				//fixes screwups with the cursed stone
-				ItemStack badStack = null;
-				bool hasCursedStone = false;
+				List<ItemStack> allStones = new List<ItemStack>();
 				foreach(ItemStack stack in player.miscInventory) {
-					if(stack.item == Items.SpecialItems.POWER_STONE && stack.relicData == null) {
-						badStack = stack;
-					}
-					else if(stack.item == Items.SpecialItems.POWER_STONE) {
-						hasCursedStone = true;
-					}
+					if(stack.item == Items.SpecialItems.POWER_STONE)
+						allStones.Add(stack);
 				}
-				if(badStack != null)
-					player.miscInventory.Remove(badStack);
 				foreach(ItemStack stack in QuestManager.availableRelics) {
-					if(stack.item == Items.SpecialItems.POWER_STONE && !hasCursedStone) {
-						hasCursedStone = true;
-					}
-					else if(stack.item == Items.SpecialItems.POWER_STONE && hasCursedStone) {
-						badStack = stack;
-					}
+					if(stack.item == Items.SpecialItems.POWER_STONE)
+						allStones.Add(stack);
 				}
-				if(badStack != null)
-					QuestManager.availableRelics.Remove(badStack);
-				if(!hasCursedStone) {
+				allStones.Sort((x, y) => (x.antiquity * 1000 + (x.relicData == null ? 0 : x.relicData.Count)).CompareTo((y.antiquity * 1000 + (y.relicData == null ? 0 : y.relicData.Count))));
+				ItemStack good = allStones.Find(x => x.item == Items.SpecialItems.POWER_STONE && x.relicData != null);
+
+				bool wasIninventory = player.miscInventory.Contains(good);
+
+				player.miscInventory.RemoveAll(x => x.item == Items.SpecialItems.POWER_STONE);
+				QuestManager.availableRelics.RemoveAll(x => x.item == Items.SpecialItems.POWER_STONE);
+
+				if(good == null) {
 					ItemStack newRelic = new ItemStack(Items.SpecialItems.POWER_STONE, 1);
 					QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+				}
+				else {
+					if(wasIninventory)
+						player.miscInventory.Add(good);
+					else
+						QuestManager.availableRelics.Add(good);
 				}
 			}
 
@@ -491,7 +498,7 @@ namespace Assets.draco18s.artificer.game {
 							amt = MathHelper.Min(amt, maxSell);
 						/*i.quantityStored -= amt;
 						i.quantityStored = (i.quantityStored < 0 ? 0 : i.quantityStored);*/
-						amt = MathHelper.Max(MathHelper.Min(amt, i.quantityStored) - i.consumeAmount, 0);
+						amt = MathHelper.Max(MathHelper.Min(amt, i.quantityStored - i.consumeAmount), 0);
 						i.quantityStored -= amt;
 						quant -= i.quantityStored;
 						val = ((BigRational)quant * GetVendorValue());
@@ -667,6 +674,14 @@ namespace Assets.draco18s.artificer.game {
 			int j = Mathf.CeilToInt((float)((indust.output * indust.getTotalLevel()) - indust.consumeAmount) / Main.instance.GetVendorSize());
 
 			return j >= 0 ? j : 0;
+		}
+
+		private BigInteger ApproximateIncome() {
+			BigInteger currIncome = 0;
+			foreach(Industry indu in player.builtItems) {
+				currIncome += (BigInteger)indu.GetSellValue() * (indu.output * indu.level < indu.getVendors() * GetVendorSize() ? indu.output * indu.level : indu.getVendors() * GetVendorSize());
+			}
+			return currIncome;
 		}
 
 		private BigInteger ApproximateIncome(FieldInfo[] fields) {

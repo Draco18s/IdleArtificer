@@ -58,7 +58,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 		}
 
 		public float getValuedModifier(Industry industry) {
-			if((industry.industryItem.equipType & ItemEquipType.ARMOR) > 0 || (industry.industryItem.equipType & ItemEquipType.WEAPON) > 0 || (industry.industryItem.equipType & ItemEquipType.RANGED) > 0) {
+			if(industry.industryItem.hasReqType(requirement.RequirementType.ARMOR) || (industry.industryItem.equipType & ItemEquipType.WEAPON) > 0 || (industry.industryItem.equipType & ItemEquipType.RANGED) > 0) {
 				if(industry.industryType == Industries.IndustryTypesEnum.IRON) {
 					return 4;
 				}
@@ -93,6 +93,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 
 		public void modifyQuest(Quest theQuest) {
 			theQuest.miscData = new Dictionary<string, object>();
+			theQuest.numQuestsBefore = Math.Min(theQuest.numQuestsBefore, 10);
 			int r = theQuest.questRand.Next(2);
 			UnityEngine.Debug.Log("R: " + r);
 			if(sideAname.Equals("")) r = 0;
@@ -152,9 +153,9 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 						doCombat(ref sideBstrength, ref sideAstrength, theQuest, true);
 					}
 				}
+				checkVictory();
 				//else 
 			}
-			checkVictory();
 			if(goal.type == ChallengeTypes.Goals.OBSERVE_ENEMY) {
 				hasInfo = true;
 			}
@@ -216,7 +217,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 				}
 			}
 			else {
-				if(sideAstrength < 0 || sideBstrength > 0) {
+				if(sideAstrength < 0 || sideBstrength < 0) {
 					battleOver = true;
 					numGuildmastersAtWarEnd = StatisticsTracker.guildmastersElected.value;
 				}

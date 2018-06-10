@@ -134,7 +134,7 @@ namespace Assets.draco18s.artificer.quests {
 		protected long[] knownRequirements;
 
 		public string heroName;
-		public readonly long numQuestsBefore;
+		public long numQuestsBefore;
 		public readonly int heroMaxHealth;
 		public readonly List<ItemStack> inventory;
 		public readonly ItemStack[] rewards;
@@ -396,16 +396,16 @@ namespace Assets.draco18s.artificer.quests {
 			List<ItemStack> used = new List<ItemStack>();
 			while(questTotalTime <= 0 && doesHeroHave(RequirementType.MANA)) {
 				if(doesHeroHave(AidType.MANA_LARGE, ref used)) {
-					questTotalTime += 240;
+					questTotalTime += 360;
 				}
 				else if(doesHeroHave(AidType.MANA_MEDIUM, ref used)) {
-					questTotalTime += 180;
+					questTotalTime += 270;
 				}
 				else if(doesHeroHave(AidType.MANA_SMALL, ref used)) {
-					questTotalTime += 120;
+					questTotalTime += 180;
 				}
 				else if(doesHeroHave(AidType.MANA_TINY, ref used)) {
-					questTotalTime += 60;
+					questTotalTime += 90;
 				}
 				else {
 					break;
@@ -748,10 +748,10 @@ namespace Assets.draco18s.artificer.quests {
 				else {
 					int stamina = 0;
 					foreach(ItemStack st in used) {
-						stamina += (st.doesStackHave(AidType.MANA_TINY) ? 60 : 0);
-						stamina += (st.doesStackHave(AidType.MANA_SMALL) ? 120 : 0);
-						stamina += (st.doesStackHave(AidType.MANA_MEDIUM) ? 180 : 0);
-						stamina += (st.doesStackHave(AidType.MANA_LARGE) ? 240 : 0);
+						stamina += (st.doesStackHave(AidType.MANA_TINY) ? 90 : 0);
+						stamina += (st.doesStackHave(AidType.MANA_SMALL) ? 180 : 0);
+						stamina += (st.doesStackHave(AidType.MANA_MEDIUM) ? 270 : 0);
+						stamina += (st.doesStackHave(AidType.MANA_LARGE) ? 360 : 0);
 					}
 					questTotalTime += stamina;
 					return;

@@ -13,7 +13,9 @@ namespace Assets.draco18s.artificer.quests.challenge {
 
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
 			EnumResult result = EnumResult.CRIT_FAIL;
-
+			if(fails == 0) {
+				theQuest.hastenQuestEnding(-180);
+			}
 			result += theQuest.testLuck(4) + 1;
 
 			return result;

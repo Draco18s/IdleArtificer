@@ -251,9 +251,41 @@ namespace Assets.draco18s.artificer.game {
 			allRelics.AddRange(specialItems);
 			int best = 0;
 			foreach(ItemStack stack in allRelics) {
-				best = ++stack.antiquity;
+				best = Math.Max(++stack.antiquity, best);
 				if(stack.antiquity >= 50) {
 					StatisticsTracker.impressiveAntiquity.setAchieved();
+				}
+				if(stack.antiquity <= 0) {
+					Debug.Log("How the hell did this happen?");
+					Debug.Log(stack.getDisplayName() + " has 0 antiquity.");
+					ItemStack s = stack;
+					List<string> strList = new List<string>();
+					if(s.enchants.Count > 0) {
+						//strList.Add("Enchanted:");
+						foreach(string en in s.enchants.Select(x => x.name).Distinct()) {
+							int num = s.enchants.Count(x => x.name == en);
+							if(num > 1) {
+								strList.Add(en + " (x" + num + ")");
+							}
+							else {
+								strList.Add(en);
+							}
+						}
+					}
+					string str = string.Join(", ", strList.ToArray());
+					strList.Clear();
+					strList.Add(s.antiquity + " Antiquity");
+					if(s.enchants.Count > 0) {
+						strList.Add("Enchanted:");
+						strList.Add(" - " + str);
+					}
+					foreach(RelicInfo inf in s.relicData) {
+						strList.Add(inf.heroName + "\n   " + inf.questDescription + " (" + inf.notoriety + ")");
+						if(strList.Count > 3) break;
+					}
+					str = string.Join("\n", strList.ToArray());
+
+					Debug.Log(str);
 				}
 				stack.isIDedByPlayer = false;
 				if(stack.relicData.Any(x => x.relicName == "Lost")) {
@@ -441,6 +473,12 @@ namespace Assets.draco18s.artificer.game {
 						else {
 							item.upgradListGui.GetComponent<Button>().interactable = true;
 							//item.upgradListGui.GetComponent<Image>().color = Color.white;
+							if(item.cost > Main.instance.player.renown / 4 * 3) {
+								item.upgradListGui.GetComponent<Image>().color = ColorHelper.ORANGE;
+							}
+							else if(item.cost > Main.instance.player.renown / 4) {
+								item.upgradListGui.GetComponent<Image>().color = Color.yellow;
+							}
 						}
 
 						i++;
@@ -469,6 +507,9 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static void buyUpgradeRenown(Upgrade item) {
+			if(item.cost > Main.instance.player.renown / 4) {
+				//TODO: confirmation
+			}
 			if(item.cost <= Main.instance.player.renown) {
 				Main.instance.player.renown -= item.cost;
 				item.applyUpgrade();

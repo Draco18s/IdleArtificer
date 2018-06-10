@@ -12,9 +12,6 @@ namespace Assets.draco18s.artificer.quests.challenge {
 
 		}
 
-		//TODO:
-		//MIXED is not possible here
-
 		public override EnumResult MakeAttempt(Quest theQuest, int fails, int partials, int questBonus) {
 			EnumResult result;// = EnumResult.CRIT_FAIL;
 			if(fails > 0) result = EnumResult.MIXED;
