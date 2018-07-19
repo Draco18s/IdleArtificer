@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace Assets.draco18s.artificer.statistics {
 			}
 		}
 		public override string getDisplay() {
-			return (shouldReadAsFloat ? statValue / 10000f : statValue) + " (Best: " + (shouldReadAsFloat ? floatValue : value) + ")";
+			return (shouldReadAsFloat ? (statValue / 10000f).ToString("N3", NumberFormatInfo.InvariantInfo) : statValue.ToString("N0", NumberFormatInfo.InvariantInfo)) + " (Best: " + (shouldReadAsFloat ? floatValue.ToString("N3", NumberFormatInfo.InvariantInfo) : value.ToString("N0", NumberFormatInfo.InvariantInfo)) + ")";
 		}
 
 		public override float floatValue {

@@ -19,7 +19,10 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			if(theQuest.testStrength(mod)) {
 				result += 1;
 			}
-			if(theQuest.testStrength(mod)) {
+			if(theQuest.testStrength(mod - 2)) {
+				result += 1;
+			}
+			if(theQuest.testStrength(mod - 4)) {
 				result += 1;
 			}
 

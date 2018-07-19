@@ -57,7 +57,8 @@ namespace Assets.draco18s.artificer.game {
 				trans = obj.transform.FindChild("Description");
 				trans.GetComponent<Text>().text = item.description;
 				trans.localPosition -= new Vector3(35, 0, 0);
-				obj.transform.FindChild("Progress").GetComponent<Text>().text = item.getDisplay();
+				string txt = item.getDisplay();
+				obj.transform.FindChild("Progress").GetComponent<Text>().text = txt;
 				obj.transform.FindChild("Image").gameObject.SetActive(false);
 				obj.transform.FindChild("BG").gameObject.SetActive(false);
 				statLookup.Add(item, obj);

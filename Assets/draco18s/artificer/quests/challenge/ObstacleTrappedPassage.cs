@@ -30,7 +30,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			switch(result) {
 				case EnumResult.CRIT_FAIL: //no crit fail
 				case EnumResult.FAIL:
-					theQuest.harmHero(15, damage);
+					theQuest.harmHero(20, damage);
 					break;
 				case EnumResult.MIXED: //nothing bad, nothing good
 					break;

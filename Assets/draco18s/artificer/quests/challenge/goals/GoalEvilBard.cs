@@ -47,15 +47,15 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 					i = theQuest.raiseIntelligence(-1);
 					theQuest.raiseCharisma(-1);
 					if(i <= 0) {
-						theQuest.harmHero(25, DamageType.POISON);
-						theQuest.harmHero(25, DamageType.PETRIFY);
+						theQuest.harmHero(25, DamageType.POISON, true);
+						theQuest.harmHero(25, DamageType.PETRIFY, true);
 					}
 					break;
 				case EnumResult.FAIL:
 					i = theQuest.raiseIntelligence(-1);
 					if(i <= 0) {
-						theQuest.harmHero(25, DamageType.POISON);
-						theQuest.harmHero(25, DamageType.PETRIFY);
+						theQuest.harmHero(25, DamageType.POISON, true);
+						theQuest.harmHero(25, DamageType.PETRIFY, true);
 					}
 					break;
 				case EnumResult.MIXED:

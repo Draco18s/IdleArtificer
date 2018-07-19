@@ -44,7 +44,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 					theQuest.repeatTask();
 					break;
 				case EnumResult.MIXED:
-					questBonus += 1;
+					questBonus += 4;
 					theQuest.repeatTask();
 					break;
 				case EnumResult.SUCCESS:

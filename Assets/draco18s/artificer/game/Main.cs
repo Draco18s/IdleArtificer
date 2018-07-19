@@ -50,17 +50,24 @@ namespace Assets.draco18s.artificer.game {
 			csv_st = File.CreateText(path);
 			csv_st.WriteLine("TotalTime,TimeToNextBuilding,Income/Sec,CashOnHand,LastPurchase");*/
 			instance = this;
+
+			NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
+			Configuration.NumberFormat = nfi;
+
 			Application.runInBackground = true;
 			//player = new PlayerInfo();
 			//money = new BigInteger(10000);
 			GuiManager.instance.mainCanvas.transform.GetChild(0).GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.FacilityUnselected(); });
 			Localization.initialize();
+			CraftingManager.setupUI();
+			Upgrades.CashUpgradeInit();
+			Upgrades.RenownUpgradeInit();
 			EnchantingManager.OneTimeSetup();
 			QuestManager.setupUI();
 			GuildManager.OneTimeSetup();
 			ResearchManager.OneTimeSetup();
 			AchievementsManager.OneTimeSetup();
-			Configuration.loadCurrentDirectory();
+			RuntimeDataConfig.loadCurrentDirectory();
 
 			InfoPanel panel = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
 			panel.ConsumeToggle.onValueChanged.AddListener(delegate { CraftingManager.ToggleAllowConsume(); });
@@ -136,7 +143,7 @@ namespace Assets.draco18s.artificer.game {
 			}, false);
 			GuiManager.instance.craftHeader.transform.FindChild("RecallBtn").GetComponent<Button>().onClick.AddListener(delegate {
 				foreach(Industry ind in instance.player.builtItems) {
-					ind.AdjustVendors(0);
+					ind.SetRawVendors(0);
 				}
 				instance.player.currentVendors = 0;
 			});
@@ -171,12 +178,14 @@ namespace Assets.draco18s.artificer.game {
 			ob = ChallengeTypes.Initial.Sub.BAR_BRAWL;
 			ob = ChallengeTypes.Initial.Town.GARDENS;
 			ob = ChallengeTypes.Loot.TREASURE;
+			ob = ChallengeTypes.Scenario.PIRATE_SHIP;
 			ob = ChallengeTypes.Scenario.Pirates.MAROONED;
 			ob = ChallengeTypes.Travel.SAIL_SEAS;
 			ob = ChallengeTypes.Unexpected.THIEF;
 			ob = ChallengeTypes.Unexpected.Sub.GENIE;
 			ob = ChallengeTypes.Unexpected.Traps.MAGIC_TRAP_ACID;
 			ob = ChallengeTypes.Unexpected.Monsters.ANIMANT_PLANT;
+
 			Item it11 = Items.BANSHEE_WAIL; //old save compatibility!!!
 			it11 = Items.SpecialItems.POWER_STONE;
 #pragma warning restore 0219
@@ -270,8 +279,7 @@ namespace Assets.draco18s.artificer.game {
 			if(!StatisticsTracker.unlockedGuild.isAchieved()) GuiManager.instance.guildTab.GetComponent<Button>().interactable = false;
 			if(!StatisticsTracker.unlockedQuesting.isAchieved()) GuiManager.instance.questTab.GetComponent<Button>().interactable = false;
 			if(!StatisticsTracker.unlockedResearch.isAchieved()) GuiManager.instance.researchTab.GetComponent<Button>().interactable = false;
-
-			CraftingManager.setupUI();
+			gameObject.AddComponent<SteamManager>();
 			GuildManager.update();
 			checkDailyLogin();
 		}
@@ -317,7 +325,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public static bool readDataFromSave() {
 			//GuiManager.ShowNotification(new NotificationItem("Loading...", "", GuiManager.instance.checkOn));
-			string path2 = Configuration.currentDirectory + "Save/savedata.dat"; //"E:\\Users\\Major\\Desktop\\savedata.dat";
+			string path2 = RuntimeDataConfig.currentDirectory + "Save/savedata.dat"; //"E:\\Users\\Major\\Desktop\\savedata.dat";
 			System.Object readFromDisk;
 
 			if(File.Exists(path2)) {
@@ -346,8 +354,8 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void writeDataToSave() {
 			//GuiManager.ShowNotification(new NotificationItem("Saving...", "", GuiManager.instance.checkOn));
-			string path2 = Configuration.currentDirectory + "Save/savedata.dat";
-			string path3 = Configuration.currentDirectory + "Save/savedata-temp.dat";
+			string path2 = RuntimeDataConfig.currentDirectory + "Save/savedata.dat";
+			string path3 = RuntimeDataConfig.currentDirectory + "Save/savedata-temp.dat";
 			if(File.Exists(path3)) {
 				File.Delete(path3);
 			}
@@ -435,9 +443,10 @@ namespace Assets.draco18s.artificer.game {
 			
 			float industryTime = deltaTime * Main.instance.player.currentGuildmaster.industryRateMultiplier();
 			foreach(Industry i in player.builtItems) {
-				if(i.getTimeRemaining() > float.MinValue && !i.isProductionHalted) {
-					needSynchro = i.addTime(-industryTime) || needSynchro;
-					//i.timeRemaining -= deltaTime;
+				if(!i.isProductionHalted) {
+					if(i.getTimeRemaining() > float.MinValue) {
+						needSynchro = i.addTime(-industryTime) || needSynchro;
+					}
 					if(doAutoClick) {
 						i.tickApprentices();
 					}
@@ -470,6 +479,7 @@ namespace Assets.draco18s.artificer.game {
 					//} while(i.getTimeRemaining() < 0 && i.getTimeRemaining() > float.MinValue);
 				}
 				//if(i.guiObj != null) {
+				/**/
 				Image img = i.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Progress").GetComponent<Image>();
 				img.material.SetFloat("_Cutoff", ((i.getTimeRemaining() >= 0 ? i.getTimeRemaining() : 10) / 10f));
 				img.material.SetColor("_Color", i.productType.color);
@@ -491,7 +501,7 @@ namespace Assets.draco18s.artificer.game {
 			foreach(Industry i in player.builtItems) {
 				if(i.didComplete > 0) {
 					do {
-						maxSell = (i.isSellingStores ? -1 : (i.output * i.getTotalLevel()) - i.consumeAmount);
+						maxSell = (i.isSellingStores ? -1 : (i.output * i.getTotalLevel()));
 						quant = i.quantityStored;
 						amt = i.getVendors() * GetVendorSize();
 						if(maxSell >= 0)
@@ -526,11 +536,17 @@ namespace Assets.draco18s.artificer.game {
 					autoBuildTimer -= 5;
 					bool ret = true;
 					DateTime start = System.DateTime.Now;
+					BigInteger currIncome = 0;
+					foreach(Industry indu in player.builtItems) {
+						currIncome += (BigInteger)indu.GetSellValue() * (indu.output < indu.getVendors() ? indu.output : indu.getVendors());
+					}
+					List<CostBenefitRatio> compares = GenerateComparisonList(currIncome);
+					lastAutoBuilt = null;
 					while(ret) {
-						ret = SmartBuild(deltaTime);
+						ret = SmartBuild(deltaTime, ref compares, currIncome);
 						float timeTaken = (System.DateTime.Now - start).Milliseconds;
 						//Debug.Log("Autobuild time used: " + timeTaken +"(cont? " + (ret?"yes":"no") + ")");
-						if(timeTaken > 200) {
+						if(timeTaken > 500) {
 							ret = false;
 						}
 					}
@@ -572,54 +588,64 @@ namespace Assets.draco18s.artificer.game {
 			}
 		}
 
-		private static float autoBuildTimer = 0;
-
-		private bool SmartBuild(float dt) {
-			bool ret = false;
+		private List<CostBenefitRatio> GenerateComparisonList(BigInteger currIncome) {
 			List<CostBenefitRatio> compares = new List<CostBenefitRatio>();
 			FieldInfo[] fields = typeof(Industries).GetFields();
-			BigInteger currIncome = 0;
-			foreach(Industry indu in player.builtItems) {
-				currIncome += (BigInteger)indu.GetSellValue() * (indu.output < indu.getVendors() ? indu.output : indu.getVendors());
-			}
+			
 			//Debug.Log("start: "  + DateTime.Now.Millisecond);
 			foreach(FieldInfo field in fields) {
 				Industry ind = (Industry)field.GetValue(null);
 				//player.itemData.TryGetValue(indBtn, out ind);
-				BigInteger seconds = currIncome > 0 ? ((BigInteger)ind.GetScaledCost() - player.money) / currIncome : -1000000;
-				if(seconds < 60 && ind.doAutobuild && ind.autoBuildLevel > ind.level * ind.getHalveAndDouble() && ind.autoBuildMagnitude <= (player.money.ToString().Length - 1)) {
-					BigInteger inputCosts = 0;
-					int bonus = (ind.GetScaledCost() <= player.money ? 3 : (seconds <= 5 ? 5 : (seconds <= 30 ? 3 : 1)));
-					double penalty = 1;
-					foreach(IndustryInput input in ind.inputs) {
-						if(input.item.level == 0) {
-							penalty = 1000;
-						}
-						else if(input.item.consumeAmount >= input.item.output * input.item.getTotalLevel()) {
-							penalty *= 10 * Math.Pow(input.item.productType.amount, 1 + input.item.getTotalLevel() + ((input.item.consumeAmount - (input.item.output * input.item.getTotalLevel())) / input.item.output));
-							//Debug.Log(ind.name + " (" + input.item.name + "):" + penalty);
-						}
-						inputCosts += (input.item.GetBaseSellValue() * input.quantity);
+				CostBenefitRatio cb = GetCostBenefitFor(ind, currIncome);
+				if(cb != null)
+					compares.Add(cb);
+			}
+			return compares;
+		}
+
+		private CostBenefitRatio GetCostBenefitFor(Industry ind, BigInteger currIncome) {
+			BigInteger seconds = currIncome > 0 ? ((BigInteger)ind.GetScaledCost() - player.money) / currIncome : -1000000;
+			if(seconds < 60 && ind.doAutobuild && ind.autoBuildLevel > ind.level * ind.getHalveAndDouble() && ind.autoBuildMagnitude <= (player.money.ToString().Length - 1)) {
+				BigInteger inputCosts = 0;
+				int bonus = (ind.GetScaledCost() <= player.money ? 3 : (seconds <= 5 ? 5 : (seconds <= 30 ? 3 : 1)));
+				double penalty = 1;
+				foreach(IndustryInput input in ind.inputs) {
+					if(input.item.level == 0) {
+						penalty = 1000;
 					}
-					if(ind.consumeAmount > ind.output * ind.level) {
-						bonus *= 10;
+					else if(input.item.consumeAmount >= input.item.output * input.item.getTotalLevel()) {
+						penalty *= 10 * Math.Pow(input.item.productType.amount, 1 + input.item.getTotalLevel() + ((input.item.consumeAmount - (input.item.output * input.item.getTotalLevel())) / input.item.output));
+						//Debug.Log(ind.name + " (" + input.item.name + "):" + penalty);
 					}
-					if(ind.level == 0 && ind.GetScaledCost() <= player.money) {
-						compares.Add(new CostBenefitRatio(1, ((ind.GetBaseSellValue() * ind.output) - inputCosts) * bonus, ind));
-					}
-					else {
-						compares.Add(new CostBenefitRatio((BigInteger)(penalty * (BigRational)ind.GetScaledCost()), ((ind.GetBaseSellValue() * ind.output) - inputCosts) * bonus, ind));
-					}
+					inputCosts += (input.item.GetBaseSellValue() * input.quantity);
+				}
+				if(ind.consumeAmount > ind.output * ind.level) {
+					bonus *= 10;
+				}
+				if(ind.level == 0 && ind.GetScaledCost() <= player.money) {
+					return new CostBenefitRatio(1, ((ind.GetBaseSellValue() * ind.output) - inputCosts) * bonus, ind);
+				}
+				else {
+					return new CostBenefitRatio((BigInteger)(penalty * ind.GetScaledCost()), ((ind.GetBaseSellValue() * ind.output) - inputCosts) * bonus, ind);
 				}
 			}
+			return null;
+		}
+
+		private static float autoBuildTimer = 0;
+		private Industry lastAutoBuilt = null;
+
+		private bool SmartBuild(float dt, ref List<CostBenefitRatio> compares, BigInteger curIncome) {
+			bool ret = false;
+			
 			//Debug.Log("mid: " + DateTime.Now.Millisecond);
 			compares.Sort();
 			//Debug.Log("Current income/sec: " + currIncome);
-			//if(level == 8) {
+			/*if(level == 8) {
 				for(int i=0; i < compares.Count; i++) {
 					Debug.Log("    " + i + ": " + compares[i].indust.unlocalizedName + " " + (compares[i].cost + "/" + compares[i].benefit) + "|" + (((BigInteger)compares[i].indust.GetScaledCost() - player.money)));
 				}
-			//}
+			}*/
 			Industry indust = (compares.Count > 0 ? compares[0].indust : null);
 			if(indust != null && indust.GetScaledCost() <= player.money) {
 				timeSinceLastPurchase = 0;
@@ -628,40 +654,47 @@ namespace Assets.draco18s.artificer.game {
 					float mod = (float)indust.getHalveAndDouble() / input.item.getHalveAndDouble();
 					input.item.consumeAmount += Mathf.RoundToInt(input.quantity * mod);
 				}
-				//compares[0].indust.AdjustVendors(Mathf.CeilToInt((float)((indust.output * indust.level) - indust.consumeAmount) / Main.instance.GetVendorSize()));
-				//compares[0].indust.vendors = (compares[0].indust.vendors > 0)? compares[0].indust.vendors : compares[0].indust.vendors * -1;
+				CostBenefitRatio cb = GetCostBenefitFor(indust, curIncome);
+				if(cb != null) {
+					compares[0].cost = cb.cost;
+					compares[0].benefit = cb.benefit;
+				}
+				else {
+					compares.RemoveAt(0);
+				}
+				if(indust.getRawVendors() < indust.startingVendors && indust.level == 1 && PremiumUpgrades.VENDORREASSIGN.getIsPurchased()) {
+					int needed = indust.startingVendors - indust.getRawVendors();
+					int found = 0;
+					foreach(Industry builtInd in player.builtItems) {
+						if(builtInd.getRawVendors() > 0) {
+							player.currentVendors -= builtInd.getRawVendors();
+							found += builtInd.getRawVendors();
+							builtInd.SetRawVendors(0);
+							if(found >= needed) {
+								break;
+							}
+						}
+					}
+					needed = Math.Min(needed, found);
+					player.currentVendors += needed;
+					indust.SetRawVendors(indust.getRawVendors() + needed);
+				}
 				//lastPurchase += indust.name + " ";
 				ret = true;
 			}
 			if(indust != null) {
+				lastAutoBuilt = indust;
 				GuiManager.instance.autoBuildTarget.SetActive(true);
-				Debug.Log(indust.unlocalizedName);
+				//Debug.Log(indust.unlocalizedName);
 				//if(indust.craftingGridGO != null)
 					GuiManager.instance.autoBuildTarget.transform.localPosition = indust.getGridPos();
 				//else
 					//GuiManager.instance.autoBuildTarget.transform.position = Vector3.zero;
 			}
 			else {
-				GuiManager.instance.autoBuildTarget.SetActive(false);
+				if(lastAutoBuilt == null)
+					GuiManager.instance.autoBuildTarget.SetActive(false);
 			}
-			/*float dtt = dt;
-			do {
-				timeSinceLastPurchase += dtt>1?1:dtt;
-				timeTotal += dtt > 1 ? 1 : dtt;
-				int cur = (Mathf.FloorToInt(timeTotal));
-				if(cur % 60 == 0 && lastTime != cur) {
-					lastTime = cur;
-					//csv += "\n" + Mathf.FloorToInt(timeTotal) + "," + Mathf.FloorToInt(timeSinceLastPurchase) + "," + ApproximateIncome(fields);
-					
-					//csv_st.WriteLine(Mathf.FloorToInt(timeTotal) + "," + Mathf.FloorToInt(timeSinceLastPurchase) + "," + ApproximateIncome(fields) + "," + player.money + "," + lastPurchase);
-					//lastPurchase = "";
-				}
-				dtt -= 1;
-			} while(dtt > 0);
-			if(close_file) {
-				//csv_st.Close();
-			}*/
-			//Debug.Log("end: " + DateTime.Now.Millisecond);
 
 			return ret;
 		}
@@ -768,6 +801,8 @@ namespace Assets.draco18s.artificer.game {
 				GuildManager.setupUI();
 			}
 			if(newTab == GuiManager.instance.researchTab) {
+				ResearchManager.previousViewDate = ResearchManager.lastViewDate;
+				ResearchManager.lastViewDate = DateTime.Now;
 				ResearchManager.setupUI();
 			}
 			if(newTab == GuiManager.instance.achievementsTab) {

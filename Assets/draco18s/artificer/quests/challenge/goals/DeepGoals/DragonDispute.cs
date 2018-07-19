@@ -34,6 +34,12 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 			_description = "Dragons are fighting amongst themselves.\nGold production haulted.\nSuccessful quest completion adds Gold production.";
 		}
 
+		public string completeDescription {
+			get {
+				return "The dragons have been slain by heroes, effects will persist until next guildmaster election.\nGold production haulted.\nSuccessful quest completion adds Gold production.";
+			}
+		}
+
 		public IDeepGoal register() {
 			DeepGoalsTypes.register(this);
 			return this;

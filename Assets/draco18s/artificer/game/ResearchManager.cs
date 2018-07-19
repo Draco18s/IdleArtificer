@@ -27,6 +27,8 @@ namespace Assets.draco18s.artificer.game {
 		private static ItemStack examinedStack = null;
 		public static readonly int maxResearchTime = 7200;
 		private static Text moneyDisp;
+		public static DateTime lastViewDate;
+		public static DateTime previousViewDate;
 
 		public static void OneTimeSetup() {
 			Transform trans = GuiManager.instance.researchArea.transform;
@@ -94,10 +96,12 @@ namespace Assets.draco18s.artificer.game {
 				}
 			}
 			i = 0;
+			Main.instance.player.miscInventory.Sort((x, y) => x.addedToInvenTime.CompareTo(y.addedToInvenTime));
 			foreach(ItemStack stack in Main.instance.player.miscInventory) {
 				//Debug.Log("i: " + i);
 				//Debug.Log(stack.item.name);
 				if(stack.relicData != null && stack.isIDedByPlayer) {
+					if(stack.stackSize > 1) stack.stackSize = 1;
 					//Debug.Log("Relic data");
 					GameObject go;
 					relicsList.TryGetValue(stack, out go);
@@ -170,6 +174,7 @@ namespace Assets.draco18s.artificer.game {
 					i++;
 				}
 			}
+			Main.instance.player.miscInventory.Sort((x, y) => y.getDisplayIndex().CompareTo(x.getDisplayIndex()));
 			((RectTransform)relicList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ((i / X) * 100 + 10));
 			relicList.localPosition = Vector3.zero;
 			relicsLeftTxt.text = Main.instance.player.unidentifiedRelics.Count + " unidentified";
@@ -201,6 +206,16 @@ namespace Assets.draco18s.artificer.game {
 			else {
 				timeLeftTxt.text = "∞";
 				progressBarMat.SetFloat("_Cutoff", 1);
+			}
+			int v = 0;
+			foreach(KeyValuePair<ItemStack, GameObject> entry in relicsList) {
+				v++;
+				if(entry.Key.addedToInvenTime > previousViewDate) {
+					entry.Value.GetComponent<Image>().color = Color.Lerp(Color.white, Color.yellow, Mathf.PingPong(Time.time, 1) / 2 + 0.3f);
+				}
+				else {
+					entry.Value.GetComponent<Image>().color = Color.white;
+				}
 			}
 			moneyDisp.text = "$" + Main.AsCurrency(Main.instance.player.money);
 		}

@@ -25,6 +25,12 @@ namespace Assets.draco18s.artificer.upgrades {
 			this.saveName = saveName;
 			cost = upgradeCost;
 		}
+
+		public Upgrade register(List<Upgrade> list) {
+			list.Add(this);
+			return this;
+		}
+
 		public virtual void applyUpgrade() {
 			isPurchased = true;
 		}

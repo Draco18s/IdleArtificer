@@ -26,6 +26,7 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatBase vendorsPurchased = new StatHighscore("vendorsPurchased", EnumResetType.GUILDMASTER).register();
 		public static readonly StatBase apprenticesPurchased = new StatHighscore("apprenticesPurchased", EnumResetType.GUILDMASTER).register();
 		public static readonly StatBase journeymenPurchased = new StatHighscore("journeymenPurchased", EnumResetType.GUILDMASTER).register();
+		public static readonly StatBint appClicks = new StatBint("appClicks").register();
 		public static readonly StatBase minQuestDifficulty = new StatResetable("minQuestDifficulty").setInitialValue(0).register();
 		public static readonly StatBase maxQuestDifficulty = new StatResetable("maxQuestDifficulty").setInitialValue(3).register();
 		public static readonly StatBase questsCompleted = new StatHighscore("questsCompleted").register();
@@ -57,8 +58,8 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatAchievement allCashUpgrades = new StatAchievement("allCashUpgrades").register();
 		public static readonly StatAchievement allRenownUpgrades = new StatAchievement("allRenownUpgrades").register();
 		public static readonly StatAchievement vendorsPurchasedAch = new AchievementMulti("vendorsPurchasedAch", vendorsPurchased, new object[] { 10, 25, 50, 75, 100, 150, 200, 250, 500, 1000 }).register();
-		public static readonly StatAchievement apprenticesPurchasedAch = new AchievementMulti("apprenticesPurchasedAch", apprenticesPurchased, new object[] { 1, 5, 10, 25, 50, 75, 100, 150, 200, 250 }).register();
-		public static readonly StatAchievement journeymenPurchasedAch = new AchievementMulti("journeymenPurchasedAch", journeymenPurchased, new object[] { 1, 5, 10, 25, 50, 75, 100, 150, 200, 250 }).register();
+		public static readonly StatAchievement apprenticesPurchasedAch = new AchievementMulti("apprenticesPurchasedAch", apprenticesPurchased, new object[] { 1, 3, 5, 10, 25, 50, 75, 90, 95, 100 }).register();
+		public static readonly StatAchievement journeymenPurchasedAch = new AchievementMulti("journeymenPurchasedAch", journeymenPurchased, new object[] { 1, 3, 5, 10, 25, 50, 75, 90, 95, 100 }).register();
 		public static readonly StatAchievement guildmastersElectedAch = new AchievementMulti("guildmastersElectedAch", guildmastersElected, new object[] { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }).register().setSecret();
 		#endregion
 		//unlocked all quests

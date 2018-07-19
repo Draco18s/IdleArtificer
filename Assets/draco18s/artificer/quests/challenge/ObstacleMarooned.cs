@@ -34,13 +34,13 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.harmHero(5, DamageType.STARVE);
 			switch(result) {
 				case EnumResult.CRIT_FAIL: //tried to swim away, failed
-					theQuest.harmHero(5, DamageType.DROWN);
+					theQuest.harmHero(15, DamageType.DROWN);
 					theQuest.repeatTask();
 					break;
 				case EnumResult.FAIL: //still here, but closer to escape, low on supplies
-					theQuest.harmHero(5, DamageType.STARVE);
 					questBonus += 2; //TODO!!!
 					theQuest.repeatTask();
 					break;
@@ -48,14 +48,16 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					theQuest.hastenQuestEnding(60);
 					break;
 				case EnumResult.SUCCESS: //rescued
+					theQuest.heal(5);
 					theQuest.raiseCharisma(1);
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Initial.EXPLORE_TOWN, 0));
 					theQuest.hastenQuestEnding(-60);
 					break;
 				case EnumResult.CRIT_SUCCESS: //find buried treasure
+					theQuest.heal(10);
 					theQuest.raiseIntelligence(1);
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Loot.TREASURE, 0));
-					theQuest.hastenQuestEnding(-60);
+					theQuest.hastenQuestEnding(-240);
 					break;
 			}
 		}

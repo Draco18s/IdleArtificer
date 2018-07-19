@@ -32,10 +32,12 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 					break;
 				case EnumResult.FAIL:
 					theQuest.hastenQuestEnding(120);
+					theQuest.harmHero(10, DamageType.STARVE);
+					questBonus += 1;
 					theQuest.repeatTask();
 					break;
 				case EnumResult.MIXED:
-					questBonus += 1;
+					questBonus += 2;
 					theQuest.repeatTask();
 					break;
 				case EnumResult.SUCCESS:

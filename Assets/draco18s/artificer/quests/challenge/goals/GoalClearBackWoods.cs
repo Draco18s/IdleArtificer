@@ -15,7 +15,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			EnumResult result = EnumResult.SUCCESS - fails;
 			if(!theQuest.testCharisma(questBonus - 2)) result--;
 			if(theQuest.testStrength(questBonus - 2)) result++;
-			else theQuest.harmHero(10, DamageType.FIRE);
+			else theQuest.harmHero(20, DamageType.FIRE);
 			return result;
 		}
 

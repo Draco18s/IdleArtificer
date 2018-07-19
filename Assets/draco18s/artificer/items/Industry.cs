@@ -9,6 +9,7 @@ using Assets.draco18s.artificer.game;
 using System.Runtime.Serialization;
 using Koopakiller.Numerics;
 using Assets.draco18s.artificer.upgrades;
+using Assets.draco18s.artificer.statistics;
 
 namespace Assets.draco18s.artificer.items {
 	[Serializable]
@@ -182,12 +183,21 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public void tickApprentices() {
-			timeRemaining -= apprentices * Main.instance.GetClickRate() * Main.instance.player.currentGuildmaster.apprenticeRateMultiplier();
+			StatisticsTracker.appClicks.addValue(apprentices);
+			addTimeRaw(-1 * apprentices* Main.instance.GetClickRate() * Main.instance.player.currentGuildmaster.apprenticeRateMultiplier());
 		}
 
 		public void addTimeRaw(float t) {
 			if(timeRemaining > float.MinValue)
 				timeRemaining += t;
+			else if(PremiumUpgrades.CLICKTHROUGH.getIsPurchased()) {
+				foreach(IndustryInput i in inputs) {
+					if(i.item.quantityStored < i.quantity * getTotalLevel() && !i.item.isConsumersHalted) {
+						i.item.addTimeRaw(t);
+						break;
+					}
+				}
+			}
 		}
 
 		public void setTimeRemaining(float v) {
@@ -295,7 +305,7 @@ namespace Assets.draco18s.artificer.items {
 			return vendors;
 		}
 
-		public void AdjustVendors(int v) {
+		public void SetRawVendors(int v) {
 			vendors = v;
 		}
 

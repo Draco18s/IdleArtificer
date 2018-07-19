@@ -42,7 +42,17 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 		public WarPreparations() {
 			_name = "War Preparations";
 			_description = "{0}, effecting local economies.\nArmor and Weapons sell for more.\nReduced speed for Glass and Gold industries.";
+		}
 
+		public string completeDescription {
+			get {
+				string sideWon = "";
+				string winType = " won the war";
+				if(sideAstrength > 0) sideWon = sideAname;
+				else if(sideBstrength > 0) sideWon = sideBname;
+				else winType = "Both nations were devastated";
+				return String.Format("{0}{1}, effects will persist until next guildmaster election.\nArmor and Weapons sell for more.\nReduced speed for Glass and Gold industries.",sideWon, winType);
+			}
 		}
 
 		public IDeepGoal register() {
@@ -163,25 +173,27 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 
 		public void onFailedQuest(Quest theQuest) {
 			QuestChallenge goal = QuestManager.getGoal(theQuest);
-			if(goal.type == ChallengeTypes.Goals.DeepGoalSpecial.EQUIP_ARMY) {
-				//sideBstrength += 1;
-			}
-			else if(goal.type == ChallengeTypes.Goals.DeepGoalSpecial.COMBAT) {
-				object sideObj;
-				theQuest.miscData.TryGetValue("WarSide", out sideObj);
-				string sideStr = (string)sideObj;
-				if(sideStr.Equals("A")) {
-					//side A quest was a failure, so are defending
-					//however, odds are narrower
-					doCombat(ref sideBstrength, ref sideAstrength, theQuest, false);
+			if(theQuest.miscData != null) {
+				if(goal.type == ChallengeTypes.Goals.DeepGoalSpecial.EQUIP_ARMY) {
+					//sideBstrength += 1;
 				}
-				else {
-					//side B quest was a failure, so are defending
-					//however, odds are narrower
-					doCombat(ref sideAstrength, ref sideBstrength, theQuest, false);
+				else if(goal.type == ChallengeTypes.Goals.DeepGoalSpecial.COMBAT) {
+					object sideObj;
+					theQuest.miscData.TryGetValue("WarSide", out sideObj);
+					string sideStr = (string)sideObj;
+					if(sideStr.Equals("A")) {
+						//side A quest was a failure, so are defending
+						//however, odds are narrower
+						doCombat(ref sideBstrength, ref sideAstrength, theQuest, false);
+					}
+					else {
+						//side B quest was a failure, so are defending
+						//however, odds are narrower
+						doCombat(ref sideAstrength, ref sideBstrength, theQuest, false);
+					}
 				}
+				checkVictory();
 			}
-			checkVictory();
 		}
 
 		private void doCombat(ref int attacker, ref int defender, Quest theQuest, bool wasSuccessful) {
@@ -212,12 +224,12 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 
 		private void checkVictory() {
 			if(!combatStarts) {
-				if(sideAstrength > 25 || sideBstrength > 25) {
+				if(sideAstrength >= 25 || sideBstrength >= 25) {
 					combatStarts = true;
 				}
 			}
 			else {
-				if(sideAstrength < 0 || sideBstrength < 0) {
+				if(sideAstrength <= 0 || sideBstrength <= 0) {
 					battleOver = true;
 					numGuildmastersAtWarEnd = StatisticsTracker.guildmastersElected.value;
 				}

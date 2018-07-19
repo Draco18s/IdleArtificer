@@ -40,7 +40,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					else theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Initial.DETAINED, 0));
 					break;
 				case EnumResult.MIXED: //gain lead
-					questBonus += 1;
+					questBonus += 2;
 					if(questBonus < 5) theQuest.repeatTask(); //break away
 					break;
 				case EnumResult.SUCCESS: //get away

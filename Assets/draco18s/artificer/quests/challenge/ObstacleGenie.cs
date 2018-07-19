@@ -35,7 +35,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				case EnumResult.CRIT_FAIL:
 				case EnumResult.FAIL:
 					theQuest.harmHero(10, DamageType.HOLY);
-					theQuest.harmHero(10, DamageType.PETRIFY);
+					theQuest.harmHero(10, DamageType.PETRIFY, true);
 					theQuest.hastenQuestEnding(60);
 					break;
 				case EnumResult.MIXED:

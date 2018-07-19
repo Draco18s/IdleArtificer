@@ -17,12 +17,12 @@ namespace Assets.draco18s.artificer.init {
 		public static Enchantment ACID_RESISTANCE = new Enchantment("Acid Resistance", Items.DIATOM_EARTH, 100, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.ACID_IMMUNE).setEffectiveness(0.25f).setStacksTo(7);
 
 		//cloak
-		public static Enchantment ETHEREAL = new Enchantment("Ethereal", Items.BLACK_PEARLS, 200, ItemEquipType.CLOAK, RequirementType.ETHEREALNESS);
+		public static Enchantment ETHEREAL = new Enchantment("Ethereal", Items.BLACK_PEARLS, 200, ItemEquipType.CLOAK | ItemEquipType.MISC, RequirementType.ETHEREALNESS);
 		public static Enchantment ENDURANCE = new Enchantment("Endurance", Items.CORLY_ROOT, 200, ItemEquipType.CLOAK | ItemEquipType.RING, RequirementType.ENDURANCE);
 		public static Enchantment SPELL_RESIST = new Enchantment("Spell Resistance", Items.MUMMY_WRAPPING, 200, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.SPELL_RESIST);
 		public static Enchantment BLESSED = new Enchantment("Blessed", Industries.HOLY_SYMBOL.industryItem, 15000, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.UNHOLY_IMMUNE);
 		public static Enchantment UNBLESSED = new Enchantment("Unblessed", Industries.UNHOLY_SYMBOL.industryItem, 15000, ItemEquipType.CLOAK | ItemEquipType.SHIELD, RequirementType.HOLY_IMMUNE);
-		public static Enchantment RESTORATION = new EnchantmentLeech("Restoration", Items.GOLD_APPLE, 200, ItemEquipType.CLOAK | ItemEquipType.SHIELD | ItemEquipType.BOOTS, RequirementType.HEALING | RequirementType.MANA);
+		public static Enchantment RESTORATION = new EnchantmentLeech("Restoration", Items.GOLD_APPLE, 200, ItemEquipType.SHIELD, RequirementType.HEALING | RequirementType.MANA);
 
 		//weapon
 		public static Enchantment ENHANCEMENT = new Enchantment("Enhancement", Items.DIAMONDS, 200, ItemEquipType.WEAPON | ItemEquipType.RANGED | ItemEquipType.ARMOR | ItemEquipType.SHIELD, 0).setStacksTo(5);
@@ -35,7 +35,7 @@ namespace Assets.draco18s.artificer.init {
 
 		public static Enchantment VORPAL = new Enchantment("Vorpal", Items.OBSIDIAN_SHARD, 200, ItemEquipType.WEAPON, RequirementType.VORPAL);
 		public static Enchantment KEEN = new Enchantment("Keen", Items.TOPAZ, 200, ItemEquipType.WEAPON, 0);
-		public static Enchantment BRILIANT_ENERGY = new Enchantment("Briliant Energy", Items.RED_MERCURY, 200, ItemEquipType.WEAPON, RequirementType.BRILIANT_ENERGY);
+		public static Enchantment COUNTERSPELLING = new Enchantment("Counterspelling", Items.RED_MERCURY, 200, ItemEquipType.SHIELD | ItemEquipType.MISC, RequirementType.COUNTERSPELL);
 		
 		//ranged
 		public static Enchantment PERFECT_AIM = new Enchantment("Perfect Aim", Items.GLASS_LENS, 200, ItemEquipType.RANGED, RequirementType.PERFECT_AIM);

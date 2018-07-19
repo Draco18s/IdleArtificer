@@ -38,8 +38,10 @@ namespace Assets.draco18s.artificer.game {
 		private static Text joureffTxt;
 		private static Transform cashList;
 		private static Transform renownList;
+		private static Transform premiumList;
 		private static List<Upgrade> cashUpgradeList = new List<Upgrade>();
 		private static List<Upgrade> renownUpgradeList = new List<Upgrade>();
+		//private static List<Upgrade> premiumUpgradeList = new List<Upgrade>();
 		private static bool hasListChanged = false;
 		public static readonly string RENOWN_SYMBOL = "ℛ";
 		private static BigInteger lastMoney = 0;
@@ -62,6 +64,10 @@ namespace Assets.draco18s.artificer.game {
 			skillDisp = GuiManager.instance.guildHeader.transform.FindChild("SkillPts").GetChild(0).GetComponent<Text>();
 			cashList = GuiManager.instance.guildArea.transform.FindChild("CashUpgrades").GetChild(0).GetChild(0);
 			renownList = GuiManager.instance.guildArea.transform.FindChild("RenownUpgrades").GetChild(0).GetChild(0);
+			Transform tr = GuiManager.instance.guildArea.transform.FindChild("PremiumOpenAera");
+			tr.gameObject.AddComponent<Button>().onClick.AddListener(delegate { HidePremium(); });
+			premiumList = tr.GetChild(0).GetChild(1).GetChild(0).GetChild(0);
+			GuiManager.instance.guildArea.transform.FindChild("PremiumBtn").GetComponent<Button>().onClick.AddListener(delegate { ShowPremium(); });
 			buyVendTxt = GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
 			buyAppTxt = GuiManager.instance.buyApprenticesArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
 			buyJourTxt = GuiManager.instance.buyJourneymenArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
@@ -78,63 +84,55 @@ namespace Assets.draco18s.artificer.game {
 			joureffTxt = GuiManager.instance.buyJourneymenArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Main.instance.GetClickRate() + "sec / sec";
 
 			int i = 0;
-			FieldInfo[] fields = typeof(Upgrades.Cash).GetFields();
-			cashList.transform.hierarchyCapacity = (fields.Length + 1) * 5 + 1350;
-			foreach(FieldInfo field in fields) {
-				//buildButtons.Add(it);
-				Upgrade item = (Upgrade)field.GetValue(null);
-				//if(!item.getIsPurchased()) {
-					GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM, cashList) as GameObject;
-					item.upgradListGui = it;
-					cashUpgradeList.Add(item);
-					it.name = item.displayName;
-					it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
+			List<Upgrade> upgrades = Upgrades.AllCashUps;
+			cashList.transform.hierarchyCapacity = (upgrades.Count + 1) * 5 + 1350;
+			foreach(Upgrade item in upgrades) {
+				GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM, cashList) as GameObject;
+				item.upgradListGui = it;
+				cashUpgradeList.Add(item);
+				it.name = item.displayName;
+				it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
-					it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
-					it.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.cost);
-					it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
-					Upgrade _item = item;
-					Button btn = it.GetComponent<Button>();
-					btn.onClick.AddListener(delegate { buyUpgrade(_item); });
-					if(item.cost > Main.instance.player.money) {
-						btn.interactable = false;
-					}
-					Upgrade up = item;
-					btn.AddHover(delegate (Vector3 p) { GuiManager.ShowTooltip(btn.transform.position + Vector3.right * 90 + Vector3.down * 45,up.getTooltip(), 4f); }, false);
+				it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
+				it.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.cost);
+				it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
+				Upgrade _item = item;
+				Button btn = it.GetComponent<Button>();
+				btn.onClick.AddListener(delegate { buyUpgrade(_item); });
+				if(item.cost > Main.instance.player.money) {
+					btn.interactable = false;
+				}
+				Upgrade up = item;
+				btn.AddHover(delegate (Vector3 p) { GuiManager.ShowTooltip(btn.transform.position + Vector3.right * 90 + Vector3.down * 45,up.getTooltip(), 4f); }, false);
 
-					i++;
-				//}
+				i++;
 			}
 			((RectTransform)cashList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
 			cashList.localPosition = Vector3.zero;
 
 			i = 0;
-			fields = typeof(Upgrades.Renown).GetFields();
-			renownList.transform.hierarchyCapacity = (fields.Length + 1) * 5 + 1375;
-			foreach(FieldInfo field in fields) {
-				//buildButtons.Add(it);
-				Upgrade item = (Upgrade)field.GetValue(null);
-				//if(!item.getIsPurchased()) {
-					GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM, renownList) as GameObject;
-					item.upgradListGui = it;
-					renownUpgradeList.Add(item);
-					it.name = item.displayName;
-					it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
+			upgrades = Upgrades.AllRenownUps;
+			renownList.transform.hierarchyCapacity = (upgrades.Count + 1) * 5 + 1375;
+			foreach(Upgrade item in upgrades) {
+				GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM, renownList) as GameObject;
+				item.upgradListGui = it;
+				renownUpgradeList.Add(item);
+				it.name = item.displayName;
+				it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
-					it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
-					it.transform.FindChild("Cost").GetComponent<Text>().text = Main.AsCurrency(item.cost) + RENOWN_SYMBOL;
-					it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
-					Upgrade _item = item;
-					Button btn = it.GetComponent<Button>();
-					btn.onClick.AddListener(delegate { buyUpgradeRenown(_item); });
-					if(item.cost > Main.instance.player.renown) {
-						btn.interactable = false;
-					}
-					Upgrade up = item;
-					btn.AddHover(delegate (Vector3 p) { GuiManager.ShowTooltip(btn.transform.position + Vector3.right * 90 + Vector3.down * 45, up.getTooltip(), 4f); }, false);
+				it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
+				it.transform.FindChild("Cost").GetComponent<Text>().text = Main.AsCurrency(item.cost) + RENOWN_SYMBOL;
+				it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
+				Upgrade _item = item;
+				Button btn = it.GetComponent<Button>();
+				btn.onClick.AddListener(delegate { buyUpgradeRenown(_item); });
+				if(item.cost > Main.instance.player.renown) {
+					btn.interactable = false;
+				}
+				Upgrade up = item;
+				btn.AddHover(delegate (Vector3 p) { GuiManager.ShowTooltip(btn.transform.position + Vector3.right * 90 + Vector3.down * 45, up.getTooltip(), 4f); }, false);
 
-					i++;
-				//}
+				i++;
 			}
 			((RectTransform)renownList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
 			renownList.localPosition = Vector3.zero;
@@ -148,7 +146,7 @@ namespace Assets.draco18s.artificer.game {
 			});
 			btn2.AddHover(delegate(Vector3 p) {
 				if(Main.instance.player.totalRenown < 100000) {
-					GuiManager.ShowTooltip(btn2.transform.position + Vector3.up * 60, "You need at least 100,000 renown to attract a new guildmaster.", 2.3f);
+					GuiManager.ShowTooltip(btn2.transform.position + Vector3.up * 60, "You need to have earned at least 100,000 renown to attract a new guildmaster.", 2.3f);
 				}
 			});
 
@@ -189,6 +187,54 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.resetGuildWindow.transform.GetChild(1).FindChild("CurrentMaster").GetComponent<Button>().onClick.AddListener(closeNewGuildmaster);
 		}
 
+		private static bool hasBeenSetup = false;
+		public static void PremiumSetup(int divisor, string preIdent, string postIdent) {
+			PremiumSetup(divisor, preIdent, postIdent, true);
+		}
+		public static void PremiumSetup(int divisor, string preIdent, string postIdent, bool enabled) {
+			if(hasBeenSetup) return;
+			hasBeenSetup = true;
+			int i = 0;
+			List<Upgrade> upgrades = PremiumUpgrades.AllPremiumUps;
+			//premiumList.transform.hierarchyCapacity = (upgrades.Count + 1) * 5 + 1375;
+			foreach(Upgrade item in upgrades) {
+				GameObject go = Main.Instantiate(PrefabManager.instance.SKILL_LISTITEM, premiumList) as GameObject;
+				item.upgradListGui = go;
+				go.transform.localPosition = new Vector3(5, i * -110 - 5, 5);
+				((RectTransform)go.transform).anchorMax = new Vector2(1, 1);
+				((RectTransform)go.transform).offsetMax = new Vector2(-3, ((RectTransform)go.transform).offsetMax.y);
+				go.transform.FindChild("Name").GetComponent<Text>().text = item.displayName;
+				go.transform.FindChild("Description").GetComponent<Text>().text = Localization.translateToLocal("premium." + item.displayName + ".desc");
+				go.transform.FindChild("Ranks").GetComponent<Text>().text = "";
+				go.transform.FindChild("Label").GetComponent<Text>().text = (item.getIsPurchased() ? "Purchased!" : "");
+				Transform t1 = go.transform.FindChild("BuyOne");
+				if(enabled) {
+					t1.GetComponent<Button>().onClick.AddListener(delegate {
+						doBuyPremium(item);
+					});
+				}
+				t1.gameObject.SetActive(!item.getIsPurchased());
+				if(divisor == 100) {
+					string cstr = Main.AsCurrency(item.cost);
+					t1.GetChild(0).GetComponent<Text>().text = preIdent + (item.cost < 100 ? "0" : cstr.Substring(0, cstr.Length - 2)) + "." + cstr.Substring(cstr.Length - 2) + postIdent;
+				}
+				else {
+					string cstr = Main.AsCurrency(BigRational.Round(new BigRational(item.cost)/divisor));
+					t1.GetChild(0).GetComponent<Text>().text = preIdent + cstr + postIdent;
+				}
+				i++;
+			}
+			if(!enabled) {
+				showPremiumError();
+			}
+			((RectTransform)premiumList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
+			premiumList.localPosition = Vector3.zero;
+		}
+
+		private static void showPremiumError() {
+			GuiManager.instance.guildArea.transform.FindChild("PremiumOpenAera/PurchaseError").gameObject.SetActive(true);
+		}
+
 		private static void doBuySkill(Skill sk) {
 			if((BigInteger)sk.getCost(1) <= Main.instance.player.skillPoints) {
 				Main.instance.player.skillPoints -= (BigInteger)sk.getCost(1);
@@ -196,6 +242,12 @@ namespace Assets.draco18s.artificer.game {
 				sk.guiItem.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
 				sk.guiItem.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(sk.getCost(1)) + " pts";
 				skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
+			}
+		}
+
+		private static void doBuyPremium(Upgrade item) {
+			if(KongregateAPI.instance.isLoaded) {
+				KongregateAPI.doPurchase(item.saveName);
 			}
 		}
 
@@ -342,6 +394,17 @@ namespace Assets.draco18s.artificer.game {
 				GameObject go = sk.guiItem;
 				go.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
 			}
+			if(hasBeenSetup) {
+				List<Upgrade> upgrades = PremiumUpgrades.AllPremiumUps;
+				foreach(Upgrade item in upgrades) {
+					Transform t1 = item.upgradListGui.transform.FindChild("BuyOne");
+					item.upgradListGui.transform.FindChild("Label").GetComponent<Text>().text = (item.getIsPurchased() ? "Purchased!" : "");
+					t1.gameObject.SetActive(!item.getIsPurchased());
+				}
+			}
+			else {
+				PremiumSetup(100, "$", "", false);
+			}
 		}
 
 		public static void update() {
@@ -398,6 +461,7 @@ namespace Assets.draco18s.artificer.game {
 			if(hasListChanged) {
 				hasListChanged = false;
 				int i = 0;
+				List<Industry> haveHalfDoubleFor = new List<Industry>();
 				foreach(Upgrade item in cashUpgradeList) {
 					if(!item.getIsPurchased() && (item.cost < Main.instance.player.money * 10 || i < 10)) {
 						if(item.upgradListGui == null) {
@@ -427,10 +491,11 @@ namespace Assets.draco18s.artificer.game {
 						//Hide half-doubles until the industry is level 100
 						if(item is UpgradeHalveDouble) {
 							UpgradeHalveDouble upgrade = (UpgradeHalveDouble)item;
-							if(upgrade.affectedIndustry.level < 100) {
+							if(upgrade.affectedIndustry.level < 100 || haveHalfDoubleFor.Contains(upgrade.affectedIndustry)) {
 								i--;
 								Main.Destroy(item.upgradListGui);
 							}
+							haveHalfDoubleFor.Add(upgrade.affectedIndustry);
 						}
 
 						i++;
@@ -479,6 +544,9 @@ namespace Assets.draco18s.artificer.game {
 							else if(item.cost > Main.instance.player.renown / 4) {
 								item.upgradListGui.GetComponent<Image>().color = Color.yellow;
 							}
+							else {
+								item.upgradListGui.GetComponent<Image>().color = Color.white;
+							}
 						}
 
 						i++;
@@ -520,16 +588,14 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void resetAllUpgrades() {
 			int i = 0;
-			FieldInfo[] fields = typeof(Upgrades.Cash).GetFields();
-			foreach(FieldInfo field in fields) {
-				Upgrade item = (Upgrade)field.GetValue(null);
+			List<Upgrade> upgrades = Upgrades.AllCashUps;
+			foreach(Upgrade item in upgrades) {
 				if(item.getIsPurchased()) {
 					item.revokeUpgrade();
 				}
 			}
-			fields = typeof(Upgrades.Renown).GetFields();
-			foreach(FieldInfo field in fields) {
-				Upgrade item = (Upgrade)field.GetValue(null);
+			upgrades = Upgrades.AllRenownUps;
+			foreach(Upgrade item in upgrades) {
 				if(item.getIsPurchased()) {
 					item.revokeUpgrade();
 				}
@@ -549,7 +615,7 @@ namespace Assets.draco18s.artificer.game {
 			BigInteger c = 10;
 			int vend = Main.instance.player.maxApprentices;
 			for(; vend > 0; vend--) {
-				c *= 10;
+				c *= 4;
 			}
 			return c;
 		}
@@ -558,7 +624,7 @@ namespace Assets.draco18s.artificer.game {
 			BigInteger c = 25;
 			int vend = Main.instance.player.journeymen;
 			for(; vend > 0; vend--) {
-				c *= 15;
+				c *= 5;
 			}
 			return c;
 		}
@@ -592,6 +658,14 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void NewGuildmaster() {
 			GuiManager.instance.resetGuildWindow.SetActive(true);
+		}
+
+		private static void ShowPremium() {
+			GuiManager.instance.guildArea.transform.FindChild("PremiumOpenAera").gameObject.SetActive(true);
+		}
+
+		private static void HidePremium() {
+			GuiManager.instance.guildArea.transform.FindChild("PremiumOpenAera").gameObject.SetActive(false);
 		}
 
 		public static void writeSaveData(ref SerializationInfo info, ref StreamingContext context) {

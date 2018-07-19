@@ -58,7 +58,7 @@ namespace Assets.draco18s.artificer.statistics {
 		}
 
 		public virtual string getDisplay() {
-			return "" + (shouldReadAsFloat ? floatValue : value);
+			return (shouldReadAsFloat ? floatValue.ToString("N3",Configuration.NumberFormat) : value.ToString("N0", Configuration.NumberFormat));
 		}
 
 		protected int statValue;

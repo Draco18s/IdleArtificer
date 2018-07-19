@@ -33,6 +33,12 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 			_description = "Spirits of the Land are becoming more and more powerful and causing havok.\nIncreased value for all Potion industry types.\nReduced speed for Iron and Gold industry types.";
 		}
 
+		public string completeDescription {
+			get {
+				return "The spirits have been banished, effects will persist until next guildmaster election.\nIncreased value for all Potion industry types.\nReduced speed for Iron and Gold industry types.";
+			}
+		}
+
 		public IDeepGoal register() {
 			DeepGoalsTypes.register(this);
 			return this;

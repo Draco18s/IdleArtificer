@@ -20,6 +20,12 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 			}
 		}
 
+		public string completeDescription {
+			get {
+				return "";
+			}
+		}
+
 		public IDeepGoal register() {
 			DeepGoalsTypes.register(this);
 			return this;

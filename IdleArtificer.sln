@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdleArtificer.Plugins", "IdleArtificer.Plugins.csproj", "{48B1E15C-315D-2A34-FAFA-9C58C6776F2C}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdleArtificer", "IdleArtificer.csproj", "{6FD8D5AE-48FC-8A07-D941-B50C561EE177}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdleArtificer.Editor", "IdleArtificer.Editor.csproj", "{4BE015D7-1FBA-FFF8-0352-7ADD1830CCFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +13,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48B1E15C-315D-2A34-FAFA-9C58C6776F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B1E15C-315D-2A34-FAFA-9C58C6776F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B1E15C-315D-2A34-FAFA-9C58C6776F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B1E15C-315D-2A34-FAFA-9C58C6776F2C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6FD8D5AE-48FC-8A07-D941-B50C561EE177}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6FD8D5AE-48FC-8A07-D941-B50C561EE177}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FD8D5AE-48FC-8A07-D941-B50C561EE177}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FD8D5AE-48FC-8A07-D941-B50C561EE177}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BE015D7-1FBA-FFF8-0352-7ADD1830CCFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE015D7-1FBA-FFF8-0352-7ADD1830CCFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE015D7-1FBA-FFF8-0352-7ADD1830CCFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE015D7-1FBA-FFF8-0352-7ADD1830CCFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -33,7 +33,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			theQuest.harmHero(30, DamageType.UNHOLY);
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.hastenQuestEnding(60);
+					theQuest.harmHero(15, DamageType.UNHOLY);
 					break;
 				case EnumResult.FAIL:
 					ChallengeTypes.Loot.AddCommonResource(theQuest);
@@ -47,6 +47,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					ChallengeTypes.Loot.AddRelic(theQuest);
+					theQuest.raiseStrength(1);
 					break;
 			}
 		}

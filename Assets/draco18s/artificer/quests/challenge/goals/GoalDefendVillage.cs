@@ -27,6 +27,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.harmHero(5, DamageType.GENERIC);
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 					theQuest.harmHero(20, DamageType.GENERIC);

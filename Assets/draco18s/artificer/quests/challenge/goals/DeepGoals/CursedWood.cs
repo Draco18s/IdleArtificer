@@ -28,6 +28,12 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 			}
 		}
 
+		public string completeDescription {
+			get {
+				return "The cursed forest has been cleansed, effects will persist until next guildmaster election.\nReduced speed for Wood and Plant industry types.\nIncreased value for Wood and Plant industry types.";
+			}
+		}
+
 		public string name {
 			get {
 				return _name;

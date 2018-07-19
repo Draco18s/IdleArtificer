@@ -44,15 +44,15 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			theQuest.harmHero(10, DamageType.UNHOLY);
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.harmHero(10, DamageType.ACID);
-					theQuest.harmHero(10, DamageType.COLD);
-					theQuest.harmHero(10, DamageType.FIRE);
+					theQuest.harmHero(10, DamageType.ACID, true);
+					theQuest.harmHero(10, DamageType.COLD, true);
+					theQuest.harmHero(10, DamageType.FIRE, true);
 					theQuest.harmHero(10, DamageType.POISON);
 					break;
 				case EnumResult.FAIL:
-					theQuest.harmHero(5, DamageType.ACID);
-					theQuest.harmHero(5, DamageType.COLD);
-					theQuest.harmHero(5, DamageType.FIRE);
+					theQuest.harmHero(5, DamageType.ACID, true);
+					theQuest.harmHero(5, DamageType.COLD, true);
+					theQuest.harmHero(5, DamageType.FIRE, true);
 					theQuest.harmHero(5, DamageType.POISON);
 					break;
 				case EnumResult.MIXED:

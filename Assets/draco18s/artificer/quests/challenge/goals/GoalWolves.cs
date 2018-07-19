@@ -31,10 +31,11 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.harmHero(2, DamageType.GENERIC);
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.repeatTask();
-					theQuest.hastenQuestEnding(60);
+					theQuest.harmHero(15, DamageType.GENERIC);
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Monsters.WINTERWOLF, 0));
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Monsters.WINTERWOLF, 0));
 					break;
 				case EnumResult.FAIL:
@@ -42,11 +43,11 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 					theQuest.repeatTask();
 					break;
 				case EnumResult.MIXED:
-					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Monsters.WINTERWOLF, 0));
-					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Monsters.WINTERWOLF, 0));
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Monsters.WINTERWOLF, 2));
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Monsters.WINTERWOLF, 2));
 					break;
 				case EnumResult.SUCCESS:
-					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Monsters.WINTERWOLF, 2));
+					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Unexpected.Monsters.WINTERWOLF, 4));
 					break;
 				case EnumResult.CRIT_SUCCESS:
 					theQuest.addSubTask(new QuestChallenge(ChallengeTypes.Loot.TREASURE, 0));

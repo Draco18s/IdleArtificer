@@ -10,15 +10,23 @@ using System.Runtime.Serialization;
 namespace Assets.draco18s.artificer.masters {
 	[Serializable]
 	public class Master {
+
+		//skill & guildmaster bonus ideas:
+		//TYPE is defined as [WOOD,ANIMAL,IRON,GOLD,GLASS,HERB, etc]
+		//[ ] increase all income based on #of TYPE owned
+		//[x] increase all income of TYPE
+		//[ ] reduce build cost of TYPE
+		//[ ] reduce quest demands of TYPE
+		//[x] gain $ when quest buys TYPE
+
 		private static System.Random rand = new System.Random();
 		private static int[] weights = { 5, 3, 1, -2 };
 		public static Master createRandomMaster(int points) {
 			Master newMaster = new Master();
-			int a = rand.Next(12);
-			int b = rand.Next(12);
-			int c = rand.Next(12);
-			int d = rand.Next(12);
-
+			int a = rand.Next(13);
+			int b = rand.Next(13);
+			int c = rand.Next(13);
+			int d = rand.Next(13);
 			adjustStat(newMaster, a, weights[0], points);
 			adjustStat(newMaster, b, weights[1], points);
 			adjustStat(newMaster, c, weights[2], points);
@@ -48,7 +56,7 @@ namespace Assets.draco18s.artificer.masters {
 					newMaster.relic += (float)Math.Round(amt * 2.1) / 100f * 0.1f;
 					break;
 				case 4:
-					int ty = rand.Next(7) + 1;
+					int ty = rand.Next(newMaster.industry.Length - 1) + 1;
 					newMaster.industry[ty] += (float)Math.Round(amt * 10.5) / 100f;
 					break;
 				case 5:
@@ -71,6 +79,10 @@ namespace Assets.draco18s.artificer.masters {
 					break;
 				case 11:
 					newMaster.click += (float)Math.Round(amt * 7) / 100f;
+					break;
+				case 12:
+					int ty2 = rand.Next(newMaster.quest_value.Length - 1) + 1;
+					newMaster.quest_value[ty2] += (float)Math.Round(amt / 2) / 20;
 					break;
 			}
 		}
@@ -120,27 +132,44 @@ namespace Assets.draco18s.artificer.masters {
 				case 11:
 					s = "Click speed" + (newMaster.click > 0 ? " increased " : " reduced ") + "by " + Math.Abs(newMaster.click) + "s";
 					break;
+				case 12:
+					foreach(Industries.IndustryTypesEnum ty in Enum.GetValues(typeof(Industries.IndustryTypesEnum))) {
+						if(newMaster.quest_value[(int)ty] != 1) {
+							string indust = Main.ToTitleCase(ty.ToString());
+							s += (newMaster.quest_value[(int)ty] > 1 ? "+" : "") + Mathf.RoundToInt((newMaster.quest_value[(int)ty] - 1) * 100) + "% all " + indust + " items when sold to heroes." + "\n";
+						}
+					}
+					s = s.Substring(0, s.Length - 1);
+					break;
 			}
 			return s;
 		}
 
-		protected float cash = 1;//
-		protected float renown = 1;//
-		protected float ingredient = 1;//
-		protected float relic = 1;//
-		protected float[] industry = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };//
-		protected float industryRate = 1;//
-		protected float quest = 1;//
-		protected float vendors = 0;//
-		protected float apprentice = 1;//
-		protected float journeymen = 1;//
-		protected float research = 1;//
+		protected float cash = 1;
+		protected float renown = 1;
+		protected float ingredient = 1;
+		protected float relic = 1;
+		protected float[] industry;
+		protected float industryRate = 1;
+		protected float quest = 1;
+		protected float vendors = 0;
+		protected float apprentice = 1;
+		protected float journeymen = 1;
+		protected float research = 1;
 		protected float click;
+		protected float[] quest_value = { 1,1,1,1,1,1,1,1,1,1 };
 
 		protected string displayString;
 
 		public Master() {
 			displayString = "";
+			Array values = Enum.GetValues(typeof(Industries.IndustryTypesEnum));
+			industry = new float[values.Length];
+			quest_value = new float[values.Length];
+			foreach(Industries.IndustryTypesEnum ty in values) {
+				industry[(int)ty] = 1;
+				quest_value[(int)ty] = 1;
+			}
 		}
 
 		//allows for -100% and larger values, where -100% is "half"
@@ -161,6 +190,7 @@ namespace Assets.draco18s.artificer.masters {
 			if(research < 1) research = 1 / (Math.Abs(research - 1) + 1);
 			for(int i = 0; i < industry.Length; i++) {
 				if(industry[i] < 1) industry[i] = 1 / (Math.Abs(industry[i] - 1) + 1);
+				if(quest_value[i] < 1) quest_value[i] = 1 / (Math.Abs(quest_value[i] - 1) + 1);
 			}
 			//if(click < 1) click = 1 / (Math.Abs(click - 1) + 1);
 		}
@@ -180,6 +210,7 @@ namespace Assets.draco18s.artificer.masters {
 			return research;
 		}
 		public float industryTypeMultiplier(Industries.IndustryTypesEnum forType) {
+			if((int)forType >= industry.Length) return 1;
 			return industry[(int)forType];
 		}
 		public float industryRateMultiplier() {
@@ -200,6 +231,10 @@ namespace Assets.draco18s.artificer.masters {
 		public float clickRateMultiplier() {
 			return click;
 		}
+		public float questValueMultiplier(Industries.IndustryTypesEnum forType) {
+			if(quest_value == null || (int)forType >= quest_value.Length) return 1;
+			return quest_value[(int)forType];
+		}
 
 		public string getDisplay() {
 			return displayString;
@@ -218,6 +253,7 @@ namespace Assets.draco18s.artificer.masters {
 			info.AddValue("research", research);
 			for(int i = 0; i < industry.Length; i++) {
 				info.AddValue("industry_"+i, industry[i]);
+				info.AddValue("quest_value_" + i, quest_value[i]);
 			}
 			info.AddValue("click", click);
 		}
@@ -237,6 +273,11 @@ namespace Assets.draco18s.artificer.masters {
 				industry[i] = (float)info.GetDouble("industry_" + i);
 			}
 			click = (float)info.GetDouble("click");
+			if(Main.saveVersionFromDisk >= 20) {
+				for(int i = 0; i < industry.Length; i++) {
+					quest_value[i] = (float)info.GetDouble("quest_value_" + i);
+				}
+			}
 		}
 	}
 }

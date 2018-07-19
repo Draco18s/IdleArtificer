@@ -27,6 +27,7 @@ namespace Assets.draco18s.artificer.quests {
 		public static Quest GenerateNewQuest() {
 			ObstacleType goal = ChallengeTypes.Goals.getRandom(rand);
 			IDeepGoal deepGoal = Main.instance.player.getActiveDeepGoal();
+			if(!deepGoal.isActive()) deepGoal = DeepGoalsTypes.NONE;
 			if(rand.Next(4) == 0 && deepGoal.minQuestDifficulty() <= StatisticsTracker.maxQuestDifficulty.value) {
 				//Debug.Log(Main.instance.player.getActiveDeepGoal().name);
 				if(!QuestManager.availableQuests.Any(x => x.originalGoal == deepGoal.getQuestType())
@@ -176,7 +177,8 @@ namespace Assets.draco18s.artificer.quests {
 			CHA = deck.CHA.tokens;
 			if(challenges.Length > 0) {
 				List<long> reqList = new List<long>();
-				if(Upgrades.Renown.QUEST_REQS.getIsPurchased()) {
+				//Debug.Log(Upgrades.AllRenownUps.Find(x => x.saveName == "QUEST_REQS"));
+				if(Upgrades.AllRenownUps.Find(x => x.saveName == "QUEST_REQS").getIsPurchased()) {
 					getBetterRequirements(ref reqList, challenges);
 				}
 				else {
@@ -414,9 +416,9 @@ namespace Assets.draco18s.artificer.quests {
 			int healing = 0;
 			foreach(ItemStack st in used) {
 				healing += (st.doesStackHave(AidType.HEALING_TINY) ? 5 : 0);
-				healing += (st.doesStackHave(AidType.HEALING_SMALL) ? 10 : 0);
-				healing += (st.doesStackHave(AidType.HEALING_MEDIUM) ? 20 : 0);
-				healing += (st.doesStackHave(AidType.HEALING_LARGE) ? 50 : 0);
+				healing += (st.doesStackHave(AidType.HEALING_SMALL) ? 7 : 0);
+				healing += (st.doesStackHave(AidType.HEALING_MEDIUM) ? 15 : 0);
+				healing += (st.doesStackHave(AidType.HEALING_LARGE) ? 25 : 0);
 			}
 			heal(healing);
 			if(questTotalTime <= 0 || heroCurHealth <= 0) {
@@ -491,9 +493,9 @@ namespace Assets.draco18s.artificer.quests {
 			questStep++;
 
 			if(questStep > initQuestStep) {
-				heroCurHealth = Math.Min(heroCurHealth + 5, heroMaxHealth);
+				heal(5);
 			}
-
+			inventory.RemoveAll(x => x.stackSize <= 0);
 			if(questStep >= obstacles.Length) {
 				if(result < EnumResult.MIXED && ob.type is IQuestGoal) {
 					//rare ending
@@ -544,6 +546,10 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public void harmHero(int amt, DamageType damage) {
+			harmHero(amt, damage, false);
+		}
+
+		public void harmHero(int amt, DamageType damage, bool isMagic) {
 			if(amt <= 0) return;
 			if(!damage.getBypassesArmor()) {
 				float reduction = 0;
@@ -583,6 +589,9 @@ namespace Assets.draco18s.artificer.quests {
 				}
 
 				reduction = bestArmorV + bestShieldV + bestMagicV;
+				if((damage.isMagical() || isMagic) && this.doesHeroHave(RequirementType.COUNTERSPELL)) {
+					reduction = Math.Max(reduction, 0.4f) * 1.2f;
+				}
 				amt -= Mathf.FloorToInt(amt * reduction);
 			}
 			if(damage.getImmunityType() != 0) {
@@ -740,10 +749,10 @@ namespace Assets.draco18s.artificer.quests {
 			int needed = heroMaxHealth - heroCurHealth;
 			List<ItemStack> used = new List<ItemStack>();
 			do {
-				if(needed >= 100)	 needed -= doesHeroHave(AidType.RESSURECTION, ref used)  ? heal(100) : heal(-needed);
-				else if(needed >= 50) needed -= doesHeroHave(AidType.HEALING_LARGE, ref used)  ? heal(50) : heal(-30);
-				else if(needed >= 20) needed -= doesHeroHave(AidType.HEALING_MEDIUM, ref used) ? heal(20) : heal(-10);
-				else if(needed >= 10) needed -= doesHeroHave(AidType.HEALING_SMALL, ref used)  ? heal(10) : heal(-5);
+				if(needed >= 100)	 needed -= doesHeroHave(AidType.RESSURECTION, ref used)  ? heal(50) : heal(-needed);
+				else if(needed >= 50) needed -= doesHeroHave(AidType.HEALING_LARGE, ref used)  ? heal(25) : heal(-20);
+				else if(needed >= 20) needed -= doesHeroHave(AidType.HEALING_MEDIUM, ref used) ? heal(15) : heal(-10);
+				else if(needed >= 10) needed -= doesHeroHave(AidType.HEALING_SMALL, ref used)  ? heal(7) : heal(-5);
 				else if(needed > 0)  needed -= doesHeroHave(AidType.HEALING_TINY, ref used)   ? heal(5) : heal(-5);
 				else {
 					int stamina = 0;
@@ -759,7 +768,7 @@ namespace Assets.draco18s.artificer.quests {
 			} while(true);
 		}
 
-		private int heal(int amt) {
+		public int heal(int amt) {
 			if(amt > 0) heroCurHealth += amt;
 			else if(amt < 0) amt *= -1;
 			heroCurHealth = Mathf.Clamp(heroCurHealth, 0, heroMaxHealth);
@@ -834,10 +843,10 @@ namespace Assets.draco18s.artificer.quests {
 					return "basking in glory";
 				return "bemoaning failure";
 			}
-			if(heroCurHealth <= 0) {
+			if(heroCurHealth <= 0 && questComplete) {
 				return "bleeding out";
 			}
-			if(questTotalTime <= 0) {
+			if(questTotalTime <= 0 && questComplete) {
 				return "wallowing in defeat";
 			}
 			return _obstacles[questStep].type.desc;

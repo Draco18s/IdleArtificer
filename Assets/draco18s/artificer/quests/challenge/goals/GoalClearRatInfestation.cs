@@ -19,6 +19,9 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 
 			if(theQuest.testAgility(questBonus)) {
 				result += 1;
+				if(theQuest.doesHeroHave(RequirementType.WEAPON) || theQuest.testStrength(questBonus)) {
+					result += 1;
+				}
 			}
 			else {
 				if(theQuest.testStrength(questBonus)) {
@@ -33,16 +36,19 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.hastenQuestEnding(120);
+					theQuest.hastenQuestEnding(60);
+					theQuest.harmHero(25, DamageType.GENERIC);
 					theQuest.repeatTask();
 					break;
 				case EnumResult.FAIL:
-					theQuest.hastenQuestEnding(60);
+					theQuest.hastenQuestEnding(30);
+					theQuest.harmHero(15, DamageType.GENERIC);
 					theQuest.repeatTask();
 					break;
 				case EnumResult.MIXED:
 					questBonus += 1;
-					theQuest.repeatTask();
+					if(questBonus < 5)
+						theQuest.repeatTask();
 					break;
 				case EnumResult.SUCCESS:
 				case EnumResult.CRIT_SUCCESS:

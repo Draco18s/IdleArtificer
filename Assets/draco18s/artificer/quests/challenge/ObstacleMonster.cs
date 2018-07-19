@@ -61,6 +61,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.harmHero(5, DamageType.GENERIC);
 			switch(result) {
 				case EnumResult.CRIT_FAIL: //no crit fail
 					theQuest.harmHero(15, atkDamage);

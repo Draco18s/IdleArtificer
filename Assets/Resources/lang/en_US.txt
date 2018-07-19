@@ -115,6 +115,8 @@ item.large_rest_potion=large_restoration_potion
 item.gold_ring=gold_ring
 item.fancy_cloak=fancy_cloak
 item.gold_crown=gold_crown
+item.heavy_crossbow=heavy_crossbow
+item.heavy_shield=heavy_shield
 item.ASDF=
 
 stat.minQuestDifficulty.name=Quest Difficulty (min)
@@ -133,6 +135,7 @@ stat.relicAntiquity.name=Highest Relic Antiquity
 stat.sequentialDaysPlayed.name=Sequential Days Played
 stat.guildmastersElected.name=Guildmasters Elected
 stat.relicsIdentified.name=Relics Identified
+stat.appClicks.name=Apprentice Clicks
 stat.ASDF.name=ASDF
 
 stat.minQuestDifficulty.desc=Current minimum quest difficulty
@@ -151,6 +154,7 @@ stat.relicAntiquity.desc=
 stat.sequentialDaysPlayed.desc=Days played in a row. Next day: {0}
 stat.guildmastersElected.desc=Affects clicking speed
 stat.relicsIdentified.desc=Affects Renown income
+stat.appClicks.desc=Clicks from Apprentices
 stat.ASDF.desc=ASDF
 
 skill.rank_raw.name=Raw Resources (<color=#0000FF>Blue</color>)
@@ -180,3 +184,6 @@ skill.ClickRate.desc=Increases the time gained from clicks by {0} seconds per ra
 skill.RenownMulti.desc=Increases the effectiveness of the renown multiplier by {0}% per rank.
 skill.QuestTime.desc=Increases the time heros have to complete their quests (MP) by {0} per rank.
 skill.ASDF.desc=ASDF
+
+premium.Clickthrough.desc=Clicks (including from apprentices) that cannot advance an industry due to a lack of inputs, will instead be applied to an input that is behind.
+premium.VendorReassign.desc=Autobuild will reassign vendors from lower tier industries when building new higher teir ones and not enough are available.

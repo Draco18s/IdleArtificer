@@ -10,11 +10,20 @@ using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.init {
 	public static class SkillList {
+		
+		//skill & guildmaster bonus ideas:
+		//TYPE is defined as [WOOD,ANIMAL,IRON,GOLD,GLASS,HERB, etc]
+		//[ ] increase all income based on #of TYPE owned
+		//[x] increase all income of TYPE
+		//[ ] reduce build cost of TYPE
+		//[ ] reduce quest demands of TYPE
+		//[x] gain $ when quest buys TYPE
+
 		private static List<Skill> allSkills = new List<Skill>();
 
 		public static SkillInteger GuildmasterRating = (SkillInteger)new SkillInteger("GuildmasterRating", 5, 250, 5).register();
 		public static Skill Income = new Skill("Income", 0.1, 1, 1.5).register();
-		public static Skill VendorEffectiveness = new Skill("VendorEffectiveness", 0.25, 10, 2).register();
+		public static Skill VendorEffectiveness = new Skill("VendorEffectiveness", 0.25, 5, 1.5).register();
 		public static Skill ResearchRate = new Skill("ResearchRate", 0.025, 5, 1.05).register();
 		public static Skill ClickRate = new SkillClicks("ClickRate", 0.25, 2, 1.1).register();
 		public static Skill RenownMulti = new Skill("RenownMulti", 0.05, 25, 1.1).register();

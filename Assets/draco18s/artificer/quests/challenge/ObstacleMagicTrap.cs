@@ -17,11 +17,15 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			if(partials > 0) result = EnumResult.MIXED;
 			else if(fails > 0) result = EnumResult.FAIL;
 			else result = EnumResult.SUCCESS;
+			int mod = theQuest.doesHeroHave(RequirementType.TOOLS) ? 4 : 0;
 
-			if(theQuest.testIntelligence(questBonus)) {
+			if(theQuest.testIntelligence(questBonus + mod)) {
 				result += 1;
 			}
-
+			if(theQuest.doesHeroHave(RequirementType.SPELL_RESIST) || theQuest.doesHeroHave(RequirementType.COUNTERSPELL)) {
+				result += 1;
+			}
+			if(result > EnumResult.CRIT_SUCCESS) result = EnumResult.CRIT_SUCCESS;
 			return result;
 		}
 
@@ -29,7 +33,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			switch(result) {
 				case EnumResult.CRIT_FAIL: //no crit fail
 				case EnumResult.FAIL:
-					theQuest.harmHero(25, damage);
+					theQuest.harmHero(25, damage, true);
 					break;
 				case EnumResult.MIXED: //nothing bad, nothing good
 					break;

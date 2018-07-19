@@ -89,6 +89,7 @@ namespace Assets.draco18s.artificer.game {
 						ItemButtonData dat = bt.GetComponent<ItemButtonData>();
 						c = dat.connectedItem.GetScaledCost();
 						bt.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(c);
+						bt.transform.FindChild("Value").GetComponent<Text>().text = "$" + Main.AsCurrency(dat.connectedItem.GetSellValue());
 						if(c > Main.instance.player.money) {
 							dat.GetComponent<Button>().interactable = false;
 						}
@@ -228,7 +229,7 @@ namespace Assets.draco18s.artificer.game {
 						int num = item.startingVendors;
 						int maxAdd = Main.instance.player.maxVendors - Main.instance.player.currentVendors;
 						num = Math.Min(num, maxAdd);
-						item.AdjustVendors(num);
+						item.SetRawVendors(num);
 						Main.instance.player.currentVendors += num;
 					}
 					item.level++;
@@ -520,7 +521,7 @@ namespace Assets.draco18s.artificer.game {
 				int maxAdd = Main.instance.player.maxVendors - Main.instance.player.currentVendors;
 				num = Math.Min(num, maxAdd);
 				//Debug.Log(Main.instance.player.currentVendors + "+" + num);
-				item.AdjustVendors(item.getRawVendors() + num);
+				item.SetRawVendors(item.getRawVendors() + num);
 				Main.instance.player.currentVendors = Math.Min(Main.instance.player.currentVendors + num, Main.instance.player.maxVendors);
 
 				Transform t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");
@@ -566,7 +567,7 @@ namespace Assets.draco18s.artificer.game {
 			if(item.getRawVendors() > 0) {
 				int num = (isCntrlDown ? 50 : (isShiftDown ? 10 : 1));
 				num = Math.Min(num, item.getRawVendors());
-				item.AdjustVendors(item.getRawVendors() - num);
+				item.SetRawVendors(item.getRawVendors() - num);
 				Main.instance.player.currentVendors -= num;
 
 				Transform t = item.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Ico2");

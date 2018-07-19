@@ -11,6 +11,7 @@ namespace Assets.draco18s.artificer.quests.challenge.goals.DeepGoals {
 	public interface IDeepGoal {
 		string name { get; }
 		string description { get; }
+		string completeDescription { get; }
 		IDeepGoal register();
 		ObstacleType getQuestType();
 		void finalizeQuest(ref Quest theQuest);

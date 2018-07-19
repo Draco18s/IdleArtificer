@@ -146,6 +146,9 @@ namespace Assets.draco18s.artificer.game {
 					}
 				}
 			}
+			else {
+				stack.addedToInvenTime = DateTime.Now;
+			}
 			miscInventory.Add(stack);
 			miscInventory.Sort((x, y) => y.getDisplayIndex().CompareTo(x.getDisplayIndex()));
 			if(miscInventory.Count(x => x.relicData != null && x.isIDedByPlayer) >= 20) {
@@ -216,7 +219,7 @@ namespace Assets.draco18s.artificer.game {
 		public void reset() {
 			foreach(Industry ind in builtItems) {
 				ind.quantityStored = 0;
-				ind.AdjustVendors(0);
+				ind.SetRawVendors(0);
 				ind.setTimeRemaining(0);
 				ind.level = 0;
 				ind.consumeAmount = 0;
@@ -225,7 +228,9 @@ namespace Assets.draco18s.artificer.game {
 				}
 				Main.Destroy(ind.craftingGridGO);
 				ind.craftingGridGO = null;
+				ind.apprentices = 0;
 			}
+			currentApprentices = 0;
 			currentVendors = 0;
 			builtItems = new List<Industry>();
 			//Debug.Log("digits: " + digits);
@@ -337,7 +342,7 @@ namespace Assets.draco18s.artificer.game {
 
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
-			info.AddValue("SaveVersion", 19);
+			info.AddValue("SaveVersion", 22);
 			info.AddValue("money", money.ToString());
 			info.AddValue("moneyFloor", moneyFloor.ToString());
 			//info.AddValue("lifetimeMoney", StatisticsTracker.lifetimeMoney.ToString());
@@ -404,6 +409,7 @@ namespace Assets.draco18s.artificer.game {
 			StatisticsTracker.serializeAllStats(ref info, ref context);
 			info.AddValue("currentGuildmaster", currentGuildmaster, typeof(Master));
 			DeepGoalsTypes.serialize(ref info, ref context);
+			info.AddValue("ResearchManager.lastViewDate", ResearchManager.lastViewDate.ToLongTimeString());
 		}
 
 		private List<IndustryLoadWrapper> industriesFromDisk = new List<IndustryLoadWrapper>();
@@ -539,6 +545,8 @@ namespace Assets.draco18s.artificer.game {
 				Main.instance.player.currentGuildmaster = new Master();
 			if(Main.saveVersionFromDisk >= 12)
 				DeepGoalsTypes.deserialize(ref info, ref context);
+			if(Main.saveVersionFromDisk >= 22)
+				ResearchManager.lastViewDate = DateTime.Parse(info.GetString("ResearchManager.lastViewDate"));
 		}
 
 		public float GetApprenticeClickAmount() {
@@ -575,7 +583,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public void FinishLoad() {
 			if(StatisticsTracker.guildmastersElected.value == 0) {
-				renown = totalRenown = 100000;
+				//renown = totalRenown = 100000;
 			}
 			currentVendors = 0;
 			//renown = totalRenown = 100000; //for testing

@@ -9,15 +9,16 @@ namespace Assets.draco18s.artificer.quests {
 		public static DamageType FIRE = new DamageType(RequirementType.FIRE_IMMUNE).setBypassesArmor();
 		public static DamageType COLD = new DamageType(RequirementType.COLD_IMMUNE).setBypassesArmor();
 		public static DamageType ACID = new DamageType(RequirementType.ACID_IMMUNE).setBypassesArmor();
-		public static DamageType HOLY = new DamageType(RequirementType.HOLY_IMMUNE).setBypassesArmor();
-		public static DamageType UNHOLY = new DamageType(RequirementType.UNHOLY_IMMUNE).setBypassesArmor();
+		public static DamageType HOLY = new DamageType(RequirementType.HOLY_IMMUNE).setBypassesArmor().setMagical();
+		public static DamageType UNHOLY = new DamageType(RequirementType.UNHOLY_IMMUNE).setBypassesArmor().setMagical();
 		public static DamageType POISON = new DamageType(RequirementType.POISON_IMMUNE).setBypassesArmor();
 		public static DamageType FALL = new DamageType(RequirementType.FEATHER_FALL).setBypassesArmor();
 		public static DamageType PETRIFY = new DamageType().setBypassesArmor();
 
 		protected RequirementType immune;
 		protected bool bypassArmor = false;
-		
+		protected bool magical = false;
+
 		public DamageType() {
 
 		}
@@ -31,12 +32,21 @@ namespace Assets.draco18s.artificer.quests {
 			return this;
 		}
 
+		public DamageType setMagical() {
+			magical = true;
+			return this;
+		}
+
 		public RequirementType getImmunityType() {
 			return immune;
 		}
 
 		public bool getBypassesArmor() {
 			return bypassArmor;
+		}
+
+		public bool isMagical() {
+			return magical;
 		}
 
 		public override string ToString() {

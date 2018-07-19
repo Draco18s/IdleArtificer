@@ -46,6 +46,9 @@ namespace Assets.draco18s.artificer.quests.challenge {
 						rangedStack.stackSize--;
 					}
 					dmg = (int)Math.Round(rangedStack.getEffectiveness(RequirementType.RANGED) * dmg);
+					if(rangedStack.doesStackHave(RequirementType.PERFECT_AIM)) {
+						dmg *= 2;
+					}
 					rangedStack.onUsedDuringQuest(theQuest);
 				}
 				monsterHealth -= dmg;

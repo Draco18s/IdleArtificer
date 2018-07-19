@@ -29,14 +29,16 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 		}
 
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
+			theQuest.harmHero(15, DamageType.GENERIC);
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.harmHero(5, DamageType.GENERIC);
-					theQuest.hastenQuestEnding(150);
+					theQuest.harmHero(25, DamageType.GENERIC);
+					theQuest.hastenQuestEnding(60);
 					theQuest.repeatTask();
 					break;
 				case EnumResult.FAIL:
-					theQuest.hastenQuestEnding(120);
+					theQuest.harmHero(10, DamageType.GENERIC);
+					theQuest.hastenQuestEnding(30);
 					theQuest.repeatTask();
 					break;
 				case EnumResult.MIXED:

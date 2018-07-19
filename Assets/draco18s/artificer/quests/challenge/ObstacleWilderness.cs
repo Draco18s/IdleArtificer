@@ -33,15 +33,16 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			theQuest.hastenQuestEnding(60);
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.harmHero(10, DamageType.STARVE);
+					theQuest.harmHero(15, DamageType.STARVE);
 					theQuest.repeatTask();
 					break;
 				case EnumResult.FAIL:
+					theQuest.harmHero(5, DamageType.STARVE);
 					theQuest.repeatTask();
 					break;
 				case EnumResult.MIXED:
 					theQuest.addTime(30);
-					theQuest.hastenQuestEnding(90);
+					theQuest.hastenQuestEnding(30);
 					ChallengeTypes.Loot.AddCommonResource(theQuest);
 					break;
 				case EnumResult.SUCCESS:

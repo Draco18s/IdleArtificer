@@ -27,6 +27,7 @@ namespace Assets.draco18s.artificer.quests.challenge {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 				case EnumResult.FAIL: //meander about a bit
+					theQuest.harmHero(5, DamageType.STARVE);
 					theQuest.hastenQuestEnding(60);
 					break;
 				case EnumResult.MIXED:

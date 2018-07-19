@@ -5,7 +5,6 @@ using Koopakiller.Numerics;
 
 namespace Assets.draco18s.artificer.upgrades {
 	public class UpgradeHeroStamina : Upgrade {
-		private BigInteger bigInteger;
 		private int amount;
 
 		public UpgradeHeroStamina(BigInteger cost, int v, string saveName):base(UpgradeType.HERO_STAMINA, cost, "Increases hero starting mana by " + v, saveName) {

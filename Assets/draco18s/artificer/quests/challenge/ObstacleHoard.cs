@@ -34,9 +34,10 @@ namespace Assets.draco18s.artificer.quests.challenge {
 		public override void OnAttempt(EnumResult result, Quest theQuest, ref int questBonus) {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
-					theQuest.harmHero(10, DamageType.GENERIC);
+					theQuest.harmHero(30, DamageType.GENERIC);
 					break;
 				case EnumResult.FAIL:
+					theQuest.harmHero(5, DamageType.GENERIC);
 					ChallengeTypes.Loot.AddRandomStatPotion(theQuest, 1);
 					break;
 				case EnumResult.MIXED: //not sure possible

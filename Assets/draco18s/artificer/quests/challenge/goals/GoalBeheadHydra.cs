@@ -41,11 +41,11 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 					theQuest.harmHero(10, DamageType.GENERIC);
 					break;
 				case EnumResult.FAIL:
-					theQuest.harmHero(10, DamageType.ACID);
+					theQuest.harmHero(15, DamageType.ACID);
 					theQuest.harmHero(10, DamageType.GENERIC);
 					break;
 				case EnumResult.MIXED:
-					theQuest.harmHero(20, DamageType.GENERIC);
+					theQuest.harmHero(25, DamageType.GENERIC);
 					break;
 				case EnumResult.SUCCESS:
 					break;

@@ -14,14 +14,21 @@ namespace Assets.draco18s.artificer.init {
 		public static IDeepGoal WAR_PREPARATIONS = new WarPreparations().register();
 		public static IDeepGoal SPIRIT_UPRISING = new SpiritUprising().register();
 		public static IDeepGoal THE_CURSED_WOODS = new CursedWood().register();
+		public static IDeepGoal CAPITALISM = new Captialists().register();
 
 		public static void register(IDeepGoal goal) {
 			allDeepGoals.Add(goal);
 		}
 
+		private static IDeepGoal recentlyActive = null;
 		public static IDeepGoal getFirstActiveGoal() {
+			if(recentlyActive != null && !recentlyActive.isActive()) return recentlyActive;
 			foreach(IDeepGoal goal in allDeepGoals) {
-				if(goal != NONE && goal.isActive()) return goal;
+				if(goal != NONE && goal.isActive()) {
+					if(recentlyActive == null) recentlyActive = goal;
+					else if(goal != recentlyActive) return recentlyActive;
+					return goal;
+				}
 			}
 			return NONE;
 		}
@@ -30,6 +37,7 @@ namespace Assets.draco18s.artificer.init {
 			foreach(IDeepGoal s in allDeepGoals) {
 				s.serialize(ref info, ref context);
 			}
+			info.AddValue("recentlyActive", recentlyActive == null? "null" : recentlyActive.name);
 		}
 
 		public static void deserialize(ref SerializationInfo info, ref StreamingContext context) {
@@ -41,6 +49,12 @@ namespace Assets.draco18s.artificer.init {
 			}
 			foreach(IDeepGoal s in allDeepGoals) {
 				s.deserialize(values);
+			}
+			if(values.Contains("recentlyActive")) {
+				string ra = values["recentlyActive"] as string;
+				if(!ra.Equals("null")) {
+					recentlyActive = allDeepGoals.Find(x => x.name == ra);
+				}
 			}
 		}
 	}

@@ -57,7 +57,7 @@ namespace Assets.draco18s.artificer.init {
 			//require high-level potions
 			public static ObstacleType MAYOR = new GoalRunForOffice().setRewardScalar(4).setReqScalar(2f);//cha + firm resolve
 			public static ObstacleType CLIMB_MOUNTAIN = new GoalReachSummit().setRewardScalar(8); //endurance + featherfall
-			public static ObstacleType SETTLE_TOWN = new GoalSettleTown().setRewardScalar(8).setReqScalar(16);//tons o' resources
+			public static ObstacleType SETTLE_TOWN = new GoalSettleTown().setRewardScalar(8).setReqScalar(24);//tons o' resources
 			public static ObstacleType EXPLORE_TOMB = new GoalExploreTomb().setRewardScalar(8).setReqScalar(1.5f);//danger sense + fire damage
 			public static ObstacleType DRAGON = new GoalKillDragon().setRewardScalar(8).setReqScalar(1.5f);//fire immunity + cold damage
 			#endregion
@@ -94,6 +94,8 @@ namespace Assets.draco18s.artificer.init {
 				public static ObstacleType COMBAT = new GoalEngageInWar().setRewardScalar(6);
 
 				public static ObstacleType HUNT_SPIRITS = new GoalHuntSpirits().setRewardScalar(8);
+
+				public static ObstacleType CAPITALISM = new GoalCapitalists().setRewardScalar(4);
 			}
 
 			public static ObstacleType getRandom(Random rand) {

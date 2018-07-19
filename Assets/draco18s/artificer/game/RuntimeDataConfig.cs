@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 
 namespace Assets.draco18s.artificer.game {
-	public class Configuration {
+	public class RuntimeDataConfig {
 		public static string currentDirectory;
 		public static string currentBaseDirectory;
 

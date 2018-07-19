@@ -18,6 +18,7 @@ namespace Assets.draco18s.artificer.upgrades {
 			Main.instance.player.upgrades.TryGetValue(upgradeType, out wrap);
 			((UpgradeIntValue)wrap).value += 2;
 		}
+
 		public override void revokeUpgrade() {
 			base.revokeUpgrade();
 			UpgradeValueWrapper wrap;

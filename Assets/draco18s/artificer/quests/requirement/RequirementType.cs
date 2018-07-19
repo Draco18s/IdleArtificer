@@ -30,40 +30,37 @@ namespace Assets.draco18s.artificer.quests.requirement {
 		ENDURANCE =				(1L << 20), //qe
 		DISRUPTION =			(1L << 21), //qe
 		VORPAL =				(1L << 22), //qe
-		BRILIANT_ENERGY =		(1L << 23), //e //may remove
-		DISPELLING =			(1L << 24), //qe
-		FREE_MOVEMENT =			(1L << 25), //qe
-		PHASE_LOCK =			(1L << 26),     //may remove?
-		DETECTION =				(1L << 27), //qe
-		CLEANSING =				(1L << 28), //may remove
-		COUNTERSPELL =			(1L << 29), //may remove
-		MIND_SHIELD =			(1L << 30), //qe
-		FIRM_RESOLVE =			(1L << 31), //qe
-		ARROW_CATCHING =		(1L << 32), //qe
-		EVASION =				(1L << 33),
-		PERFECT_AIM =			(1L << 34), //e
+		DISPELLING =			(1L << 23), //qe
+		FREE_MOVEMENT =			(1L << 24), //qe
+		DETECTION =				(1L << 25), //qe
+		COUNTERSPELL =			(1L << 26), //q  
+		MIND_SHIELD =			(1L << 27), //qe
+		FIRM_RESOLVE =			(1L << 28), //qe
+		ARROW_CATCHING =		(1L << 29), //qe
+		PERFECT_AIM =			(1L << 30), //qe
 		//animals?
 
 
 		//generic-y bollocks
-		HEALING =				(1L << 35), //qie
-		MANA =					(1L << 36), //qi
-		WOOD =					(1L << 37), //qi
-		HERB =					(1L << 38), //qie
-		LEATHER =				(1L << 39), //qi
-		IRON =					(1L << 40), //qi
-		TOOLS =					(1L << 41), //qi
-		WEAPON =				(1L << 42), //qi
-		RANGED =				(1L << 43), //qi
-		ARMOR =					(1L << 44), //qi
-		STRENGTH =				(1L << 45), //qie
-		AGILITY =				(1L << 46), //qie
-		INTELLIGENCE =			(1L << 47), //qie
-		CHARISMA =				(1L << 48), //qie
-		WEAKNESS =				(1L << 49), //qi
-		CLUMSINESS =			(1L << 50), //qi
-		STUPIDITY =				(1L << 51), //qi
-		UGLINESS =				(1L << 52)  //qi
+		HEALING =				(1L << 38), //qie
+		MANA =					(1L << 39), //qi
+		WOOD =					(1L << 40), //qi
+		HERB =					(1L << 41), //qie
+		LEATHER =				(1L << 42), //qi
+		IRON =					(1L << 43), //qi
+		GOLD =					(1L << 44), //qi
+		TOOLS =					(1L << 45), //qi
+		WEAPON =				(1L << 46), //qi
+		RANGED =				(1L << 47), //qi
+		ARMOR =					(1L << 48), //qi
+		STRENGTH =				(1L << 49), //qie
+		AGILITY =				(1L << 50), //qie
+		INTELLIGENCE =			(1L << 51), //qie
+		CHARISMA =				(1L << 52), //qie
+		WEAKNESS =				(1L << 53), //qi
+		CLUMSINESS =			(1L << 54), //qi
+		STUPIDITY =				(1L << 55), //qi
+		UGLINESS =				(1L << 56)  //qi
 
 			//thieves tools!
 	}

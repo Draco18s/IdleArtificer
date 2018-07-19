@@ -321,14 +321,22 @@ namespace Koopakiller.Numerics
             }
             return new BigRational(br.Numerator + br.Denominator * scalar, br.Denominator);
         }
-        /// <summary>
-        /// Bildet die Summe aus einem Bruch und einem ganzzahligem Skalar.
-        /// </summary>
-        /// <param name="scalar">Der erste Summand (Skalar).</param>
-        /// <param name="br">Der zweite Summand (Bruch).</param>
-        /// <returns>Die Summe aus <paramref name="scalar"/> und <paramref name="br"/>.</returns>
-        /// <remarks>Das Ergebnis lässt sich eventuell noch vereinfachen.</remarks>
-        public static BigRational operator +(BigInteger scalar, BigRational br)
+
+		internal static BigRational Round(BigRational br) {
+			if(br - ToBigInt(br) >= 0.5) {
+				return ToBigInt(br) + 1;
+			}
+			return ToBigInt(br);
+		}
+
+		/// <summary>
+		/// Bildet die Summe aus einem Bruch und einem ganzzahligem Skalar.
+		/// </summary>
+		/// <param name="scalar">Der erste Summand (Skalar).</param>
+		/// <param name="br">Der zweite Summand (Bruch).</param>
+		/// <returns>Die Summe aus <paramref name="scalar"/> und <paramref name="br"/>.</returns>
+		/// <remarks>Das Ergebnis lässt sich eventuell noch vereinfachen.</remarks>
+		public static BigRational operator +(BigInteger scalar, BigRational br)
         {
             return br + scalar;
         }
