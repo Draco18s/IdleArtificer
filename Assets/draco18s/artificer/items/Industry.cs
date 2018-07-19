@@ -120,7 +120,7 @@ namespace Assets.draco18s.artificer.items {
 		}
 
 		public virtual BigRational GetScaledCost(int n) {
-			Profiler.BeginSample("Recalc");
+			UnityEngine.Profiling.Profiler.BeginSample("Recalc");
 			if(level == lastLevel && n == lastN) {
 				return lastTotal;
 			}
@@ -129,14 +129,14 @@ namespace Assets.draco18s.artificer.items {
 				lastLevel = level;
 				powLastLevel = Math.Pow(productType.amount, level);
 			}
-			Profiler.EndSample();
-			Profiler.BeginSample("Return");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Return");
 			BigRational b = (cost * halvesAndDoubles);
 			BigRational dd = new BigRational(productType.amount);
 			dd -= 1;
 			//+0.51?
 			lastTotal = b * ((powLastLevel * ((n == 1 ? pow1 : (n == 10 ? pow10 : (n == 50 ? pow50 : BigRational.Pow(productType.amount, n)))) - 1) / (dd)));
-			Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.EndSample();
 			return lastTotal;
 		}
 

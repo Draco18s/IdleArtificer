@@ -42,7 +42,7 @@ namespace Assets.draco18s.artificer.game {
 		private float autosaveTimer = 0;
 
 		void Start() {
-			Profiler.maxNumberOfSamplesPerFrame = -1;
+			UnityEngine.Profiling.Profiler.maxNumberOfSamplesPerFrame = -1;
 			/*string path = "E:\\Users\\Major\\Desktop\\time_data.csv";
 			if(File.Exists(path)) {
 				File.Delete(path);
@@ -76,15 +76,15 @@ namespace Assets.draco18s.artificer.game {
 			panel.BuildToggle.onValueChanged.AddListener(delegate { CraftingManager.ToggleAutoBuild(); });
 			
 			Button btn;
-			btn = GuiManager.instance.infoPanel.transform.FindChild("Output").GetComponent<Button>();
+			btn = GuiManager.instance.infoPanel.transform.Find("Output").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { CraftingManager.AdvanceTimer(); });
 			btn.OnRightClick(delegate { CraftingManager.AdvanceTimer(); });
 
-			btn = GuiManager.instance.infoPanel.transform.FindChild("SellAll").GetComponent<Button>();
+			btn = GuiManager.instance.infoPanel.transform.Find("SellAll").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { CraftingManager.SellAll(); });
 			//string veryLong = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam pharetra tincidunt mi, sed volutpat est elementum id. Etiam eleifend arcu vitae sem efficitur, ut congue massa ultricies. Ut facilisis, leo id tincidunt viverra, sem metus accumsan neque, ac tristique erat quam id lacus. Vivamus quis augue eros. Maecenas non laoreet ligula. Nunc id tellus consectetur ipsum volutpat convallis nec a arcu. Phasellus fermentum sapien eget porttitor convallis.";
 			btn.AddHover(delegate (Vector3 p) {
-				GuiManager.ShowTooltip(GuiManager.instance.infoPanel.transform.FindChild("SellAll").transform.position + Vector3.right * 45, "Sell all " + AsCurrency(CraftingManager.GetQuantity()) + " " + CraftingManager.GetName() + " for $" + AsCurrency(CraftingManager.SellAllValue()));
+				GuiManager.ShowTooltip(GuiManager.instance.infoPanel.transform.Find("SellAll").transform.position + Vector3.right * 45, "Sell all " + AsCurrency(CraftingManager.GetQuantity()) + " " + CraftingManager.GetName() + " for $" + AsCurrency(CraftingManager.SellAllValue()));
 			});
 
 			GuiManager.instance.craftHeader.transform.Find("MoneyArea").GetComponent<Image>().AddHover(delegate(Vector3 pos) {
@@ -94,23 +94,23 @@ namespace Assets.draco18s.artificer.game {
 			});
 
 			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
-			info.transform.FindChild("Input1").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(1); });
-			info.transform.FindChild("Input2").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(2); });
-			info.transform.FindChild("Input3").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(3); });
+			info.transform.Find("Input1").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(1); });
+			info.transform.Find("Input2").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(2); });
+			info.transform.Find("Input3").GetComponent<Button>().onClick.AddListener(delegate () { CraftingManager.SelectInput(3); });
 			info.UpgradeBtn.onClick.AddListener(delegate { CraftingManager.UpgradeCurrent(); });
 			info.DowngradeBtn.onClick.AddListener(delegate { CraftingManager.DowngradeCurrent(); });
 			info.ConfDowngradeBtn.onClick.AddListener(delegate { CraftingManager.Do_DowngradeCurrent(); });
-			info.VendNum.transform.FindChild("IncVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseVendors(); });
-			info.VendNum.transform.FindChild("DecVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseVendors(); });
-			info.StartVend.transform.FindChild("IncStVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseStartingVendors(); });
-			info.StartVend.transform.FindChild("DecStVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseStartingVendors(); });
-			GuiManager.instance.infoPanel.transform.FindChild("NumAppr").FindChild("IncAppr").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseApprentices(); });
-			GuiManager.instance.infoPanel.transform.FindChild("NumAppr").FindChild("DecAppr").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseApprentices(); });
-			info.BuildNum.transform.FindChild("IncBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseAutoBuild(); });
-			info.BuildNum.transform.FindChild("DecBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseAutoBuild(); });
+			info.VendNum.transform.Find("IncVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseVendors(); });
+			info.VendNum.transform.Find("DecVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseVendors(); });
+			info.StartVend.transform.Find("IncStVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseStartingVendors(); });
+			info.StartVend.transform.Find("DecStVend").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseStartingVendors(); });
+			GuiManager.instance.infoPanel.transform.Find("NumAppr").Find("IncAppr").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseApprentices(); });
+			GuiManager.instance.infoPanel.transform.Find("NumAppr").Find("DecAppr").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseApprentices(); });
+			info.BuildNum.transform.Find("IncBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseAutoBuild(); });
+			info.BuildNum.transform.Find("DecBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseAutoBuild(); });
 			info.VendText.transform.GetChild(0).GetComponent<Button>().AddHover(delegate (Vector3 p) { GuiManager.ShowTooltip(info.VendText.transform.position + Vector3.right * 45, "Your vendors currently sell " + AsCurrency(CraftingManager.NumberSoldByVendors()) + " units per cycle.\nConsidering the Vendor Effectiveness multiplier, you'll earn $" + AsCurrency(CraftingManager.ValueSoldByVendors()) + " per cycle.", 1.61f); }, false);
-			info.MagnitudeNum.transform.FindChild("IncBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseBuildMagnitude(); });
-			info.MagnitudeNum.transform.FindChild("DecBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseBuildMagnitude(); });
+			info.MagnitudeNum.transform.Find("IncBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.IncreaseBuildMagnitude(); });
+			info.MagnitudeNum.transform.Find("DecBuild").GetComponent<Button>().onClick.AddListener(delegate { CraftingManager.DecreaseBuildMagnitude(); });
 
 			GuiManager.instance.craftTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.craftTab, GuiManager.instance.craftArea, GuiManager.instance.craftHeader); });
 			GuiManager.instance.enchantTab.GetComponent<Button>().onClick.AddListener(delegate { switchTabImage(GuiManager.instance.enchantTab, GuiManager.instance.enchantArea, GuiManager.instance.enchantHeader); });
@@ -126,7 +126,7 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.researchArea.GetComponent<Canvas>().enabled = false;
 			GuiManager.instance.achievementsArea.GetComponent<Canvas>().enabled = false;
 
-			btn = GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").GetComponent<Button>();
+			btn = GuiManager.instance.craftHeader.transform.Find("ResetBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { player.reset(); });
 			btn.AddHover(delegate (Vector3 p) {
 				/*BigInteger spentRenown = Main.instance.player.totalRenown - Main.instance.player.renown;
@@ -134,30 +134,30 @@ namespace Assets.draco18s.artificer.game {
 				totalRenown /= 10000;
 				BigInteger renown = totalRenown - spentRenown + Main.instance.player.questsCompleted;*/
 				BigInteger renown = getCachedNewRenown() + Main.instance.player.questsCompletedRenown;
-				GuiManager.ShowTooltip(GuiManager.instance.craftHeader.transform.FindChild("ResetBtn").transform.position, "You will gain " + Main.AsCurrency(renown) + " Renown if you reset now.", 2.5f);
+				GuiManager.ShowTooltip(GuiManager.instance.craftHeader.transform.Find("ResetBtn").transform.position, "You will gain " + Main.AsCurrency(renown) + " Renown if you reset now.", 2.5f);
 			});
-			btn = GuiManager.instance.craftHeader.transform.FindChild("SyncBtn").GetComponent<Button>();
+			btn = GuiManager.instance.craftHeader.transform.Find("SyncBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { CraftingManager.SynchronizeInustries(); });
 			btn.AddHover(delegate (Vector3 p) {
 				GuiManager.ShowTooltip(btn.transform.position+Vector3.right*50, "Automatically synchronize the build timers.",3);
 			}, false);
-			GuiManager.instance.craftHeader.transform.FindChild("RecallBtn").GetComponent<Button>().onClick.AddListener(delegate {
+			GuiManager.instance.craftHeader.transform.Find("RecallBtn").GetComponent<Button>().onClick.AddListener(delegate {
 				foreach(Industry ind in instance.player.builtItems) {
 					ind.SetRawVendors(0);
 				}
 				instance.player.currentVendors = 0;
 			});
-			Toggle tog = GuiManager.instance.craftHeader.transform.FindChild("AutoToggle").GetComponent<Toggle>();
+			Toggle tog = GuiManager.instance.craftHeader.transform.Find("AutoToggle").GetComponent<Toggle>();
 			tog.onValueChanged.AddListener(delegate { debugAutoBuild = !debugAutoBuild; });
 			tog.AddHover(delegate (Vector3 pos) {
 				GuiManager.ShowTooltip(tog.transform.position + Vector3.right * 50, "Builds industries in order of best cost:benefit ratio, up to the specified autobuild limits.", 3);
 			}, false);
 
-			GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyVendor(); });
-			GuiManager.instance.buyApprenticesArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyApprentice(); });
-			GuiManager.instance.buyJourneymenArea.transform.FindChild("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyJourneyman(); });
+			GuiManager.instance.buyVendorsArea.transform.Find("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyVendor(); });
+			GuiManager.instance.buyApprenticesArea.transform.Find("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyApprentice(); });
+			GuiManager.instance.buyJourneymenArea.transform.Find("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyJourneyman(); });
 			
-			GuiManager.instance.topPanel.transform.FindChild("SaveBtn").GetComponent<Button>().onClick.AddListener(delegate {
+			GuiManager.instance.topPanel.transform.Find("SaveBtn").GetComponent<Button>().onClick.AddListener(delegate {
 				if(Application.platform == RuntimePlatform.WebGLPlayer) {
 					DataAccess.Save(player);
 				}
@@ -422,23 +422,23 @@ namespace Assets.draco18s.artificer.game {
 				autoClickTime -= 1;
 			}
 
-			Profiler.BeginSample("Quest Manager");
+			UnityEngine.Profiling.Profiler.BeginSample("Quest Manager");
 			QuestManager.tickAllQuests(deltaTime);
 			QuestManager.updateLists();
-			Profiler.EndSample();
-			Profiler.BeginSample("Enchant Manager");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Enchant Manager");
 			EnchantingManager.update();
-			Profiler.EndSample();
-			Profiler.BeginSample("Guild Manager");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Guild Manager");
 			GuildManager.update();
-			Profiler.EndSample();
-			Profiler.BeginSample("Research Manager");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Research Manager");
 			ResearchManager.update(deltaTime);
-			Profiler.EndSample();
-			Profiler.BeginSample("Achievements Manager");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Achievements Manager");
 			AchievementsManager.update();
-			Profiler.EndSample();
-			Profiler.BeginSample("Tick Built Items");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Tick Built Items");
 			bool needSynchro = false;
 			
 			float industryTime = deltaTime * Main.instance.player.currentGuildmaster.industryRateMultiplier();
@@ -480,7 +480,7 @@ namespace Assets.draco18s.artificer.game {
 				}
 				//if(i.guiObj != null) {
 				/**/
-				Image img = i.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Progress").GetComponent<Image>();
+				Image img = i.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Progress").GetComponent<Image>();
 				img.material.SetFloat("_Cutoff", ((i.getTimeRemaining() >= 0 ? i.getTimeRemaining() : 10) / 10f));
 				img.material.SetColor("_Color", i.productType.color);
 				//}
@@ -489,10 +489,10 @@ namespace Assets.draco18s.artificer.game {
 			//Debug.Log(needSynchro);
 			if(!needSynchro && CraftingManager.doSynchronize) {
 				CraftingManager.doSynchronize = false;
-				GuiManager.instance.craftHeader.transform.FindChild("SyncBtn").GetComponent<Button>().interactable = true;
+				GuiManager.instance.craftHeader.transform.Find("SyncBtn").GetComponent<Button>().interactable = true;
 			}
-			Profiler.EndSample();
-			Profiler.BeginSample("Sell Items");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Sell Items");
 			player.clearCache();
 			BigInteger maxSell;
 			BigInteger quant;
@@ -519,17 +519,17 @@ namespace Assets.draco18s.artificer.game {
 					} while(i.didComplete > 0);
 				}
 			}
-			Profiler.EndSample();
-			Profiler.BeginSample("Crafting Update");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Crafting Update");
 			CraftingManager.update();
-			Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.EndSample();
 			if(Input.GetMouseButton(0)) {
 				mouseDownTime += Time.deltaTime;
 			}
 			else {
 				mouseDownTime = 0;
 			}
-			Profiler.BeginSample("Autobuild");
+			UnityEngine.Profiling.Profiler.BeginSample("Autobuild");
 			if(debugAutoBuild) {
 				autoBuildTimer += Time.deltaTime;
 				if(autoBuildTimer > 5) {
@@ -561,7 +561,7 @@ namespace Assets.draco18s.artificer.game {
 				mat.SetFloat("_Cutoff", 1);
 				GuiManager.instance.autoBuildTarget.SetActive(false);
 			}
-			Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.EndSample();
 			if(Mathf.FloorToInt(Time.time * 10) % 20 == 0) {
 				foreach(Industry item in player.builtItems) {
 					item.consumeAmount = 0;

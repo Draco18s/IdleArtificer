@@ -77,7 +77,7 @@ public class GuiManager : MonoBehaviour {
 		((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 160);
 		((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 64);
 		instance.tooltip.transform.position = pos;
-		Text textArea = instance.tooltip.transform.FindChild("Text").GetComponent<Text>();
+		Text textArea = instance.tooltip.transform.Find("Text").GetComponent<Text>();
 		textArea.text = v;
 		//width + 7.5
 		//height + 6
@@ -133,9 +133,9 @@ public class GuiManager : MonoBehaviour {
 		if(!DOTween.IsTweening(notification.transform) && notificationQueue.Count > 0) {
 			NotificationItem item = notificationQueue[0];
 			notificationQueue.RemoveAt(0);
-			notification.transform.FindChild("Title").GetComponent<Text>().text = item.title;
-			notification.transform.FindChild("Text").GetComponent<Text>().text = item.text;
-			notification.transform.FindChild("Img").GetComponent<Image>().sprite = item.image;
+			notification.transform.Find("Title").GetComponent<Text>().text = item.title;
+			notification.transform.Find("Text").GetComponent<Text>().text = item.text;
+			notification.transform.Find("Img").GetComponent<Image>().sprite = item.image;
 
 			notification.transform.DOMoveY(Screen.height - 85, 0.5f, false).SetEase(Ease.InOutQuad).OnComplete(PauseCallback);
 		}

@@ -48,9 +48,9 @@ namespace Assets.draco18s.artificer.game {
 		private static Master[] availableMasters = new Master[3];
 
 		public static void OneTimeSetup() {
-			moneyDisp = GuiManager.instance.guildHeader.transform.FindChild("MoneyArea").GetChild(0).GetComponent<Text>();
-			renownDisp = GuiManager.instance.guildHeader.transform.FindChild("GuildRenownArea").GetChild(0).GetComponent<Text>();
-			Transform t = GuiManager.instance.guildHeader.transform.FindChild("RenownOnReset");
+			moneyDisp = GuiManager.instance.guildHeader.transform.Find("MoneyArea").GetChild(0).GetComponent<Text>();
+			renownDisp = GuiManager.instance.guildHeader.transform.Find("GuildRenownArea").GetChild(0).GetComponent<Text>();
+			Transform t = GuiManager.instance.guildHeader.transform.Find("RenownOnReset");
 			newRenownDisp = t.GetChild(0).GetComponent<Text>();
 			t.GetComponent<Button>().AddHover(delegate (Vector3 p) {
 				/*BigInteger spentRenown = Main.instance.player.totalRenown - Main.instance.player.renown;
@@ -61,27 +61,27 @@ namespace Assets.draco18s.artificer.game {
 
 				GuiManager.ShowTooltip(p, "Renown from cash earned: " + Main.AsCurrency(renown) + RENOWN_SYMBOL + "\nRenown from completed quests: " + Main.AsCurrency(Main.instance.player.questsCompletedRenown) + RENOWN_SYMBOL, 5f);
 			});
-			skillDisp = GuiManager.instance.guildHeader.transform.FindChild("SkillPts").GetChild(0).GetComponent<Text>();
-			cashList = GuiManager.instance.guildArea.transform.FindChild("CashUpgrades").GetChild(0).GetChild(0);
-			renownList = GuiManager.instance.guildArea.transform.FindChild("RenownUpgrades").GetChild(0).GetChild(0);
-			Transform tr = GuiManager.instance.guildArea.transform.FindChild("PremiumOpenAera");
+			skillDisp = GuiManager.instance.guildHeader.transform.Find("SkillPts").GetChild(0).GetComponent<Text>();
+			cashList = GuiManager.instance.guildArea.transform.Find("CashUpgrades").GetChild(0).GetChild(0);
+			renownList = GuiManager.instance.guildArea.transform.Find("RenownUpgrades").GetChild(0).GetChild(0);
+			Transform tr = GuiManager.instance.guildArea.transform.Find("PremiumOpenAera");
 			tr.gameObject.AddComponent<Button>().onClick.AddListener(delegate { HidePremium(); });
 			premiumList = tr.GetChild(0).GetChild(1).GetChild(0).GetChild(0);
-			GuiManager.instance.guildArea.transform.FindChild("PremiumBtn").GetComponent<Button>().onClick.AddListener(delegate { ShowPremium(); });
-			buyVendTxt = GuiManager.instance.buyVendorsArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
-			buyAppTxt = GuiManager.instance.buyApprenticesArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
-			buyJourTxt = GuiManager.instance.buyJourneymenArea.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>();
+			GuiManager.instance.guildArea.transform.Find("PremiumBtn").GetComponent<Button>().onClick.AddListener(delegate { ShowPremium(); });
+			buyVendTxt = GuiManager.instance.buyVendorsArea.transform.Find("BuyOne").GetChild(0).GetComponent<Text>();
+			buyAppTxt = GuiManager.instance.buyApprenticesArea.transform.Find("BuyOne").GetChild(0).GetComponent<Text>();
+			buyJourTxt = GuiManager.instance.buyJourneymenArea.transform.Find("BuyOne").GetChild(0).GetComponent<Text>();
 
-			numVend1 = GuiManager.instance.buyVendorsArea.transform.FindChild("OwnedTxt").GetComponent<Text>();
-			numVend2 = GuiManager.instance.buyVendorsArea.transform.FindChild("AvailableTxt").GetComponent<Text>();
-			numApp1 = GuiManager.instance.buyApprenticesArea.transform.FindChild("OwnedTxt").GetComponent<Text>();
-			numApp2 = GuiManager.instance.buyApprenticesArea.transform.FindChild("AvailableTxt").GetComponent<Text>();
-			numJour1 = GuiManager.instance.buyJourneymenArea.transform.FindChild("OwnedTxt").GetComponent<Text>();
+			numVend1 = GuiManager.instance.buyVendorsArea.transform.Find("OwnedTxt").GetComponent<Text>();
+			numVend2 = GuiManager.instance.buyVendorsArea.transform.Find("AvailableTxt").GetComponent<Text>();
+			numApp1 = GuiManager.instance.buyApprenticesArea.transform.Find("OwnedTxt").GetComponent<Text>();
+			numApp2 = GuiManager.instance.buyApprenticesArea.transform.Find("AvailableTxt").GetComponent<Text>();
+			numJour1 = GuiManager.instance.buyJourneymenArea.transform.Find("OwnedTxt").GetComponent<Text>();
 			//numJour2 = GuiManager.instance.buyJourneymenArea.transform.FindChild("AvailableTxt").GetComponent<Text>();
 
-			vendeffTxt = GuiManager.instance.buyVendorsArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Mathf.RoundToInt(Main.instance.player.GetVendorValue()*100) + "%";
-			appeffTxt = GuiManager.instance.buyApprenticesArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Main.instance.GetClickRate() + "sec / sec";
-			joureffTxt = GuiManager.instance.buyJourneymenArea.transform.FindChild("EffectivenessTxt").GetComponent<Text>();//.text = Main.instance.GetClickRate() + "sec / sec";
+			vendeffTxt = GuiManager.instance.buyVendorsArea.transform.Find("EffectivenessTxt").GetComponent<Text>();//.text = Mathf.RoundToInt(Main.instance.player.GetVendorValue()*100) + "%";
+			appeffTxt = GuiManager.instance.buyApprenticesArea.transform.Find("EffectivenessTxt").GetComponent<Text>();//.text = Main.instance.GetClickRate() + "sec / sec";
+			joureffTxt = GuiManager.instance.buyJourneymenArea.transform.Find("EffectivenessTxt").GetComponent<Text>();//.text = Main.instance.GetClickRate() + "sec / sec";
 
 			int i = 0;
 			List<Upgrade> upgrades = Upgrades.AllCashUps;
@@ -93,9 +93,9 @@ namespace Assets.draco18s.artificer.game {
 				it.name = item.displayName;
 				it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
-				it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
-				it.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.cost);
-				it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
+				it.transform.Find("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
+				it.transform.Find("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.cost);
+				it.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
 				Upgrade _item = item;
 				Button btn = it.GetComponent<Button>();
 				btn.onClick.AddListener(delegate { buyUpgrade(_item); });
@@ -120,9 +120,9 @@ namespace Assets.draco18s.artificer.game {
 				it.name = item.displayName;
 				it.transform.localPosition = new Vector3(6, i * -100 - 5, 0);
 
-				it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
-				it.transform.FindChild("Cost").GetComponent<Text>().text = Main.AsCurrency(item.cost) + RENOWN_SYMBOL;
-				it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
+				it.transform.Find("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
+				it.transform.Find("Cost").GetComponent<Text>().text = Main.AsCurrency(item.cost) + RENOWN_SYMBOL;
+				it.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
 				Upgrade _item = item;
 				Button btn = it.GetComponent<Button>();
 				btn.onClick.AddListener(delegate { buyUpgradeRenown(_item); });
@@ -139,7 +139,7 @@ namespace Assets.draco18s.artificer.game {
 
 			lastMoney = Main.instance.player.money;
 
-			Button btn2 = GuiManager.instance.guildmasterArea.transform.FindChild("BuyOne").GetComponent<Button>();
+			Button btn2 = GuiManager.instance.guildmasterArea.transform.Find("BuyOne").GetComponent<Button>();
 			btn2.onClick.AddListener(delegate {
 				if(Main.instance.player.totalRenown >= 100000)
 					NewGuildmaster();
@@ -156,7 +156,7 @@ namespace Assets.draco18s.artificer.game {
 			availableMasters[2] = Master.createRandomMaster(pts);
 
 			for(int j = 1; j < availableMasters.Length+1; j++) {
-				Transform gmb = GuiManager.instance.resetGuildWindow.transform.GetChild(1).FindChild("Guildmaster" + j);
+				Transform gmb = GuiManager.instance.resetGuildWindow.transform.GetChild(1).Find("Guildmaster" + j);
 				int q = j-1;
 				gmb.GetComponent<Button>().onClick.AddListener(delegate { electGuildmaster(availableMasters[q]); });
 			}
@@ -171,10 +171,10 @@ namespace Assets.draco18s.artificer.game {
 				go.transform.localPosition = new Vector3(5, i * -110 -5, 5);
 				((RectTransform)go.transform).anchorMax = new Vector2(1,1);
 				((RectTransform)go.transform).offsetMax = new Vector2(-3, ((RectTransform)go.transform).offsetMax.y);
-				go.transform.FindChild("Name").GetComponent<Text>().text = Localization.translateToLocal(sk.name);
-				go.transform.FindChild("Description").GetComponent<Text>().text = string.Format(Localization.translateToLocal(sk.description), sk.getMultiplierForDisplay());
-				go.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
-				Transform t1 = go.transform.FindChild("BuyOne");
+				go.transform.Find("Name").GetComponent<Text>().text = Localization.translateToLocal(sk.name);
+				go.transform.Find("Description").GetComponent<Text>().text = string.Format(Localization.translateToLocal(sk.description), sk.getMultiplierForDisplay());
+				go.transform.Find("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
+				Transform t1 = go.transform.Find("BuyOne");
 				t1.GetComponent<Button>().onClick.AddListener(delegate {
 					doBuySkill(sk);
 				});
@@ -183,8 +183,8 @@ namespace Assets.draco18s.artificer.game {
 			}
 			((RectTransform)skillListParent).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 110 + 10));
 			renownList.localPosition = Vector3.zero;
-			GuiManager.instance.resetGuildWindow.transform.GetChild(1).FindChild("CloseBtn").GetComponent<Button>().onClick.AddListener(closeNewGuildmaster);
-			GuiManager.instance.resetGuildWindow.transform.GetChild(1).FindChild("CurrentMaster").GetComponent<Button>().onClick.AddListener(closeNewGuildmaster);
+			GuiManager.instance.resetGuildWindow.transform.GetChild(1).Find("CloseBtn").GetComponent<Button>().onClick.AddListener(closeNewGuildmaster);
+			GuiManager.instance.resetGuildWindow.transform.GetChild(1).Find("CurrentMaster").GetComponent<Button>().onClick.AddListener(closeNewGuildmaster);
 		}
 
 		private static bool hasBeenSetup = false;
@@ -203,11 +203,11 @@ namespace Assets.draco18s.artificer.game {
 				go.transform.localPosition = new Vector3(5, i * -110 - 5, 5);
 				((RectTransform)go.transform).anchorMax = new Vector2(1, 1);
 				((RectTransform)go.transform).offsetMax = new Vector2(-3, ((RectTransform)go.transform).offsetMax.y);
-				go.transform.FindChild("Name").GetComponent<Text>().text = item.displayName;
-				go.transform.FindChild("Description").GetComponent<Text>().text = Localization.translateToLocal("premium." + item.displayName + ".desc");
-				go.transform.FindChild("Ranks").GetComponent<Text>().text = "";
-				go.transform.FindChild("Label").GetComponent<Text>().text = (item.getIsPurchased() ? "Purchased!" : "");
-				Transform t1 = go.transform.FindChild("BuyOne");
+				go.transform.Find("Name").GetComponent<Text>().text = item.displayName;
+				go.transform.Find("Description").GetComponent<Text>().text = Localization.translateToLocal("premium." + item.displayName + ".desc");
+				go.transform.Find("Ranks").GetComponent<Text>().text = "";
+				go.transform.Find("Label").GetComponent<Text>().text = (item.getIsPurchased() ? "Purchased!" : "");
+				Transform t1 = go.transform.Find("BuyOne");
 				if(enabled) {
 					t1.GetComponent<Button>().onClick.AddListener(delegate {
 						doBuyPremium(item);
@@ -232,15 +232,15 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void showPremiumError() {
-			GuiManager.instance.guildArea.transform.FindChild("PremiumOpenAera/PurchaseError").gameObject.SetActive(true);
+			GuiManager.instance.guildArea.transform.Find("PremiumOpenAera/PurchaseError").gameObject.SetActive(true);
 		}
 
 		private static void doBuySkill(Skill sk) {
 			if((BigInteger)sk.getCost(1) <= Main.instance.player.skillPoints) {
 				Main.instance.player.skillPoints -= (BigInteger)sk.getCost(1);
 				sk.increaseRank(1);
-				sk.guiItem.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
-				sk.guiItem.transform.FindChild("BuyOne").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(sk.getCost(1)) + " pts";
+				sk.guiItem.transform.Find("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
+				sk.guiItem.transform.Find("BuyOne").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(sk.getCost(1)) + " pts";
 				skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
 			}
 		}
@@ -357,14 +357,14 @@ namespace Assets.draco18s.artificer.game {
 			availableMasters[1] = Master.createRandomMaster(pts);
 			availableMasters[2] = Master.createRandomMaster(pts);
 
-			GuiManager.instance.guildmasterArea.transform.FindChild("OwnedTxt").GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
+			GuiManager.instance.guildmasterArea.transform.Find("OwnedTxt").GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
 			if(!StatisticsTracker.firstGuildmaster.isAchieved()) {
 				StatisticsTracker.firstGuildmaster.setAchieved();
 				StatisticsTracker.maxQuestDifficulty.addValue(2);
 				StatisticsTracker.minQuestDifficulty.addValue(1);
 			}
 			closeNewGuildmaster();
-			GuiManager.instance.guildArea.transform.FindChild("SkillPanel").FindChild("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
+			GuiManager.instance.guildArea.transform.Find("SkillPanel").Find("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.transform.parent.gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
 			StatisticsTracker.guildmastersElected.addValue(1);
@@ -373,17 +373,17 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void setupUI() {
 			hasListChanged = true;
-			Transform gmb = GuiManager.instance.resetGuildWindow.transform.GetChild(1).FindChild("CurrentMaster");
+			Transform gmb = GuiManager.instance.resetGuildWindow.transform.GetChild(1).Find("CurrentMaster");
 			gmb.GetChild(0).GetComponent<Text>().text = "";
 			gmb.GetChild(1).GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
 			for(int i = 0; i < availableMasters.Length; i++) {
-				gmb = GuiManager.instance.resetGuildWindow.transform.GetChild(1).FindChild("Guildmaster" + (i+1));
+				gmb = GuiManager.instance.resetGuildWindow.transform.GetChild(1).Find("Guildmaster" + (i+1));
 				gmb.GetChild(0).GetComponent<Text>().text = "";
 				gmb.GetChild(1).GetComponent<Text>().text = availableMasters[i].getDisplay();
 			}
-			GuiManager.instance.guildmasterArea.transform.FindChild("BuyOne").GetComponent<Button>().interactable = Main.instance.player.totalRenown >= 100000;
-			GuiManager.instance.guildmasterArea.transform.FindChild("OwnedTxt").GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
-			GuiManager.instance.guildArea.transform.FindChild("SkillPanel").FindChild("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
+			GuiManager.instance.guildmasterArea.transform.Find("BuyOne").GetComponent<Button>().interactable = Main.instance.player.totalRenown >= 100000;
+			GuiManager.instance.guildmasterArea.transform.Find("OwnedTxt").GetComponent<Text>().text = Main.instance.player.currentGuildmaster.getDisplay();
+			GuiManager.instance.guildArea.transform.Find("SkillPanel").Find("Skills").gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.transform.parent.gameObject.SetActive(Main.instance.player.totalSkillPoints > 0);
 			skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
 
@@ -392,13 +392,13 @@ namespace Assets.draco18s.artificer.game {
 			while(list.MoveNext()) {
 				Skill sk = list.Current;
 				GameObject go = sk.guiItem;
-				go.transform.FindChild("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
+				go.transform.Find("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
 			}
 			if(hasBeenSetup) {
 				List<Upgrade> upgrades = PremiumUpgrades.AllPremiumUps;
 				foreach(Upgrade item in upgrades) {
-					Transform t1 = item.upgradListGui.transform.FindChild("BuyOne");
-					item.upgradListGui.transform.FindChild("Label").GetComponent<Text>().text = (item.getIsPurchased() ? "Purchased!" : "");
+					Transform t1 = item.upgradListGui.transform.Find("BuyOne");
+					item.upgradListGui.transform.Find("Label").GetComponent<Text>().text = (item.getIsPurchased() ? "Purchased!" : "");
 					t1.gameObject.SetActive(!item.getIsPurchased());
 				}
 			}
@@ -468,9 +468,9 @@ namespace Assets.draco18s.artificer.game {
 							GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM, cashList) as GameObject;
 							item.upgradListGui = it;
 							it.name = item.displayName;
-							it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
-							it.transform.FindChild("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.cost);
-							it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
+							it.transform.Find("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
+							it.transform.Find("Cost").GetComponent<Text>().text = "$" + Main.AsCurrency(item.cost);
+							it.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
 							Upgrade _item = item;
 							Button btn = it.GetComponent<Button>();
 							btn.onClick.AddListener(delegate { buyUpgrade(_item); });
@@ -519,9 +519,9 @@ namespace Assets.draco18s.artificer.game {
 							GameObject it = Main.Instantiate(PrefabManager.instance.UPGRADE_GUI_LISTITEM,renownList) as GameObject;
 							item.upgradListGui = it;
 							it.name = item.displayName;
-							it.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
-							it.transform.FindChild("Cost").GetComponent<Text>().text = Main.AsCurrency(item.cost) + RENOWN_SYMBOL;
-							it.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
+							it.transform.Find("Title").GetComponent<Text>().text = Main.ToTitleCase(item.displayName);
+							it.transform.Find("Cost").GetComponent<Text>().text = Main.AsCurrency(item.cost) + RENOWN_SYMBOL;
+							it.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + item.getIconName());
 							Upgrade _item = item;
 							Button btn = it.GetComponent<Button>();
 							btn.onClick.AddListener(delegate { buyUpgradeRenown(_item); });
@@ -661,11 +661,11 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void ShowPremium() {
-			GuiManager.instance.guildArea.transform.FindChild("PremiumOpenAera").gameObject.SetActive(true);
+			GuiManager.instance.guildArea.transform.Find("PremiumOpenAera").gameObject.SetActive(true);
 		}
 
 		private static void HidePremium() {
-			GuiManager.instance.guildArea.transform.FindChild("PremiumOpenAera").gameObject.SetActive(false);
+			GuiManager.instance.guildArea.transform.Find("PremiumOpenAera").gameObject.SetActive(false);
 		}
 
 		public static void writeSaveData(ref SerializationInfo info, ref StreamingContext context) {

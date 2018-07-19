@@ -32,16 +32,16 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void OneTimeSetup() {
 			Transform trans = GuiManager.instance.researchArea.transform;
-			relicList = trans.FindChild("RelicsList").GetChild(0).GetChild(0);
+			relicList = trans.Find("RelicsList").GetChild(0).GetChild(0);
 			relicList.transform.hierarchyCapacity = 200 * 20;
-			progressBarMat = trans.FindChild("Research").FindChild("RelicProgress").GetComponent<Image>().material;
-			trans.FindChild("Research").FindChild("Barbg").GetComponent<Button>().onClick.AddListener(delegate { IncrementResearch(); });
-			timeLeftTxt = trans.FindChild("Research").FindChild("TimeLeft").GetComponent<Text>();
-			relicsLeftTxt = trans.FindChild("Research").FindChild("NumUnidentified").GetComponent<Text>();
+			progressBarMat = trans.Find("Research").Find("RelicProgress").GetComponent<Image>().material;
+			trans.Find("Research").Find("Barbg").GetComponent<Button>().onClick.AddListener(delegate { IncrementResearch(); });
+			timeLeftTxt = trans.Find("Research").Find("TimeLeft").GetComponent<Text>();
+			relicsLeftTxt = trans.Find("Research").Find("NumUnidentified").GetComponent<Text>();
 
-			relicInfo = trans.FindChild("RelicInfoOpen").GetChild(0);
-			relicInfo.FindChild("CloseBtn").GetComponent<Button>().onClick.AddListener(delegate { CloseInfo(); });
-			Button btn = relicInfo.FindChild("SellBtn").GetComponent<Button>();
+			relicInfo = trans.Find("RelicInfoOpen").GetChild(0);
+			relicInfo.Find("CloseBtn").GetComponent<Button>().onClick.AddListener(delegate { CloseInfo(); });
+			Button btn = relicInfo.Find("SellBtn").GetComponent<Button>();
 			btn.onClick.AddListener(delegate { SellItem(); });
 			btn.AddHover(delegate (Vector3 p) {
 				if(examinedStack != null) {
@@ -49,18 +49,18 @@ namespace Assets.draco18s.artificer.game {
 					GuiManager.ShowTooltip(btn.transform.position + Vector3.up * 30,"Sell for $" + Main.AsCurrency(val));
 				}
 			}, false);
-			Button btn2 = relicInfo.FindChild("DiscardBtn").GetComponent<Button>();
+			Button btn2 = relicInfo.Find("DiscardBtn").GetComponent<Button>();
 			btn2.onClick.AddListener(delegate { DiscardItem(); });
 			btn2.AddHover(delegate (Vector3 p) {
 				if(examinedStack != null) {
 					GuiManager.ShowTooltip(btn2.transform.position + Vector3.up * 30, "Discard this artifact back to the unidentified pile.", 3);
 				}
 			}, false);
-			moneyDisp = GuiManager.instance.researchHeader.transform.FindChild("MoneyArea").GetChild(0).GetComponent<Text>();
-			relicInfoText = relicInfo.FindChild("Info Scroll View").GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>();
+			moneyDisp = GuiManager.instance.researchHeader.transform.Find("MoneyArea").GetChild(0).GetComponent<Text>();
+			relicInfoText = relicInfo.Find("Info Scroll View").GetChild(0).GetChild(0).GetChild(0).GetComponent<Text>();
 			for(int r = 1; r <= 20; r++) {
 				int rr = r;
-				Image igm = relicInfo.transform.FindChild("Req" + r).GetComponent<Image>();
+				Image igm = relicInfo.transform.Find("Req" + r).GetComponent<Image>();
 				igm.AddHover(delegate (Vector3 p) {
 					GuiManager.ShowTooltip(igm.transform.position + Vector3.up * 20, displayReqDetails(rr));
 				},false);
@@ -115,9 +115,9 @@ namespace Assets.draco18s.artificer.game {
 					}
 					go.transform.localPosition = new Vector3((i % X) * 98 + 5, ((i / X) * -125) - 5, 0);
 					//Debug.Log(go.transform.parent.name + ":" + go.transform.localPosition);
-					Text tx = go.transform.FindChild("Title").GetComponent<Text>();
+					Text tx = go.transform.Find("Title").GetComponent<Text>();
 					tx.text = Main.ToTitleCase(stack.getDisplayName());
-					go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
+					go.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
 					//go.transform.FindChild("Quantity").GetComponent<Text>().text = "";
 					ItemStack s = stack;
 					Button btn = go.GetComponent<Button>();
@@ -163,10 +163,10 @@ namespace Assets.draco18s.artificer.game {
 							if(ty == 0) abort = true;
 						}
 						if(abort) {
-							go.transform.FindChild("Req" + r).gameObject.SetActive(false);
+							go.transform.Find("Req" + r).gameObject.SetActive(false);
 						}
 						else {
-							go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
+							go.transform.Find("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 							ty = ty >> 1;
 							ty = ty << 1;
 						}
@@ -232,8 +232,8 @@ namespace Assets.draco18s.artificer.game {
 		private static void ShowInfo(ItemStack stack) {
 			relicInfo.parent.gameObject.SetActive(true);
 			examinedStack = stack;
-			relicInfo.FindChild("Title").GetComponent<Text>().text = examinedStack.getDisplayName();
-			relicInfo.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + examinedStack.item.name);
+			relicInfo.Find("Title").GetComponent<Text>().text = examinedStack.getDisplayName();
+			relicInfo.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + examinedStack.item.name);
 			relicInfoText.text = "";
 			int req_num = 1;
 			long ty = (long)stack.getAllReqs();
@@ -246,11 +246,11 @@ namespace Assets.draco18s.artificer.game {
 					if(ty == 0) abort = true;
 				}
 				if(abort) {
-					relicInfo.transform.FindChild("Req" + r).gameObject.SetActive(false);
+					relicInfo.transform.Find("Req" + r).gameObject.SetActive(false);
 				}
 				else {
-					relicInfo.transform.FindChild("Req" + r).gameObject.SetActive(true);
-					relicInfo.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
+					relicInfo.transform.Find("Req" + r).gameObject.SetActive(true);
+					relicInfo.transform.Find("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 					ty = ty >> 1;
 					ty = ty << 1;
 				}

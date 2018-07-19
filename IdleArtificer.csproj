@@ -16,7 +16,7 @@
     <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
-    <UnityVersion>5.4.0f3</UnityVersion>
+    <UnityVersion>2017.1.0p4</UnityVersion>
     <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
@@ -27,8 +27,8 @@
     <IntermediateOutputPath>Temp\UnityVS_obj\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EDITOR_RETINA;ENABLE_RETINA_GUISTYLES;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_WEBGL;UNITY_WEBGL_API;UNITY_DISABLE_WEB_VERIFICATION;ENABLE_TEXTUREID_MAP;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_IL2CPP;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_1_0;UNITY_2017_1;UNITY_2017;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_GENERICS;ENABLE_PVR_GI;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_RUNTIME_NAVMESH_BUILDING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_NATIVE_ARRAY;ENABLE_SPRITE_MASKING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_VIDEO;ENABLE_RMGUI;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_STYLE_SHEETS;PLATFORM_WEBGL;UNITY_WEBGL;UNITY_WEBGL_API;UNITY_DISABLE_WEB_VERIFICATION;UNITY_GFX_USE_PLATFORM_VSYNC;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_VR;ENABLE_IL2CPP;NET_2_0_SUBSET;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_NATIVE_ARRAY_CHECKS;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,8 +37,8 @@
     <IntermediateOutputPath>Temp\UnityVS_obj\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_4_0;UNITY_5_4;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_EDITOR_RETINA;ENABLE_RETINA_GUISTYLES;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_SPRITE_POLYGON;ENABLE_TERRAIN;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_LOCALIZATION;ENABLE_ANDROID_ATLAS_ETC1_COMPRESSION;ENABLE_EDITOR_TESTS_RUNNER;UNITY_WEBGL;UNITY_WEBGL_API;UNITY_DISABLE_WEB_VERIFICATION;ENABLE_TEXTUREID_MAP;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_IL2CPP;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_1_0;UNITY_2017_1;UNITY_2017;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_GENERICS;ENABLE_PVR_GI;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_RUNTIME_NAVMESH_BUILDING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_NATIVE_ARRAY;ENABLE_SPRITE_MASKING;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_VIDEO;ENABLE_RMGUI;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_STYLE_SHEETS;PLATFORM_WEBGL;UNITY_WEBGL;UNITY_WEBGL_API;UNITY_DISABLE_WEB_VERIFICATION;UNITY_GFX_USE_PLATFORM_VSYNC;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_VR;ENABLE_IL2CPP;NET_2_0_SUBSET;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_NATIVE_ARRAY_CHECKS;UNITY_TEAM_LICENSE;ENABLE_VSTU</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -49,23 +49,38 @@
     <Reference Include="UnityScript.Lang" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="UnityEditor">
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>H:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/Managed/UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>H:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Networking">
-      <HintPath>H:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TestRunner">
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Timeline">
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Analytics">
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.HoloLens">
+      <HintPath>H:/Program Files/Unity 2017.1.0p4/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
     </Reference>
     <Reference Include="DOTween">
       <HintPath>Assets/Demigiant/DOTween/DOTween.dll</HintPath>
     </Reference>
     <Reference Include="DOTween50">
       <HintPath>Assets/Demigiant/DOTween/DOTween50.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor">
-      <HintPath>H:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -75,34 +90,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyName.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyNameSettings.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\CVCNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\Classes.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\FemaleWrapperNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\Gender.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\INameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\LandGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\LastNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\MaleClericFirstNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\MaleRogueFirstNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\MaleWarriorFirstNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\MaleWizardFirstNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\PostfixGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\PostfixWizardGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\PrefixGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\Race.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\RaceNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\IFantasyNameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\NameGenerator.cs" />
-    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Properties\AssemblyInfo.cs" />
-    <Compile Include="Assets\Standalone\Properties\AssemblyInfo.cs" />
     <Compile Include="Assets\draco18s\artificer\game\AchievementsManager.cs" />
     <Compile Include="Assets\draco18s\artificer\game\CraftingManager.cs" />
     <Compile Include="Assets\draco18s\artificer\game\EnchantingManager.cs" />
-    <Compile Include="Assets\draco18s\artificer\game\GuiManager.cs" />
     <Compile Include="Assets\draco18s\artificer\game\GuildManager.cs" />
+    <Compile Include="Assets\draco18s\artificer\game\GuiManager.cs" />
     <Compile Include="Assets\draco18s\artificer\game\Main.cs" />
     <Compile Include="Assets\draco18s\artificer\game\PlayerInfo.cs" />
     <Compile Include="Assets\draco18s\artificer\game\PrefabManager.cs" />
@@ -119,21 +111,74 @@
     <Compile Include="Assets\draco18s\artificer\init\SkillList.cs" />
     <Compile Include="Assets\draco18s\artificer\init\Upgrades.cs" />
     <Compile Include="Assets\draco18s\artificer\items\Enchantment.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentHaste.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentLeech.cs" />
     <Compile Include="Assets\draco18s\artificer\items\Industry.cs" />
     <Compile Include="Assets\draco18s\artificer\items\IndustryInput.cs" />
     <Compile Include="Assets\draco18s\artificer\items\Item.cs" />
-    <Compile Include="Assets\draco18s\artificer\items\ItemStack.cs" />
-    <Compile Include="Assets\draco18s\artificer\items\RelicInfo.cs" />
-    <Compile Include="Assets\draco18s\artificer\items\Scalar.cs" />
-    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentHaste.cs" />
-    <Compile Include="Assets\draco18s\artificer\items\enchants\EnchantmentLeech.cs" />
     <Compile Include="Assets\draco18s\artificer\items\item\ItemGoods.cs" />
     <Compile Include="Assets\draco18s\artificer\items\item\ItemPowerStone.cs" />
     <Compile Include="Assets\draco18s\artificer\items\item\ItemScepter.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\ItemStack.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\RelicInfo.cs" />
+    <Compile Include="Assets\draco18s\artificer\items\Scalar.cs" />
     <Compile Include="Assets\draco18s\artificer\masters\Master.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\DamageType.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\EnumResult.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\Quest.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\Captialists.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\CursedWood.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\DragonDispute.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\IDeepGoal.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\NoDeepGoal.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\SpiritUprising.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\WarPreparations.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalArcheryContest.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBeheadHydra.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBuildAlchemyLab.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBuildHome.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCapitalists.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCleansCorruption.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalClearBackWoods.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalClearRatInfestation.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCombatTraining.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDefendVillage.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDelivery.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEngageInWar.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEquipArmy.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEvilBard.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreCave.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb_Mummy.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb_Skeletons.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFallenHero.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindAtlantis.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindCows.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindMcGuffin.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFreeSlaves.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalGuardTemple.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalHeartTree.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalHuntSpirits.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalInfiltrateCastle.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillDragon.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillKraken.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillLitch.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalObserveTroopMovements.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPatrolDuty.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPetitionTheDuke.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPlantGarden.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalReachSummit.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRecruitAllies.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRepairDam.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRescueCaptured.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRunForOffice.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSettleTown.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSkeletons.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSlayGorgon.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSowChaos.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSphynxRiddles.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalTargetPractice.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalUpgradeTown.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalWolves.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IDescriptorData.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IQuestGoal.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\IMonsterChallenge.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\IRelicMaker.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleAmbush.cs" />
@@ -195,63 +240,10 @@
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstacleWilderness.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\ObstcaleStealSupplies.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\challenge\QuestChallenge.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\Captialists.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\CursedWood.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\DragonDispute.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\IDeepGoal.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\NoDeepGoal.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\SpiritUprising.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\DeepGoals\WarPreparations.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalArcheryContest.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBeheadHydra.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBuildAlchemyLab.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalBuildHome.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCapitalists.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCleansCorruption.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalClearBackWoods.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalClearRatInfestation.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalCombatTraining.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDefendVillage.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalDelivery.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEngageInWar.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEquipArmy.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalEvilBard.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreCave.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb_Mummy.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalExploreTomb_Skeletons.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFallenHero.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindAtlantis.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindCows.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFindMcGuffin.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalFreeSlaves.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalGuardTemple.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalHeartTree.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalHuntSpirits.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalInfiltrateCastle.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillDragon.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillKraken.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalKillLitch.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalObserveTroopMovements.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPatrolDuty.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPetitionTheDuke.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalPlantGarden.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalReachSummit.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRecruitAllies.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRepairDam.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRescueCaptured.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalRunForOffice.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSettleTown.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSkeletons.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSlayGorgon.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSowChaos.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalSphynxRiddles.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalTargetPractice.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalUpgradeTown.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\GoalWolves.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IDescriptorData.cs" />
-    <Compile Include="Assets\draco18s\artificer\quests\challenge\goals\IQuestGoal.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\DamageType.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\EnumResult.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\hero\HarrowDeck.cs" />
+    <Compile Include="Assets\draco18s\artificer\quests\Quest.cs" />
     <Compile Include="Assets\draco18s\artificer\quests\requirement\RequirementType.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\AchievementMulti.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\EnumResetType.cs" />
@@ -260,15 +252,16 @@
     <Compile Include="Assets\draco18s\artificer\statistics\StatBase.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatBint.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatHighscore.cs" />
+    <Compile Include="Assets\draco18s\artificer\statistics\StatisticsTracker.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatLogin.cs" />
     <Compile Include="Assets\draco18s\artificer\statistics\StatResetable.cs" />
-    <Compile Include="Assets\draco18s\artificer\statistics\StatisticsTracker.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\InfoPanel.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\ItemButtonData.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\NotificationItem.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\QuestInfo.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\SelectObject.cs" />
     <Compile Include="Assets\draco18s\artificer\ui\TooltipTrigger.cs" />
+    <Compile Include="Assets\draco18s\artificer\upgrades\premium\PremiumUpgrade.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\Skill.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\SkillClicks.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\SkillIndustryRank.cs" />
@@ -292,24 +285,24 @@
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeTheLoots.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorEffectiveness.cs" />
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorSize.cs" />
-    <Compile Include="Assets\draco18s\artificer\upgrades\premium\PremiumUpgrade.cs" />
     <Compile Include="Assets\draco18s\config\Configuration.cs" />
     <Compile Include="Assets\draco18s\config\Localization.cs" />
     <Compile Include="Assets\draco18s\util\ColorHelper.cs" />
     <Compile Include="Assets\draco18s\util\CostBenefitRatio.cs" />
     <Compile Include="Assets\draco18s\util\DataAccess.cs" />
     <Compile Include="Assets\draco18s\util\KongregateAPI.cs" />
+    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\_Extensions.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\AngleUnits.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\ArgumentDifferentException.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\ArgumentDoubleException.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\BigInteger.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\BigRational.cs" />
-    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\CStepEventArgs.cs" />
-    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\CTrigonometry.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\Calculator.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\ComparerMethod.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\Complex.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\Constants.cs" />
+    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\CStepEventArgs.cs" />
+    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\CTrigonometry.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\DomainFunctionLimits.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\DomainSet.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\DomainSets.cs" />
@@ -322,11 +315,11 @@
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\IInteger.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\IMathComparison.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\IMathEqualComparison.cs" />
+    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\Interval.cs" />
+    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\IntervalTypes.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\INumber.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\IPoint.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\ISet.cs" />
-    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\Interval.cs" />
-    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\IntervalTypes.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\JosephusProblem.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\LambdaEqualityComparer.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\ListSet.cs" />
@@ -344,11 +337,33 @@
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\Triangle.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\VariableNullException.cs" />
     <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\Vector.cs" />
-    <Compile Include="Assets\draco18s\util\Koopakiller.Numerics\_Extensions.cs" />
     <Compile Include="Assets\draco18s\util\MathHelper.cs" />
     <Compile Include="Assets\draco18s\util\SpriteLoader.cs" />
     <Compile Include="Assets\draco18s\util\SteamManager.cs" />
     <Compile Include="Assets\draco18s\util\TypeExtentions.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyName.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\FantasyNameSettings.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\Classes.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\CVCNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\FemaleWrapperNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\Gender.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\INameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\LandGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\LastNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\MaleClericFirstNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\MaleRogueFirstNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\MaleWarriorFirstNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\MaleWizardFirstNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\PostfixGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\PostfixWizardGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\PrefixGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\Race.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Generators\RaceNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\IFantasyNameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\NameGenerator.cs" />
+    <Compile Include="Assets\RPGKit.FantasyNameGenerator\Properties\AssemblyInfo.cs" />
+    <Compile Include="Assets\Standalone\Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Demigiant\DOTween\DOTween.XML" />

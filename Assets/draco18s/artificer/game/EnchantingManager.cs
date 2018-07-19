@@ -34,26 +34,26 @@ namespace Assets.draco18s.artificer.game {
 		private static Dictionary<Industry, GameObject> enchantIngredList = new Dictionary<Industry, GameObject>();
 
 		public static void OneTimeSetup() {
-			Transform enchantWindow = GuiManager.instance.enchantArea.transform.FindChild("Enchant");
-			Transform i1 = enchantWindow.FindChild("Input1");
-			Transform i2 = enchantWindow.FindChild("Input2");
-			Transform o1 = enchantWindow.FindChild("Output");
+			Transform enchantWindow = GuiManager.instance.enchantArea.transform.Find("Enchant");
+			Transform i1 = enchantWindow.Find("Input1");
+			Transform i2 = enchantWindow.Find("Input2");
+			Transform o1 = enchantWindow.Find("Output");
 			//i1.GetComponent<Button>().onClick.AddListener(delegate { addInput1(); });
 			//i2.GetComponent<Button>().onClick.AddListener(delegate { addInput2(); });
 			o1.GetComponent<Button>().onClick.AddListener(delegate { getOutput(); });
 			inputImg1 = i1.GetComponent<Image>();
 			inputImg2 = i2.GetComponent<Image>();
 			outputImg = o1.GetComponent<Image>();
-			inventoryList1 = GuiManager.instance.enchantArea.transform.FindChild("Inventory1").GetChild(0).GetChild(0);
-			inventoryList2 = GuiManager.instance.enchantArea.transform.FindChild("Inventory2").GetChild(0).GetChild(0);
-			inventoryList3 = GuiManager.instance.enchantArea.transform.FindChild("Inventory3").GetChild(0).GetChild(0);
+			inventoryList1 = GuiManager.instance.enchantArea.transform.Find("Inventory1").GetChild(0).GetChild(0);
+			inventoryList2 = GuiManager.instance.enchantArea.transform.Find("Inventory2").GetChild(0).GetChild(0);
+			inventoryList3 = GuiManager.instance.enchantArea.transform.Find("Inventory3").GetChild(0).GetChild(0);
 			inventoryList1.transform.hierarchyCapacity = 100 * 10;
 			inventoryList2.transform.hierarchyCapacity = 100 * 10;
 			inventoryList3.transform.hierarchyCapacity = 100 * 10;
 #pragma warning disable 0219
 			Enchantment e = Enchantments.ALERTNESS;
 #pragma warning restore 0219
-			outputName = enchantWindow.FindChild("OutputName").GetComponent<Text>();
+			outputName = enchantWindow.Find("OutputName").GetComponent<Text>();
 			outputName.text = "";
 		}
 
@@ -107,9 +107,9 @@ namespace Assets.draco18s.artificer.game {
 					go.transform.localPosition = new Vector3(6, (i * -125) - 5, 0);
 					//ind.enchantInvenListObj = go;
 					go.name = ind.saveName;
-					go.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(Localization.translateToLocal(ind.unlocalizedName));
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored) + " / " + Main.AsCurrency(10000);
-					go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.saveName);
+					go.transform.Find("Title").GetComponent<Text>().text = Main.ToTitleCase(Localization.translateToLocal(ind.unlocalizedName));
+					go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored) + " / " + Main.AsCurrency(10000);
+					go.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.saveName);
 					int req_num = 1;
 					long ty = (long)ind.industryItem.getAllReqs();
 					//if(ind == Industries.LEATHER) {
@@ -124,14 +124,14 @@ namespace Assets.draco18s.artificer.game {
 							if(ty == 0) abort = true;
 						}
 						if(abort) {
-							go.transform.FindChild("Req" + r).gameObject.SetActive(false);
+							go.transform.Find("Req" + r).gameObject.SetActive(false);
 						}
 						else {
 							//if(ind == Industries.LEATHER) {
 							//	Debug.Log("   :" + req_num);
 							//	Debug.Log("   :" + ((RequirementType)(1L << req_num)));
 							//}
-							go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
+							go.transform.Find("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 							ty = ty >> 1;
 							ty = ty << 1;
 						}
@@ -170,15 +170,15 @@ namespace Assets.draco18s.artificer.game {
 				go.transform.localPosition = new Vector3(6, (j * -125) - 5, 0);
 				//ind.invenListObj = go;
 				go.name = stack.item.name;
-				go.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(stack.getDisplayName());
-				go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
+				go.transform.Find("Title").GetComponent<Text>().text = Main.ToTitleCase(stack.getDisplayName());
+				go.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
 
 				int req_num = 1;
 				long ty = (long)stack.getAllReqs();
 				bool abort = false;
 				if(ench != null) {
 					ty |= (long)ench.reqTypes;
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize) + " / " + ench.ingredientQuantity;
+					go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize) + " / " + ench.ingredientQuantity;
 					go.GetComponent<Button>().onClick.AddListener(delegate { addInput2(s); });
 					int slot = (int)ench.enchantSlotRestriction;
 
@@ -190,17 +190,17 @@ namespace Assets.draco18s.artificer.game {
 							if(slot == 0) abort = true;
 						}
 						if(abort) {
-							go.transform.FindChild("Equip" + r).gameObject.SetActive(false);
+							go.transform.Find("Equip" + r).gameObject.SetActive(false);
 						}
 						else {
-							go.transform.FindChild("Equip" + r).GetComponent<Image>().sprite = GuiManager.instance.equip_icons[req_num - 1];
+							go.transform.Find("Equip" + r).GetComponent<Image>().sprite = GuiManager.instance.equip_icons[req_num - 1];
 							slot = slot >> 1;
 							slot = slot << 1;
 						}
 					}
 				}
 				else {
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize);
+					go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize);
 					if((stack.enchants.Count > 0 || stack.relicData != null) && stack.isIDedByPlayer) {
 						//go.transform.SetParent(inventoryList3);
 						go.transform.localPosition = new Vector3(6, (i * -125) - 5, 0);
@@ -225,10 +225,10 @@ namespace Assets.draco18s.artificer.game {
 						if(ty == 0) abort = true;
 					}
 					if(abort) {
-						go.transform.FindChild("Req" + r).gameObject.SetActive(false);
+						go.transform.Find("Req" + r).gameObject.SetActive(false);
 					}
 					else {
-						go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
+						go.transform.Find("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 						ty = ty >> 1;
 						ty = ty << 1;
 					}
@@ -254,12 +254,12 @@ namespace Assets.draco18s.artificer.game {
 					go.transform.localPosition = new Vector3(6, (j * -125) - 5, 0);
 					//ind.invenListObj = go;
 					go.name = stack.item.name;
-					go.transform.FindChild("Title").GetComponent<Text>().text = Main.ToTitleCase(stack.getDisplayName());
-					go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
+					go.transform.Find("Title").GetComponent<Text>().text = Main.ToTitleCase(stack.getDisplayName());
+					go.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
 					Enchantment ench = GameRegistry.GetEnchantmentByItem(stack.item);
 					int req_num = 1;
 					long ty = (long)ench.reqTypes;
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize) + " / " + ench.ingredientQuantity;
+					go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize) + " / " + ench.ingredientQuantity;
 
 					go.GetComponent<Button>().onClick.AddListener(delegate { /*SelectItem(s);*/addInput2(stack); });
 
@@ -273,10 +273,10 @@ namespace Assets.draco18s.artificer.game {
 							if(ty == 0) abort = true;
 						}
 						if(abort) {
-							go.transform.FindChild("Req" + r).gameObject.SetActive(false);
+							go.transform.Find("Req" + r).gameObject.SetActive(false);
 						}
 						else {
-							go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
+							go.transform.Find("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 							ty = ty >> 1;
 							ty = ty << 1;
 						}
@@ -293,10 +293,10 @@ namespace Assets.draco18s.artificer.game {
 							if(slot == 0) abort = true;
 						}
 						if(abort) {
-							go.transform.FindChild("Equip" + r).gameObject.SetActive(false);
+							go.transform.Find("Equip" + r).gameObject.SetActive(false);
 						}
 						else {
-							go.transform.FindChild("Equip" + r).GetComponent<Image>().sprite = GuiManager.instance.equip_icons[req_num - 1];
+							go.transform.Find("Equip" + r).GetComponent<Image>().sprite = GuiManager.instance.equip_icons[req_num - 1];
 							slot = slot >> 1;
 							slot = slot << 1;
 						}
@@ -319,7 +319,7 @@ namespace Assets.draco18s.artificer.game {
 				GameObject go;
 				enchantInvenList.TryGetValue(ind, out go);
 				if(go != null) {
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored) + " / " + Main.AsCurrency(10000);
+					go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored) + " / " + Main.AsCurrency(10000);
 				}
 				else {
 					enchantIngredList.TryGetValue(ind, out go);
@@ -327,7 +327,7 @@ namespace Assets.draco18s.artificer.game {
 						//int v = (ind.quantityStored > int.MaxValue ? 999999999 : BigInteger.ToInt32(ind.quantityStored));
 						//ItemStack stack = new ItemStack(ind, v);
 						Enchantment e = GameRegistry.GetEnchantmentByItem(ind.industryItem);
-						go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored) + " / " + Main.AsCurrency(e.ingredientQuantity);
+						go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored) + " / " + Main.AsCurrency(e.ingredientQuantity);
 					}
 				}
 			}
@@ -336,7 +336,7 @@ namespace Assets.draco18s.artificer.game {
 				enchantMiscInvenList.TryGetValue(stack, out go);
 				Enchantment e = GameRegistry.GetEnchantmentByItem(stack.item);
 				if(go != null && e != null) {
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize) + " / " + Main.AsCurrency(e.ingredientQuantity);
+					go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize) + " / " + Main.AsCurrency(e.ingredientQuantity);
 				}
 			}
 		}
@@ -391,7 +391,7 @@ namespace Assets.draco18s.artificer.game {
 				inputStack1 = new ItemStack(selectedIndustry, 10000);
 				GameObject go;
 				enchantInvenList.TryGetValue(selectedIndustry, out go);
-				go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(selectedIndustry.quantityStored) + " / " + Main.AsCurrency(10000);
+				go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(selectedIndustry.quantityStored) + " / " + Main.AsCurrency(10000);
 				preSelectedIndustry = selectedIndustry;
 				//inputStack1 = null;
 			}

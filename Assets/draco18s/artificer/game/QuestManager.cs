@@ -46,14 +46,14 @@ namespace Assets.draco18s.artificer.game {
 
 		public static void setupUI() {
 			if(questList == null) {
-				regularQuests = GuiManager.instance.questArea.transform.FindChild("Quests");
-				questList = regularQuests.FindChild("Available").GetChild(0).GetChild(0);
-				activeQuestList = regularQuests.FindChild("Active").GetChild(0).GetChild(0);
-				inventoryList = GuiManager.instance.questArea.transform.FindChild("Inventory1").GetChild(0).GetChild(0);
-				miscInventoryList = GuiManager.instance.questArea.transform.FindChild("Inventory2").GetChild(0).GetChild(0);
-				deepGoal = GuiManager.instance.questArea.transform.FindChild("DeepQuest");
-				filters = GuiManager.instance.questArea.transform.FindChild("Filters");
-				GameObject img = GuiManager.instance.questArea.transform.FindChild("Filters").GetChild(0).gameObject;
+				regularQuests = GuiManager.instance.questArea.transform.Find("Quests");
+				questList = regularQuests.Find("Available").GetChild(0).GetChild(0);
+				activeQuestList = regularQuests.Find("Active").GetChild(0).GetChild(0);
+				inventoryList = GuiManager.instance.questArea.transform.Find("Inventory1").GetChild(0).GetChild(0);
+				miscInventoryList = GuiManager.instance.questArea.transform.Find("Inventory2").GetChild(0).GetChild(0);
+				deepGoal = GuiManager.instance.questArea.transform.Find("DeepQuest");
+				filters = GuiManager.instance.questArea.transform.Find("Filters");
+				GameObject img = GuiManager.instance.questArea.transform.Find("Filters").GetChild(0).gameObject;
 				foreach(RequirementType t in Enum.GetValues(typeof(RequirementType))) {
 					int v = Main.BitNum((long)t);
 					GameObject go = Main.Instantiate(img, img.transform.position + new Vector3(v % 13,v / -13,0)*18, Quaternion.identity, filters) as GameObject;
@@ -62,7 +62,7 @@ namespace Assets.draco18s.artificer.game {
 					go.GetComponent<Button>().onClick.AddListener(delegate { FilterInventory(v-1); });
 				}
 				img.GetComponent<Button>().onClick.AddListener(delegate { FilterInventory(-1); });
-				GuiManager.instance.questHeader.transform.FindChild("FilterBtn").GetComponent<Button>().onClick.AddListener(delegate { showHideFilters(); });
+				GuiManager.instance.questHeader.transform.Find("FilterBtn").GetComponent<Button>().onClick.AddListener(delegate { showHideFilters(); });
 			}
 			int i = 0;
 			validateQuests();
@@ -91,11 +91,11 @@ namespace Assets.draco18s.artificer.game {
 						questInvenList.Add(newInd, go);
 						//ind.questInvenListObj = go;
 						go.name = ind.saveName;
-						Text tx = go.transform.FindChild("Title").GetComponent<Text>();
+						Text tx = go.transform.Find("Title").GetComponent<Text>();
 						tx.text = Main.ToTitleCase(Localization.translateToLocal(ind.unlocalizedName));
 						tx.fontSize = 28;
-						go.transform.FindChild("Quantity").GetComponent<Text>().text = "0 / " + Main.AsCurrency(ind.quantityStored);
-						go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.saveName);
+						go.transform.Find("Quantity").GetComponent<Text>().text = "0 / " + Main.AsCurrency(ind.quantityStored);
+						go.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + ind.saveName);
 						int req_num = 1;
 						long ty = (long)ind.industryItem.getAllReqs();
 						bool abort = false;
@@ -107,10 +107,10 @@ namespace Assets.draco18s.artificer.game {
 								if(ty == 0) abort = true;
 							}
 							if(abort) {
-								go.transform.FindChild("Req" + r).gameObject.SetActive(false);
+								go.transform.Find("Req" + r).gameObject.SetActive(false);
 							}
 							else {
-								go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
+								go.transform.Find("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 								ty = ty >> 1;
 								ty = ty << 1;
 							}
@@ -206,26 +206,26 @@ namespace Assets.draco18s.artificer.game {
 				q.timeUntilQuestExpires = -100;*/
 				return;
 			}
-			go.transform.FindChild("Name").GetComponent<Text>().text = ToTitleCase(q.obstacles[q.obstacles.Length - 1].type.name);
-			go.transform.FindChild("Hero").GetComponent<Text>().text = "Hero: " + q.heroName;
+			go.transform.Find("Name").GetComponent<Text>().text = ToTitleCase(q.obstacles[q.obstacles.Length - 1].type.name);
+			go.transform.Find("Hero").GetComponent<Text>().text = "Hero: " + q.heroName;
 			for(int r = 1; r <= 6; r++) {
 				int req_num = Main.BitNum(q.getReq(r - 1)) - 1;
 				if(req_num < 0) {
-					go.transform.FindChild("Req" + r).gameObject.SetActive(false);
+					go.transform.Find("Req" + r).gameObject.SetActive(false);
 				}
 				else {
-					Transform rq = go.transform.FindChild("Req" + r);
+					Transform rq = go.transform.Find("Req" + r);
 					rq.GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num];
 					int v = req_num;
 					Button bb = rq.GetComponent<Button>();
 					bb.onClick.AddListener(delegate { FilterInventory(v); });
-					bb.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(bb.transform.parent.FindChild("ReqHover").position + Vector3.right * 60, "Items that supply these traits will surely aid the hero.\nClick to filter.", 5); }, false);
+					bb.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(bb.transform.parent.Find("ReqHover").position + Vector3.right * 60, "Items that supply these traits will surely aid the hero.\nClick to filter.", 5); }, false);
 				}
 			}
-			Button b1 = go.transform.FindChild("Start").GetComponent<Button>();
+			Button b1 = go.transform.Find("Start").GetComponent<Button>();
 			b1.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b1.transform.position + Vector3.right*45, "Start the quest now with the the inventory shown above.\nYou do not have to supply any items, but the quest will likely fail.\nSuccessful quests will generate additional rewards.", 6.5F); }, false);
 			b1.onClick.AddListener(delegate { startQuest(theQuest, go); });
-			Button b2 = go.transform.FindChild("Cancel").GetComponent<Button>();
+			Button b2 = go.transform.Find("Cancel").GetComponent<Button>();
 			b2.onClick.AddListener(delegate {
 				Main.instance.player.getActiveDeepGoal().onFailedQuest(q);
 				removeQuest(theQuest, go);
@@ -233,7 +233,7 @@ namespace Assets.draco18s.artificer.game {
 			});
 			b2.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b2.transform.position + Vector3.right * 45, "Ignore the quest. Reduces the time until the next quest by " + Main.SecondsToTime(300) + ".", 3.5f); }, false);
 			for(int r = 1; r <= 6; r++) {
-				Transform btn = go.transform.FindChild("Inven" + r);
+				Transform btn = go.transform.Find("Inven" + r);
 				int slotnum = r - 1;
 				btn.GetComponent<Button>().onClick.AddListener(delegate { AddRemoveItemFromQuest(theQuest, slotnum); });
 				if(q.inventory.Count >= r) {
@@ -241,26 +241,26 @@ namespace Assets.draco18s.artificer.game {
 						if(theQuest.inventory[r - 1].item.industry.craftingGridGO == null) {
 							foreach(GameObject cgo in CraftingManager.buildButtons) {
 								if(cgo.GetComponent<ItemButtonData>().connectedItem == theQuest.inventory[r - 1].item.industry) {
-									q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>().sprite = cgo.transform.FindChild("Img").GetComponent<Image>().sprite;
+									q.guiItem.transform.Find("Inven" + r).GetComponent<Image>().sprite = cgo.transform.Find("Img").GetComponent<Image>().sprite;
 									break;
 								}
 							}
 						}
 						else {
-							q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>().sprite = theQuest.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
+							q.guiItem.transform.Find("Inven" + r).GetComponent<Image>().sprite = theQuest.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Img").GetComponent<Image>().sprite;
 						}
 					}
 					else {
-						q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + theQuest.inventory[r - 1].item.name);
+						q.guiItem.transform.Find("Inven" + r).GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + theQuest.inventory[r - 1].item.name);
 					}
 				}
 			}
-			go.transform.FindChild("Reward1").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.rewards[0].item.name);
-			go.transform.FindChild("Reward2").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.rewards[1].item.name);
-			go.transform.FindChild("Expire").GetComponent<Text>().text = "Expires in " + Main.SecondsToTime((int)q.timeUntilQuestExpires);
-			Button b3 = go.transform.FindChild("RewardLabel").GetChild(0).GetComponent<Button>();
+			go.transform.Find("Reward1").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.rewards[0].item.name);
+			go.transform.Find("Reward2").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.rewards[1].item.name);
+			go.transform.Find("Expire").GetComponent<Text>().text = "Expires in " + Main.SecondsToTime((int)q.timeUntilQuestExpires);
+			Button b3 = go.transform.Find("RewardLabel").GetChild(0).GetComponent<Button>();
 			b3.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b3.transform.position + Vector3.right * 92, "You will get these items when the quest is started.", 3); }, false);
-			Button b4 = go.transform.FindChild("ReqHover").GetComponent<Button>();
+			Button b4 = go.transform.Find("ReqHover").GetComponent<Button>();
 			b4.AddHover(delegate (Vector3 p) { if(go.transform.localPosition.y == -7) GuiManager.ShowTooltip(b4.transform.position + Vector3.right * 60, "Items that supply these traits will surely aid the hero.\nClick to filter.", 5); }, false);
 		}
 
@@ -271,7 +271,7 @@ namespace Assets.draco18s.artificer.game {
 			//go.transform.SetParent(activeQuestList);
 
 			//go.transform.FindChild("Name").GetComponent<Text>().text = ToTitleCase(q.obstacles[q.obstacles.Length - 1].type.name);
-			go.transform.FindChild("Hero").GetComponent<Text>().text = q.heroName;
+			go.transform.Find("Hero").GetComponent<Text>().text = q.heroName;
 			QuestInfo info = go.GetComponent<QuestInfo>();
 			Image img = info.HPBar.GetComponent<Image>();
 			img.material = Main.Instantiate(img.material);
@@ -342,11 +342,11 @@ namespace Assets.draco18s.artificer.game {
 							if(q.inventory.Contains(selectedStack)) {
 								q.inventory.Remove(selectedStack);
 								for(int r = 1; r <= 6; r++) {
-									Image im = q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>();
+									Image im = q.guiItem.transform.Find("Inven" + r).GetComponent<Image>();
 									im.sprite = GuiManager.instance.gray_square;
 									if(q.inventory.Count >= r) {
 										if(q.inventory[r - 1].item.industry != null) {
-											im.GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
+											im.GetComponent<Image>().sprite = q.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Img").GetComponent<Image>().sprite;
 										}
 										else {
 											im.GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + q.inventory[r - 1].item.name);
@@ -359,20 +359,20 @@ namespace Assets.draco18s.artificer.game {
 				}
 			}
 			for(int r = 1; r <= 6; r++) {
-				Image im = theQuest.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>();
+				Image im = theQuest.guiItem.transform.Find("Inven" + r).GetComponent<Image>();
 				im.sprite = GuiManager.instance.gray_square;
 				if(theQuest.inventory.Count >= r) {
 					if(theQuest.inventory[r - 1].item.industry != null) {
 						if(theQuest.inventory[r - 1].item.industry.craftingGridGO == null) {
 							foreach(GameObject go in CraftingManager.buildButtons) {
 								if(go.GetComponent<ItemButtonData>().connectedItem == theQuest.inventory[r - 1].item.industry) {
-									im.GetComponent<Image>().sprite = go.transform.FindChild("Img").GetComponent<Image>().sprite;
+									im.GetComponent<Image>().sprite = go.transform.Find("Img").GetComponent<Image>().sprite;
 									break;
 								}
 							}
 						}
 						else {
-							im.GetComponent<Image>().sprite = theQuest.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).FindChild("Img").GetComponent<Image>().sprite;
+							im.GetComponent<Image>().sprite = theQuest.inventory[r - 1].item.industry.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Img").GetComponent<Image>().sprite;
 						}
 					}
 					else {
@@ -399,12 +399,12 @@ namespace Assets.draco18s.artificer.game {
 					go.transform.localPosition = new Vector3(7, (i * -125) - 5, 0);
 					//ind.invenListObj = go;
 					go.name = stack.item.name;
-					Text tx = go.transform.FindChild("Title").GetComponent<Text>();
+					Text tx = go.transform.Find("Title").GetComponent<Text>();
 					tx.text = Main.ToTitleCase(stack.getDisplayName());
 					if(stack.relicData == null)
 						tx.fontSize = 28;
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize);
-					go.transform.FindChild("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
+					go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(stack.stackSize);
+					go.transform.Find("Img").GetComponent<Image>().sprite = SpriteLoader.getSpriteForResource("items/" + stack.item.name);
 					int req_num = 1;
 					long ty = (long)stack.getAllReqs();
 					bool abort = false;
@@ -416,10 +416,10 @@ namespace Assets.draco18s.artificer.game {
 							if(ty == 0) abort = true;
 						}
 						if(abort) {
-							go.transform.FindChild("Req" + r).gameObject.SetActive(false);
+							go.transform.Find("Req" + r).gameObject.SetActive(false);
 						}
 						else {
-							go.transform.FindChild("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
+							go.transform.Find("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 							ty = ty >> 1;
 							ty = ty << 1;
 						}
@@ -457,7 +457,7 @@ namespace Assets.draco18s.artificer.game {
 							}
 						}
 					}
-					go.transform.FindChild("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored, 4, true) + " / " + Main.AsCurrency(total, 4, true);
+					go.transform.Find("Quantity").GetComponent<Text>().text = Main.AsCurrency(ind.quantityStored, 4, true) + " / " + Main.AsCurrency(total, 4, true);
 					//bool haveEnough = ind.quantityStored >= total;
 					
 					i++;
@@ -468,7 +468,7 @@ namespace Assets.draco18s.artificer.game {
 
 			foreach(Quest q in availableQuests) {
 				
-				q.guiItem.transform.FindChild("Start").GetComponent<Button>().interactable = isQuestReady(q);
+				q.guiItem.transform.Find("Start").GetComponent<Button>().interactable = isQuestReady(q);
 			}
 		}
 
@@ -503,13 +503,13 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static void removeQuest(Quest theQuest, GameObject go) {
-			Button b = theQuest.guiItem.transform.FindChild("Start").GetComponent<Button>();
+			Button b = theQuest.guiItem.transform.Find("Start").GetComponent<Button>();
 			b.RemoveAllEvents();
-			b = theQuest.guiItem.transform.FindChild("Cancel").GetComponent<Button>();
+			b = theQuest.guiItem.transform.Find("Cancel").GetComponent<Button>();
 			b.RemoveAllEvents();
-			b = go.transform.FindChild("RewardLabel").GetChild(0).GetComponent<Button>();
+			b = go.transform.Find("RewardLabel").GetChild(0).GetComponent<Button>();
 			b.RemoveAllEvents();
-			b = go.transform.FindChild("ReqHover").GetComponent<Button>();
+			b = go.transform.Find("ReqHover").GetComponent<Button>();
 			b.RemoveAllEvents();
 
 			availableQuests.Remove(theQuest);
@@ -585,8 +585,8 @@ namespace Assets.draco18s.artificer.game {
 			validateQuests();
 			//inventoryList.transform.localPosition = Vector3.zero;
 
-			GuiManager.instance.questHeader.transform.FindChild("MoneyArea").GetChild(0).GetComponent<Text>().text = "$" + Main.AsCurrency(Main.instance.player.money, 12);
-			GuiManager.instance.questHeader.transform.FindChild("QuestArea").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(StatisticsTracker.questsCompleted.serializedValue, 12);
+			GuiManager.instance.questHeader.transform.Find("MoneyArea").GetChild(0).GetComponent<Text>().text = "$" + Main.AsCurrency(Main.instance.player.money, 12);
+			GuiManager.instance.questHeader.transform.Find("QuestArea").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(StatisticsTracker.questsCompleted.serializedValue, 12);
 		}
 
 		protected static void updateActiveQuestList() {
@@ -704,15 +704,15 @@ namespace Assets.draco18s.artificer.game {
 			}
 			if(newQuestDelayTimer <= 0) {
 				newQuestDelayTimer = -1;
-				GuiManager.instance.questHeader.transform.FindChild("NewQuestTime").GetComponent<Text>().text = "---";
+				GuiManager.instance.questHeader.transform.Find("NewQuestTime").GetComponent<Text>().text = "---";
 			}
 			else {
-				GuiManager.instance.questHeader.transform.FindChild("NewQuestTime").GetComponent<Text>().text = "New Quest in " + Main.SecondsToTime((int)newQuestDelayTimer);
+				GuiManager.instance.questHeader.transform.Find("NewQuestTime").GetComponent<Text>().text = "New Quest in " + Main.SecondsToTime((int)newQuestDelayTimer);
 			}
 			foreach(Quest q in availableQuests) {
 				q.timeUntilQuestExpires -= time;
 				if(q.guiItem != null)
-					q.guiItem.transform.FindChild("Expire").GetComponent<Text>().text = "Expires in " + Main.SecondsToTime((int)q.timeUntilQuestExpires);
+					q.guiItem.transform.Find("Expire").GetComponent<Text>().text = "Expires in " + Main.SecondsToTime((int)q.timeUntilQuestExpires);
 				if(q.timeUntilQuestExpires <= 0) {
 					Main.instance.player.getActiveDeepGoal().onFailedQuest(q);
 					Main.Destroy(q.guiItem);
@@ -740,7 +740,7 @@ namespace Assets.draco18s.artificer.game {
 			questEquipTimer += (time * Main.instance.player.currentGuildmaster.journeymenRateMultiplier() * (1 + 0.05f*((AchievementMulti)StatisticsTracker.clicksAch).getNumAchieved()));
 			//journeyman equip loop
 			float tim = (questEquipTimerMax - questEquipTimer) / Main.instance.player.currentGuildmaster.journeymenRateMultiplier();
-			Transform timer = GuiManager.instance.questHeader.transform.FindChild("JourneymanTime");
+			Transform timer = GuiManager.instance.questHeader.transform.Find("JourneymanTime");
 			timer.GetComponent<Text>().text = "Auto-Equip in " + Main.SecondsToTime((int)tim);
 			timer.gameObject.SetActive(Main.instance.player.journeymen > 0);
 			int adjustQuestTime = 0;
@@ -821,7 +821,7 @@ namespace Assets.draco18s.artificer.game {
 					Quest q = availableQuests[j];
 					if(q.guiItem != null) {
 						for(int r = 1; r <= 6; r++) {
-							Image im = q.guiItem.transform.FindChild("Inven" + r).GetComponent<Image>();
+							Image im = q.guiItem.transform.Find("Inven" + r).GetComponent<Image>();
 							im.sprite = GuiManager.instance.gray_square;
 							if(q.inventory.Count >= r) {
 								if(q.inventory[r - 1].item.industry != null) {

@@ -47,7 +47,7 @@ namespace Assets.draco18s.artificer.upgrades {
 		}
 
 		public BigRational getCost(int n) {
-			Profiler.BeginSample("Recalc");
+			UnityEngine.Profiling.Profiler.BeginSample("Recalc");
 			if(ranks == lastranks && n == lastN) {
 				return lastTotal;
 			}
@@ -56,14 +56,14 @@ namespace Assets.draco18s.artificer.upgrades {
 				lastranks = ranks;
 				powLastranks = Math.Pow(costMultiplier, ranks);
 			}
-			Profiler.EndSample();
-			Profiler.BeginSample("Return");
+			UnityEngine.Profiling.Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.BeginSample("Return");
 			BigRational b = baseCost;
 			BigRational dd = new BigRational(costMultiplier);
 			dd -= 1;
 			//+0.51?
 			lastTotal = b * ((powLastranks * ((n == 1 ? pow1 : (n == 10 ? pow10 : (n == 50 ? pow50 : BigRational.Pow(costMultiplier, n)))) - 1) / (dd)));
-			Profiler.EndSample();
+			UnityEngine.Profiling.Profiler.EndSample();
 			return lastTotal;
 		}
 
