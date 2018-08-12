@@ -7,13 +7,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6FD8D5AE-48FC-8A07-D941-B50C561EE177}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>Assembly-CSharp.dll</AssemblyName>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
     <CompilerResponseFile></CompilerResponseFile>
+    <UnityProjectGenerator>VSTU</UnityProjectGenerator>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>WebGL:20</UnityBuildTarget>
     <UnityVersion>2017.1.0p4</UnityVersion>
@@ -101,6 +102,7 @@
     <Compile Include="Assets\draco18s\artificer\game\QuestManager.cs" />
     <Compile Include="Assets\draco18s\artificer\game\ResearchManager.cs" />
     <Compile Include="Assets\draco18s\artificer\game\RuntimeDataConfig.cs" />
+    <Compile Include="Assets\draco18s\artificer\game\TutorialManager.cs" />
     <Compile Include="Assets\draco18s\artificer\init\ChallengeTypes.cs" />
     <Compile Include="Assets\draco18s\artificer\init\DeepGoalsTypes.cs" />
     <Compile Include="Assets\draco18s\artificer\init\Enchantments.cs" />
@@ -287,6 +289,7 @@
     <Compile Include="Assets\draco18s\artificer\upgrades\UpgradeVendorSize.cs" />
     <Compile Include="Assets\draco18s\config\Configuration.cs" />
     <Compile Include="Assets\draco18s\config\Localization.cs" />
+    <Compile Include="Assets\draco18s\tutorial\TutorialStep.cs" />
     <Compile Include="Assets\draco18s\util\ColorHelper.cs" />
     <Compile Include="Assets\draco18s\util\CostBenefitRatio.cs" />
     <Compile Include="Assets\draco18s\util\DataAccess.cs" />

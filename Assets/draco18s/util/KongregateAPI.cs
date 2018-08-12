@@ -1,5 +1,6 @@
 ﻿using Assets.draco18s.artificer.game;
 using Assets.draco18s.artificer.init;
+using Assets.draco18s.artificer.upgrades;
 using Assets.draco18s.util;
 using UnityEngine;
 
@@ -20,8 +21,10 @@ public class KongregateAPI : MonoBehaviour {
 		//gameObject.name = "KongregateAPI";
 
 		Application.ExternalEval(
-		  @"if(typeof(kongregateUnitySupport) != 'undefined'){
-			kongregateUnitySupport.initAPI('KongregateAPI', 'OnKongregateAPILoaded');
+		  @"console.log('initializing Kong API');
+          if(typeof(kongregateUnitySupport) != 'undefined'){
+			console.log('success!');
+			kongregateUnitySupport.initAPI('Main Camera', 'OnKongregateAPILoaded');
 		  };"
 		);
 	}
@@ -30,6 +33,7 @@ public class KongregateAPI : MonoBehaviour {
 		Debug.Log("Kong API loaded!");
 		isLoaded = true;
 		OnKongregateUserInfo(userInfoString);
+		submitStat("loaded", 1);
 		GuildManager.PremiumSetup(10, "", " Kreds");
 	}
 
@@ -38,7 +42,19 @@ public class KongregateAPI : MonoBehaviour {
 		var userId = System.Convert.ToInt32(info[0]);
 		var username = info[1];
 		var gameAuthToken = info[2];
-		Debug.Log("Kongregate User Info: " + username + ", userId: " + userId);
+		Application.ExternalEval(
+		  @"console.log('Kongregate User Info: ' + username + ', userId: ' + userId);"
+		);
+
+		Application.ExternalEval(@"
+			kongregate.services.addEventListener('login', function(){
+				var unityObject = kongregateUnitySupport.getUnityObject();
+				var services = kongregate.services;
+				var params=[services.getUserId(), services.getUsername(), services.getGameAuthToken()].join('|');
+				unityObject.SendMessage('Main Camera', 'OnKongregateUserInfo', params);
+			});"
+		);
+		getPurchases();
 	}
 
 	public static void doPurchase(string itemName) {
@@ -55,23 +71,18 @@ public class KongregateAPI : MonoBehaviour {
 	}
 
 	public void OnPurchaseSuccess(string str) {
-		PremiumUpgrades.AllPremiumUps.Find(x => x.saveName.Equals(str)).applyUpgrade();
+		Upgrade up = PremiumUpgrades.AllPremiumUps.Find(x => x.saveName.ToLower().Equals(str.ToLower()));
+		if(up != null) {
+			up.applyUpgrade();
+			GuildManager.finalizePremiumPurchase(up);
+		}
 	}
 
 	public void OnPurchaseFailure(string str) {
-
-	}
-
-	public void GetPurchasesCallback(object result) {
-		if(result.GetType().IsArrayOf<string>()) {
-			string[] values = convertTo<string>(result);
-			for(int i = 0; i < values.Length; i++) {
-				PremiumUpgrades.AllPremiumUps.Find(x => x.saveName.Equals(values[i])).applyUpgrade();
-			}
-		}
-		else {
-			Debug.Log("Callback object was not a string[]!");
-		}
+		Application.ExternalEval(
+		  @"console.log('Purchased failed: " + str + "');"
+		);
+		GuildManager.showPurchaseFailure(str);
 	}
 
 	public static T[] convertTo<T>(object input) {
@@ -79,18 +90,30 @@ public class KongregateAPI : MonoBehaviour {
 	} 
 
 	public static void getPurchases() {
+		PremiumUpgrades.AllPremiumUps.ForEach(x => x.revokeUpgrade());
 		Application.ExternalEval(@"
+			console.log('getting premium purchases...');
 			kongregate.mtx.requestUserItemList(null, function(result) {
 				var unityObject = kongregateUnitySupport.getUnityObject();
 				var results = [];
 				if(result.success) {
-					for(var i:int = 0; i < result.data.length; i++) {
-						var item:Object = result.data[i];
-						results[i] = item.identifier;
+					console.log('applying purchases...');
+					for(var i = 0; i < result.data.length; i++) {
+						unityObject.SendMessage('Main Camera', 'OnPurchaseSuccess', result.data[i].identifier);
 					}
 				}
-				unityObject.SendMessage('Main Camera', 'GetPurchasesCallback', results);
+				else {
+					console.log('failed!');
+				}
 			});
 		");
+	}
+
+	public static void submitStat(string stat, int value) {
+#if UNITY_EDITOR
+		if(value < 0) throw new System.Exception("Kong Statistics value for " + stat + " was less than 0!");
+#endif
+		if(value < 0) return;
+		Application.ExternalCall("kongregate.stats.submit", stat, value);
 	}
 }

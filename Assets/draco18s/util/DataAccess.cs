@@ -17,6 +17,7 @@ namespace Assets.draco18s.util {
 		private static readonly string saveFile = "{0}/savedata.dat";
 
 		public static void Save(PlayerInfo gameDetails) {
+			Main.reportKongStats();
 			//PlatformSafeMessage("Saving is not supported on WebGL currently");
 			string dataPath = string.Format(saveFile, Application.persistentDataPath);
 			BinaryFormatter binaryFormatter = new BinaryFormatter();

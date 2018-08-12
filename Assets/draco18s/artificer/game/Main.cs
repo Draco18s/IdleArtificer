@@ -42,7 +42,7 @@ namespace Assets.draco18s.artificer.game {
 		private float autosaveTimer = 0;
 
 		void Start() {
-			UnityEngine.Profiling.Profiler.maxNumberOfSamplesPerFrame = -1;
+			//UnityEngine.Profiling.Profiler.maxNumberOfSamplesPerFrame = -1;
 			/*string path = "E:\\Users\\Major\\Desktop\\time_data.csv";
 			if(File.Exists(path)) {
 				File.Delete(path);
@@ -50,7 +50,7 @@ namespace Assets.draco18s.artificer.game {
 			csv_st = File.CreateText(path);
 			csv_st.WriteLine("TotalTime,TimeToNextBuilding,Income/Sec,CashOnHand,LastPurchase");*/
 			instance = this;
-
+			TutorialManager.init();
 			NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
 			Configuration.NumberFormat = nfi;
 
@@ -319,6 +319,12 @@ namespace Assets.draco18s.artificer.game {
 			return CachedNewRenown;
 		}
 
+		public void resetIndustryCaches() {
+			foreach(Industry ind in player.builtItems) {
+				ind.resetCache();
+			}
+		}
+
 		private void test(Vector3 pos) {
 
 		}
@@ -422,6 +428,7 @@ namespace Assets.draco18s.artificer.game {
 				autoClickTime -= 1;
 			}
 
+			TutorialManager.update();
 			UnityEngine.Profiling.Profiler.BeginSample("Quest Manager");
 			QuestManager.tickAllQuests(deltaTime);
 			QuestManager.updateLists();
@@ -494,8 +501,10 @@ namespace Assets.draco18s.artificer.game {
 			UnityEngine.Profiling.Profiler.EndSample();
 			UnityEngine.Profiling.Profiler.BeginSample("Sell Items");
 			player.clearCache();
+			GetVendorValue();
+			GetSellMultiplierFull();
 			BigInteger maxSell;
-			BigInteger quant;
+			BigRational quant;
 			BigInteger amt;
 			BigRational val;
 			foreach(Industry i in player.builtItems) {
@@ -506,12 +515,10 @@ namespace Assets.draco18s.artificer.game {
 						amt = i.getVendors() * GetVendorSize();
 						if(maxSell >= 0)
 							amt = MathHelper.Min(amt, maxSell);
-						/*i.quantityStored -= amt;
-						i.quantityStored = (i.quantityStored < 0 ? 0 : i.quantityStored);*/
 						amt = MathHelper.Max(MathHelper.Min(amt, i.quantityStored - i.consumeAmount), 0);
 						i.quantityStored -= amt;
 						quant -= i.quantityStored;
-						val = ((BigRational)quant * GetVendorValue());
+						val = quant * GetVendorValue();
 						val *= i.GetSellValue();
 						AddMoney((BigInteger)val);
 						//AddMoney(GetVendorValue() * (quant * i.GetSellValue()));
@@ -962,6 +969,22 @@ namespace Assets.draco18s.artificer.game {
 			//FieldInfo[] fields = typeof(Industries).GetFields();
 			//csv_st.WriteLine(Mathf.FloorToInt(timeTotal) + "," + Mathf.FloorToInt(timeSinceLastPurchase) + "," + ApproximateIncome(fields) + "," + player.money + "," + text);
 		}
+
+		internal static void reportKongStats() {
+///Kongregate statistics reporting
+#if UNITY_WEBGL
+			KongregateAPI.submitStat("lifetimeMoneyMagnitude", BigInteger.Log10(StatisticsTracker.lifetimeMoney.value));
+			KongregateAPI.submitStat("lifetimeRenown", BigInteger.Log10(StatisticsTracker.lifetimeRenown.value));
+			KongregateAPI.submitStat("questsCompletedEver", (StatisticsTracker.questsCompletedEver.value));
+			KongregateAPI.submitStat("relicsIdentified", (StatisticsTracker.relicsIdentified.value));
+
+			KongregateAPI.submitStat("impressiveAntiquity", (StatisticsTracker.impressiveAntiquity.isAchieved() ? 1 : 0));
+			KongregateAPI.submitStat("clicksAch", ((AchievementMulti)StatisticsTracker.clicksAch).getNumAchieved());
+			KongregateAPI.submitStat("allQuestsUnlocked", (StatisticsTracker.allQuestsUnlocked.isAchieved() ? 1 : 0));
+			KongregateAPI.submitStat("completeHiddenQuest", (StatisticsTracker.defeatKraken.isAchieved() ? 1 : 0));
+#endif
+		}
+
 		public class FirstRelics : IRelicMaker {
 			public string relicDescription(ItemStack stack) {
 				return "This relic predates recorded history.";

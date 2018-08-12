@@ -229,6 +229,7 @@ namespace Assets.draco18s.artificer.game {
 				Main.Destroy(ind.craftingGridGO);
 				ind.craftingGridGO = null;
 				ind.apprentices = 0;
+				ind.resetCache();
 			}
 			currentApprentices = 0;
 			currentVendors = 0;
@@ -241,6 +242,10 @@ namespace Assets.draco18s.artificer.game {
 
 			//TODO: Lifetime money -> renown calc is WRONG
 			//Immediate reset after reseting will generate renown for doing NOTHING
+			
+#if UNITY_WEBGL
+
+#endif
 
 			BigInteger newRenown = BigInteger.CubeRoot(StatisticsTracker.lifetimeMoney.value);
 			BigInteger totRen = newRenown;
@@ -342,7 +347,7 @@ namespace Assets.draco18s.artificer.game {
 
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
-			info.AddValue("SaveVersion", 22);
+			info.AddValue("SaveVersion", 23);
 			info.AddValue("money", money.ToString());
 			info.AddValue("moneyFloor", moneyFloor.ToString());
 			//info.AddValue("lifetimeMoney", StatisticsTracker.lifetimeMoney.ToString());
@@ -410,6 +415,7 @@ namespace Assets.draco18s.artificer.game {
 			info.AddValue("currentGuildmaster", currentGuildmaster, typeof(Master));
 			DeepGoalsTypes.serialize(ref info, ref context);
 			info.AddValue("ResearchManager.lastViewDate", ResearchManager.lastViewDate.ToLongTimeString());
+			TutorialManager.serialize(ref info, ref context);
 		}
 
 		private List<IndustryLoadWrapper> industriesFromDisk = new List<IndustryLoadWrapper>();
@@ -547,6 +553,7 @@ namespace Assets.draco18s.artificer.game {
 				DeepGoalsTypes.deserialize(ref info, ref context);
 			if(Main.saveVersionFromDisk >= 22)
 				ResearchManager.lastViewDate = DateTime.Parse(info.GetString("ResearchManager.lastViewDate"));
+			TutorialManager.deserialize(ref info, ref context);
 		}
 
 		public float GetApprenticeClickAmount() {
@@ -583,7 +590,7 @@ namespace Assets.draco18s.artificer.game {
 
 		public void FinishLoad() {
 			if(StatisticsTracker.guildmastersElected.value == 0) {
-				//renown = totalRenown = 100000;
+				renown = totalRenown = 100000;
 			}
 			currentVendors = 0;
 			//renown = totalRenown = 100000; //for testing

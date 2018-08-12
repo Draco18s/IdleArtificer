@@ -229,8 +229,17 @@ namespace Assets.draco18s.artificer.items {
 			return level + bonusLevel;
 		}
 
+		protected BigRational sellValueCached = -1;
+
+		public void resetCache() {
+			sellValueCached = -1;
+		}
+
 		public virtual BigRational GetSellValue() {
-			return Main.instance.GetSellMultiplierFull() * valueMulti * (BigRational)GetBaseSellValue() * Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType) * SkillList.getScalarTypeMulti(productType) * Main.instance.player.getActiveDeepGoal().getValuedModifier(this);
+			if(sellValueCached < 0) {
+				sellValueCached = Main.instance.player.currentGuildmaster.industryTypeMultiplier(industryType) * SkillList.getScalarTypeMulti(productType) * Main.instance.player.getActiveDeepGoal().getValuedModifier(this);
+			}
+			return Main.instance.GetSellMultiplierFull() * valueMulti * GetBaseSellValue() * sellValueCached;
 		}
 
 		public Industry setIndustryType(Industries.IndustryTypesEnum type) {

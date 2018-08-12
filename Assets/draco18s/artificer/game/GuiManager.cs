@@ -63,6 +63,9 @@ public class GuiManager : MonoBehaviour {
 		equip_icons = Resources.LoadAll<Sprite>("items/equip_icons");
 		notification.transform.position = new Vector3(Screen.width - 5, Screen.height + 2, 0);
 	}
+	public static void HideTooltip() {
+		instance.tooltip.SetActive(false);
+	}
 
 	public static void ShowTooltip(Vector3 p, string v) {
 		ShowTooltip(p, v, 1);
@@ -71,7 +74,10 @@ public class GuiManager : MonoBehaviour {
 		ShowTooltip(pos, v, ratio, 1);
 	}
 	public static void ShowTooltip(Vector3 pos, string v, float ratio, float scale) {
-		if(v.Length == 0) return;
+		ShowTooltip(pos, v, ratio, scale, true);
+	}
+	public static void ShowTooltip(Vector3 pos, string v, float ratio, float scale, bool allowMoveDown) {
+			if(v.Length == 0) return;
 
 		instance.tooltip.SetActive(true);
 		((RectTransform)instance.tooltip.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 160);
@@ -110,17 +116,23 @@ public class GuiManager : MonoBehaviour {
 		}
 		float wid = ((RectTransform)instance.tooltip.transform).rect.width;
 		float hig = ((RectTransform)instance.tooltip.transform).rect.height;
-		if(instance.tooltip.transform.position.x + wid > Screen.width) {
-			//shift the tooltip down. No check for off-screen
-			if(instance.tooltip.transform.position.y - hig*1.5f < 35) {
-				instance.tooltip.transform.position = new Vector3(Screen.width - wid / 2 - 5, instance.tooltip.transform.position.y + ((RectTransform)instance.tooltip.transform).rect.height, 0);
+		if(instance.tooltip.transform.position.x + wid * scale > Screen.width) {
+			if(allowMoveDown) {
+				//shift the tooltip down. No check for off-screen
+				if(instance.tooltip.transform.position.y - hig * 1.5f < 35) {
+					instance.tooltip.transform.position = new Vector3(Screen.width - (wid * scale) / 2 - 5, instance.tooltip.transform.position.y + ((RectTransform)instance.tooltip.transform).rect.height, 0);
+				}
+				else {
+					instance.tooltip.transform.position = new Vector3(Screen.width - (wid * scale) / 2 - 5, instance.tooltip.transform.position.y - ((RectTransform)instance.tooltip.transform).rect.height, 0);
+				}
 			}
 			else {
-				instance.tooltip.transform.position = new Vector3(Screen.width - wid / 2 - 5, instance.tooltip.transform.position.y - ((RectTransform)instance.tooltip.transform).rect.height, 0);
+				//instance.tooltip.transform.position += new Vector3(wid * scale / 2, 0, 0);
+				instance.tooltip.transform.position = new Vector3(Screen.width - (wid * scale / 2) - 5, instance.tooltip.transform.position.y, 0);
 			}
 		}
 		else {
-			instance.tooltip.transform.position += new Vector3(wid / 2, 0, 0);
+			instance.tooltip.transform.position += new Vector3(wid * scale / 2, 0, 0);
 		}
 		instance.tooltip.transform.localScale = new Vector3(scale, scale, scale);
 	}

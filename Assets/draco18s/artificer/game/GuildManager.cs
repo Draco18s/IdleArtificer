@@ -46,6 +46,7 @@ namespace Assets.draco18s.artificer.game {
 		public static readonly string RENOWN_SYMBOL = "ℛ";
 		private static BigInteger lastMoney = 0;
 		private static Master[] availableMasters = new Master[3];
+		private static bool purchasingAvailable;
 
 		public static void OneTimeSetup() {
 			moneyDisp = GuiManager.instance.guildHeader.transform.Find("MoneyArea").GetChild(0).GetComponent<Text>();
@@ -224,15 +225,24 @@ namespace Assets.draco18s.artificer.game {
 				}
 				i++;
 			}
-			if(!enabled) {
-				showPremiumError();
-			}
+			showPremiumError(!enabled);
+			purchasingAvailable = enabled;
 			((RectTransform)premiumList).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (i * 100 + 10));
 			premiumList.localPosition = Vector3.zero;
 		}
 
-		private static void showPremiumError() {
-			GuiManager.instance.guildArea.transform.Find("PremiumOpenAera/PurchaseError").gameObject.SetActive(true);
+		private static void showPremiumError(bool show) {
+			GameObject go = GuiManager.instance.guildArea.transform.Find("PremiumOpenAera/PurchaseError").gameObject;
+			go.SetActive(show);
+			go.transform.Find("Label").GetComponent<Text>().text = "API Initialization Error:";
+			go.transform.Find("Text").GetComponent<Text>().text = "Purchasing not supported on this platform.";
+		}
+
+		public static void showPurchaseFailure(string str) {
+			GameObject go = GuiManager.instance.guildArea.transform.Find("PremiumOpenAera/PurchaseError").gameObject;
+			go.SetActive(true);
+			go.transform.Find("Label").GetComponent<Text>().text = "Purchasing Error:";
+			go.transform.Find("Text").GetComponent<Text>().text = str;
 		}
 
 		private static void doBuySkill(Skill sk) {
@@ -242,6 +252,7 @@ namespace Assets.draco18s.artificer.game {
 				sk.guiItem.transform.Find("Ranks").GetComponent<Text>().text = "" + sk.getRanks();
 				sk.guiItem.transform.Find("BuyOne").GetChild(0).GetComponent<Text>().text = Main.AsCurrency(sk.getCost(1)) + " pts";
 				skillDisp.text = Main.AsCurrency(Main.instance.player.skillPoints);
+				Main.instance.resetIndustryCaches();
 			}
 		}
 
@@ -249,6 +260,13 @@ namespace Assets.draco18s.artificer.game {
 			if(KongregateAPI.instance.isLoaded) {
 				KongregateAPI.doPurchase(item.saveName);
 			}
+		}
+
+		public static void finalizePremiumPurchase(Upgrade item) {
+			GameObject go = item.upgradListGui;
+			Transform t1 = go.transform.Find("BuyOne");
+			go.transform.Find("Label").GetComponent<Text>().text = (item.getIsPurchased() ? "Purchased!" : "");
+			t1.gameObject.SetActive(!item.getIsPurchased());
 		}
 
 		private static void closeNewGuildmaster() {
@@ -259,6 +277,7 @@ namespace Assets.draco18s.artificer.game {
 			foreach(Industry ind in Main.instance.player.builtItems) {
 				ind.apprentices = 0;
 			}
+			DeepGoalsTypes.clearActiveGoal();
 			Main.instance.player.reset();
 			BigInteger renown = Main.instance.player.totalRenown;
 			Debug.Log(Main.instance.player.totalRenown + " | " + Main.instance.player.renown);
@@ -351,6 +370,11 @@ namespace Assets.draco18s.artificer.game {
 			}
 			StatisticsTracker.relicAntiquity.resetValue();
 			StatisticsTracker.relicAntiquity.setValue(best);
+///Kongregate statistics reporting
+#if UNITY_WEBGL
+			KongregateAPI.submitStat("relicAntiquity", best);
+			KongregateAPI.submitStat("guildmastersElected", 1);
+#endif
 
 			int pts = 15 + SkillList.GuildmasterRating.getMultiplier();
 			availableMasters[0] = Master.createRandomMaster(pts);
@@ -666,6 +690,7 @@ namespace Assets.draco18s.artificer.game {
 
 		private static void HidePremium() {
 			GuiManager.instance.guildArea.transform.Find("PremiumOpenAera").gameObject.SetActive(false);
+			showPremiumError(!purchasingAvailable);
 		}
 
 		public static void writeSaveData(ref SerializationInfo info, ref StreamingContext context) {

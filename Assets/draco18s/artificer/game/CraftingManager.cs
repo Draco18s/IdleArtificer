@@ -178,7 +178,7 @@ namespace Assets.draco18s.artificer.game {
 						}
 						t = item.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Ico2");
 						if(item.getRawVendors() > 0) {
-							BigInteger avaialbleToSell = item.output * item.level + (item.isSellingStores?item.quantityStored:0) - item.consumeAmount;
+							BigInteger avaialbleToSell = item.output * (item.level + item.bonusLevel) + (item.isSellingStores?item.quantityStored:0) - item.consumeAmount;
 							BigInteger sellCapacity = item.getVendors() * Main.instance.GetVendorSize();
 							if(avaialbleToSell < sellCapacity && avaialbleToSell <= sellCapacity-(item.getOneVendor()*Main.instance.GetVendorSize())) {
 								t.GetComponent<Image>().color = Color.red;
@@ -417,13 +417,21 @@ namespace Assets.draco18s.artificer.game {
 			if(selectedIcon == null) return;
 
 			Vector3 pos = selectedIcon.craftingGridGO.transform.GetChild(0).localPosition;//new Vector3(selectedIcon.transform.localPosition.x, selectedIcon.transform.localPosition.y + 50, 0);
-			int v = (Screen.height) / 2;
+			/*int v = (Screen.height) / 2;
 			pos.y -= v;
 			int h = (Screen.width / 2) - 170;
 			pos.x = Mathf.Clamp(pos.x, 115 - h, h);
 			pos.y = Mathf.Clamp(pos.y, -v + 170, v - 270) + 0.5f;
 
+			GuiManager.instance.infoPanel.transform.localPosition = pos;*/
+
+
+			int maxy = Screen.height - 235;
+			int minx = Screen.width / 2 - 160;
+			pos.y = Mathf.Clamp(pos.y, 168, maxy - 32);
+			pos.x = Mathf.Clamp(pos.x, -1 * (minx - 128), minx - 16);
 			GuiManager.instance.infoPanel.transform.localPosition = pos;
+
 			ShowConsumers();
 		}
 
@@ -526,7 +534,7 @@ namespace Assets.draco18s.artificer.game {
 
 				Transform t = item.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Ico2");
 				if(item.getRawVendors() > 0) {
-					BigInteger avaialbleToSell = item.output * item.level + (item.isSellingStores ? item.quantityStored : 0) - item.consumeAmount;
+					BigInteger avaialbleToSell = item.output * (item.level + item.bonusLevel) + (item.isSellingStores ? item.quantityStored : 0) - item.consumeAmount;
 					BigInteger sellCapacity = item.getVendors() * Main.instance.GetVendorSize();
 					if(avaialbleToSell < sellCapacity && avaialbleToSell <= sellCapacity - (item.getOneVendor() * Main.instance.GetVendorSize())) {
 						t.GetComponent<Image>().color = Color.red;
@@ -572,7 +580,7 @@ namespace Assets.draco18s.artificer.game {
 
 				Transform t = item.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Ico2");
 				if(item.getRawVendors() > 0) {
-					BigInteger avaialbleToSell = item.output * item.level + (item.isSellingStores ? item.quantityStored : 0) - item.consumeAmount;
+					BigInteger avaialbleToSell = item.output * (item.level + item.bonusLevel) + (item.isSellingStores ? item.quantityStored : 0) - item.consumeAmount;
 					BigInteger sellCapacity = item.getVendors() * Main.instance.GetVendorSize();
 					if(avaialbleToSell < sellCapacity && avaialbleToSell <= sellCapacity - (item.getOneVendor() * Main.instance.GetVendorSize())) {
 						t.GetComponent<Image>().color = Color.red;
@@ -712,7 +720,7 @@ namespace Assets.draco18s.artificer.game {
 		public static BigInteger NumberSoldByVendors(Industry item) {
 			BigInteger num = 0;
 			if(item.isSellingStores) {
-				BigInteger m = item.output * item.level + item.quantityStored - item.consumeAmount;
+				BigInteger m = item.output * (item.level + item.bonusLevel) + item.quantityStored - item.consumeAmount;
 				if(m > item.getVendors() * Main.instance.GetVendorSize()) {
 					num = item.getVendors() * Main.instance.GetVendorSize();
 				}
@@ -721,8 +729,8 @@ namespace Assets.draco18s.artificer.game {
 				}
 			}
 			else {
-				if((item.output * item.level) - item.consumeAmount < item.getVendors() * Main.instance.GetVendorSize())
-					num = (item.output * item.level) - item.consumeAmount;
+				if((item.output * (item.level + item.bonusLevel)) - item.consumeAmount < item.getVendors() * Main.instance.GetVendorSize())
+					num = (item.output * (item.level + item.bonusLevel)) - item.consumeAmount;
 				else
 					num = item.getVendors() * Main.instance.GetVendorSize();
 			}
@@ -877,7 +885,7 @@ namespace Assets.draco18s.artificer.game {
 			Material mat = GuiManager.instance.infoPanel.transform.Find("Progress").GetComponent<Image>().material;
 			mat.SetFloat("_Cutoff", ((selectedIcon.getTimeRemaining() >= 0 ? selectedIcon.getTimeRemaining() : 10) / 10f));
 			mat.SetColor("_Color", selectedIcon.productType.color);
-			int ch = ((selectedIcon.output * selectedIcon.level) - selectedIcon.consumeAmount);
+			int ch = ((selectedIcon.output * (selectedIcon.level + selectedIcon.bonusLevel)) - selectedIcon.consumeAmount);
 			if(selectedIcon.isProductionHalted) ch = -selectedIcon.consumeAmount;
 			InfoPanel info = GuiManager.instance.infoPanel.GetComponent<InfoPanel>();
 			if(selectedIcon.isSellingStores && selectedIcon.getRawVendors() > 0) {
@@ -981,7 +989,7 @@ namespace Assets.draco18s.artificer.game {
 				info.MagnitudeNum.text = "10 E" + selectedIcon.autoBuildMagnitude;
 				BigInteger num = 0;
 				if(selectedIcon.isSellingStores) {
-					BigInteger m = selectedIcon.output * selectedIcon.level + selectedIcon.quantityStored - selectedIcon.consumeAmount;
+					BigInteger m = selectedIcon.output * (selectedIcon.level + selectedIcon.bonusLevel) + selectedIcon.quantityStored - selectedIcon.consumeAmount;
 					if(m > selectedIcon.getVendors() * Main.instance.GetVendorSize()) {
 						num = selectedIcon.getVendors() * Main.instance.GetVendorSize();
 					}
@@ -990,8 +998,8 @@ namespace Assets.draco18s.artificer.game {
 					}
 				}
 				else {
-					if(selectedIcon.output * selectedIcon.level - selectedIcon.consumeAmount < selectedIcon.getVendors() * Main.instance.GetVendorSize())
-						num = Math.Max(selectedIcon.output * selectedIcon.level - selectedIcon.consumeAmount,0);
+					if(selectedIcon.output * (selectedIcon.level + selectedIcon.bonusLevel) - selectedIcon.consumeAmount < selectedIcon.getVendors() * Main.instance.GetVendorSize())
+						num = Math.Max(selectedIcon.output * (selectedIcon.level + selectedIcon.bonusLevel) - selectedIcon.consumeAmount,0);
 					else
 						num = selectedIcon.getVendors() * Main.instance.GetVendorSize();
 				}
@@ -1123,11 +1131,11 @@ namespace Assets.draco18s.artificer.game {
 
 		private static Color GetColorForProductivity(Industry item, IndustryInput input) {
 			int t = Mathf.RoundToInt(Time.time * 5);
-			int needPerCycle = input.quantity * item.level;
+			int needPerCycle = input.quantity * (item.level + item.bonusLevel);
 			if((input.item.isConsumersHalted || (input.item.quantityStored < needPerCycle && item.getTimeRemaining() <= 0)) && t % 4 != 0)
 				return ColorHelper.PURPLE;
 
-			int ch = ((input.item.output * input.item.level * (input.item.isProductionHalted?0:1)) - input.item.consumeAmount * (input.item.isConsumersHalted?0:1));
+			int ch = ((input.item.output * (input.item.level + input.item.bonusLevel) * (input.item.isProductionHalted?0:1)) - input.item.consumeAmount * (input.item.isConsumersHalted?0:1));
 			if(ch < 0) {
 				int q = input.item.getVendors() * Main.instance.GetVendorSize() * (input.item.isProductionHalted ? 0 : 1);
 				if(q > 0 && q > ch && !input.item.isSellingStores) {

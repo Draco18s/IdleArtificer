@@ -402,6 +402,15 @@ namespace Assets.draco18s.artificer.game {
 			}
 			doOutput();
 		}
+
+		public static bool hasItem1() {
+			return preSelectedIndustry != null || inputStack1 != null;
+		}
+
+		public static bool hasItem2() {
+			return preSelectedStack != null;
+		}
+
 		public static void addInput1(ItemStack selectedStack) {
 			if(selectedStack != null) {
 				inputImg1.sprite = SpriteLoader.getSpriteForResource("items/" + selectedStack.item.name);

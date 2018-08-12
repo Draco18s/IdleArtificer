@@ -33,6 +33,10 @@ namespace Assets.draco18s.artificer.init {
 			return NONE;
 		}
 
+		public static void clearActiveGoal() {
+			recentlyActive = null;
+		}
+
 		public static void serialize(ref SerializationInfo info, ref StreamingContext context) {
 			foreach(IDeepGoal s in allDeepGoals) {
 				s.serialize(ref info, ref context);

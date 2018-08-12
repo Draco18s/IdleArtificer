@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdleArtificer.Plugins", "IdleArtificer.Plugins.csproj", "{48B1E15C-315D-2A34-FAFA-9C58C6776F2C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdleArtificer", "IdleArtificer.csproj", "{6FD8D5AE-48FC-8A07-D941-B50C561EE177}"
