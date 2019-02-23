@@ -13,13 +13,15 @@ namespace Assets.draco18s.tutorial {
 		public string displayText;
 		public Check triggerStep;
 		public Check hideTrigger;
+		public Check isOnCorrectTab;
 
-		public TutorialStep(Vector3 target, Vector3 textLoc, string text, Check trigger, Check hide) {
+		public TutorialStep(Vector3 target, Vector3 textLoc, string text, Check trigger, Check hide, Check correctTab) {
 			arrowTarget = target;
 			displayAt = textLoc;
 			displayText = text;
 			triggerStep = trigger;
 			hideTrigger = hide;
+			isOnCorrectTab = correctTab;
 		}
 	}
 }

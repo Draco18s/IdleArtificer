@@ -204,7 +204,7 @@ namespace Assets.draco18s.artificer.game {
 				Main.Destroy(go);
 				q.questComplete = true;
 				q.timeUntilQuestExpires = -100;*/
-				return;
+				//return;
 			}
 			go.transform.Find("Name").GetComponent<Text>().text = ToTitleCase(q.obstacles[q.obstacles.Length - 1].type.name);
 			go.transform.Find("Hero").GetComponent<Text>().text = "Hero: " + q.heroName;
@@ -849,7 +849,7 @@ namespace Assets.draco18s.artificer.game {
 					stack.relicData = new List<RelicInfo>();
 				}
 				RelicInfo info = new RelicInfo(hero, maker.relicNames(stack), string.Format(maker.relicDescription(stack),otherData), ob.getRewardScalar());
-				Debug.Log(info);
+				//Debug.Log(info);
 				stack.relicData.Add(info);
 				stack.isIDedByPlayer = false;
 			}
@@ -863,7 +863,7 @@ namespace Assets.draco18s.artificer.game {
 					stack.relicData = new List<RelicInfo>();
 				}
 				RelicInfo info = new RelicInfo(hero, maker.relicNames(stack), maker.relicDescription(stack), ob.getRewardScalar());
-				Debug.Log(info);
+				//Debug.Log(info);
 				stack.relicData.Add(info);
 				stack.isIDedByPlayer = false;
 			}
@@ -876,7 +876,7 @@ namespace Assets.draco18s.artificer.game {
 				stack.relicData = new List<RelicInfo>();
 			}
 			RelicInfo info = new RelicInfo(hero, maker.relicNames(stack), maker.relicDescription(stack), scalar);
-			Debug.Log(info);
+			//Debug.Log(info);
 			stack.relicData.Add(info);
 			stack.isIDedByPlayer = false;
 			return stack;
@@ -907,12 +907,12 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		private static ItemStack makeRelic(ItemStack stack, Quest q) {
-			Debug.Log("Making a relic! " + stack.item.name);
-			Debug.Log("Already have? " + Main.instance.player.miscInventory.Contains(stack));
+			//Debug.Log("Making a relic! " + stack.item.name);
+			//Debug.Log("Already have? " + Main.instance.player.miscInventory.Contains(stack));
 			if(Main.instance.player.miscInventory.Contains(stack)) {
-				Debug.Log(q.heroName + ":" + q.getGoal().name);
-				Debug.Log("UnIDed? " + Main.instance.player.unidentifiedRelics.Contains(stack));
-				Debug.Log("Available? " + QuestManager.availableRelics.Contains(stack));
+				//Debug.Log(q.heroName + ":" + q.getGoal().name);
+				//Debug.Log("UnIDed? " + Main.instance.player.unidentifiedRelics.Contains(stack));
+				//Debug.Log("Available? " + QuestManager.availableRelics.Contains(stack));
 			}
 			QuestChallenge goal = getGoal(q);
 			if(goal.type is IDescriptorData && q.miscData != null) {
@@ -926,11 +926,11 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static ItemStack getRandomTreasure(Quest theQuest) {
-			Debug.Log("Available relics: " + availableRelics.Count);
+			//Debug.Log("Available relics: " + availableRelics.Count);
 			if(availableRelics.Count == 0) return null;
 			ItemStack stack = availableRelics[theQuest.questRand.Next(availableRelics.Count)];
 			availableRelics.Remove(stack);
-			Debug.Log("Available relics: " + availableRelics.Count);
+			//Debug.Log("Available relics: " + availableRelics.Count);
 			return stack;
 		}
 

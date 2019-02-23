@@ -280,7 +280,7 @@ namespace Assets.draco18s.artificer.game {
 			DeepGoalsTypes.clearActiveGoal();
 			Main.instance.player.reset();
 			BigInteger renown = Main.instance.player.totalRenown;
-			Debug.Log(Main.instance.player.totalRenown + " | " + Main.instance.player.renown);
+			//Debug.Log(Main.instance.player.totalRenown + " | " + Main.instance.player.renown);
 			Main.instance.player.skillPoints += renown / 10000;
 			Main.instance.player.totalSkillPoints += renown / 10000;
 			Main.instance.player.currentGuildmaster = master;
@@ -327,8 +327,8 @@ namespace Assets.draco18s.artificer.game {
 					StatisticsTracker.impressiveAntiquity.setAchieved();
 				}
 				if(stack.antiquity <= 0) {
-					Debug.Log("How the hell did this happen?");
-					Debug.Log(stack.getDisplayName() + " has 0 antiquity.");
+					//Debug.Log("How the hell did this happen?");
+					//Debug.Log(stack.getDisplayName() + " has 0 antiquity.");
 					ItemStack s = stack;
 					List<string> strList = new List<string>();
 					if(s.enchants.Count > 0) {
@@ -356,7 +356,7 @@ namespace Assets.draco18s.artificer.game {
 					}
 					str = string.Join("\n", strList.ToArray());
 
-					Debug.Log(str);
+					//Debug.Log(str);
 				}
 				stack.isIDedByPlayer = false;
 				if(stack.relicData.Any(x => x.relicName == "Lost")) {
@@ -611,7 +611,6 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public static void resetAllUpgrades() {
-			int i = 0;
 			List<Upgrade> upgrades = Upgrades.AllCashUps;
 			foreach(Upgrade item in upgrades) {
 				if(item.getIsPurchased()) {

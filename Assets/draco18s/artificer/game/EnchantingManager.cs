@@ -128,8 +128,8 @@ namespace Assets.draco18s.artificer.game {
 						}
 						else {
 							//if(ind == Industries.LEATHER) {
-							//	Debug.Log("   :" + req_num);
-							//	Debug.Log("   :" + ((RequirementType)(1L << req_num)));
+								//Debug.Log("   :" + req_num);
+								//Debug.Log("   :" + ((RequirementType)(1L << req_num)));
 							//}
 							go.transform.Find("Req" + r).GetComponent<Image>().sprite = GuiManager.instance.req_icons[req_num - 1];
 							ty = ty >> 1;
@@ -160,7 +160,7 @@ namespace Assets.draco18s.artificer.game {
 					}
 					else {
 						if(s.relicData != null && !s.isIDedByPlayer) continue;
-						Debug.Log(s.getDisplayName() + ":" + (s.relicData == null ? 0 : s.relicData.Count));
+						//Debug.Log(s.getDisplayName() + ":" + (s.relicData == null ? 0 : s.relicData.Count));
 						go = Main.Instantiate(PrefabManager.instance.INVEN_GUI_LISTITEM, inventoryList3) as GameObject;
 						//go.transform.SetParent(inventoryList2);
 						enchantMiscInvenList.Add(s, go);
@@ -587,9 +587,9 @@ namespace Assets.draco18s.artificer.game {
 						preSelectedStack.item.industry.quantityStored -= inputStack2.stackSize;
 					}
 					else {
-						Debug.Log(preSelectedStack.stackSize);
+						//Debug.Log(preSelectedStack.stackSize);
 						preSelectedStack.stackSize -= inputStack2.stackSize;
-						Debug.Log(preSelectedStack.stackSize);
+						//Debug.Log(preSelectedStack.stackSize);
 					}
 					Main.instance.player.addItemToInventory(outputStack);
 					setupUI();
@@ -606,14 +606,14 @@ namespace Assets.draco18s.artificer.game {
 			else if(inputStack2.stackSize <= preSelectedStack.stackSize) {
 				//inputStack1 gets the new enchantment
 				if(preSelectedStack.item.industry != null) {
-					Debug.Log(preSelectedStack.item.industry.quantityStored);
+					//Debug.Log(preSelectedStack.item.industry.quantityStored);
 					preSelectedStack.item.industry.quantityStored -= inputStack2.stackSize;
-					Debug.Log(preSelectedStack.item.industry.quantityStored);
+					//Debug.Log(preSelectedStack.item.industry.quantityStored);
 				}
 				else {
-					Debug.Log(preSelectedStack.stackSize);
+					//Debug.Log(preSelectedStack.stackSize);
 					preSelectedStack.stackSize -= inputStack2.stackSize;
-					Debug.Log(preSelectedStack.stackSize);
+					//Debug.Log(preSelectedStack.stackSize);
 				}
 				inputStack1.stackSize -= 1;
 				if(inputStack1.stackSize == 0)

@@ -65,7 +65,7 @@ namespace Assets.draco18s.artificer.quests {
 		}
 
 		public static Quest GenerateNewQuest(ObstacleType withGoal, string heroName) {
-			Debug.Log("Creating new quest with goal" + withGoal);
+			//Debug.Log("Creating new quest with goal" + withGoal);
 			if(withGoal == null) {
 				throw new Exception("Error creating quest wtih null goal!");
 			}
@@ -239,6 +239,11 @@ namespace Assets.draco18s.artificer.quests {
 					}
 				};
 			}
+			if(reqList.Count == 0) {
+				if(QuestManager.availableQuests.Count == 0) {
+					reqList.Add((long)RequirementType.MANA);
+				}
+			}
 		}
 
 		private class IntWrapper {
@@ -388,12 +393,12 @@ namespace Assets.draco18s.artificer.quests {
 				return EnumResult.CONTINUE;
 			}
 			int initQuestStep = questStep;
-			if(questStep >= obstacles.Length || questStep < 0) {
-				Debug.Log(this.heroName);
-				foreach(QuestChallenge o in obstacles) {
-					Debug.Log("  " + o.type.name);
-				}
-			}
+			//if(questStep >= obstacles.Length || questStep < 0) {
+				//Debug.Log(this.heroName);
+				//foreach(QuestChallenge o in obstacles) {
+					//Debug.Log("  " + o.type.name);
+				//}
+			//}
 			QuestChallenge ob = obstacles[questStep];
 			List<ItemStack> used = new List<ItemStack>();
 			while(questTotalTime <= 0 && doesHeroHave(RequirementType.MANA)) {
@@ -423,12 +428,12 @@ namespace Assets.draco18s.artificer.quests {
 			heal(healing);
 			if(questTotalTime <= 0 || heroCurHealth <= 0) {
 				//hero dies
-				Debug.Log("FAIL " + heroName + ": " + ob.type.name + " | " + questTotalTime + ", " + heroCurHealth);
+				//Debug.Log("FAIL " + heroName + ": " + ob.type.name + " | " + questTotalTime + ", " + heroCurHealth);
 				object corwrap;
 				int cor = 0;
 				if(miscData != null && miscData.TryGetValue("cursed_corruption", out corwrap)) {
 					cor = (int)corwrap;
-					Debug.Log("Corrupted: " + doesHeroHave(RequirementType.SPELL_RESIST) + ", "  + cor);
+					//Debug.Log("Corrupted: " + doesHeroHave(RequirementType.SPELL_RESIST) + ", "  + cor);
 				}
 				Main.instance.player.getActiveDeepGoal().onFailedQuest(this);
 				//Debug.Log("     " + obstacles[questStep-1].type.name);
@@ -499,11 +504,11 @@ namespace Assets.draco18s.artificer.quests {
 			if(questStep >= obstacles.Length) {
 				if(result < EnumResult.MIXED && ob.type is IQuestGoal) {
 					//rare ending
-					Debug.Log("QUEST FAILURE " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+					//Debug.Log("QUEST FAILURE " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
 					Main.instance.player.getActiveDeepGoal().onFailedQuest(this);
 					return EnumResult.FAIL;
 				}
-				Debug.Log("SUCCESS " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
+				//Debug.Log("SUCCESS " + ob.type.name + "|" + questTotalTime + "," + heroCurHealth);
 				Main.instance.player.getActiveDeepGoal().onSuccessfulQuest(this);
 				return EnumResult.SUCCESS;
 			}
@@ -796,6 +801,8 @@ namespace Assets.draco18s.artificer.quests {
 			}
 			if(inventory.Count <= 0) {
 				high -= 2;
+				this.heroCurHealth -= 10;
+				this.hastenQuestEnding(180);
 			}
 			foreach(QuestChallenge obs in _obstacles) {
 				//every challenge is given a luck factor based on the antiquity of the best relic
@@ -882,6 +889,11 @@ namespace Assets.draco18s.artificer.quests {
 			if(miscData != null)
 				info.AddValue("miscData", miscData, typeof(Dictionary<string, object>));
 			info.AddValue("finalResult", (int)finalResult);
+
+			info.AddValue("numKnownRequirements", knownRequirements.Length);
+			for(int o = 0; o < knownRequirements.Length; o++) {
+				info.AddValue("knReq_" + o, knownRequirements[o], typeof(long));
+			}
 		}
 
 		public Quest(SerializationInfo info, StreamingContext context) {
@@ -924,6 +936,17 @@ namespace Assets.draco18s.artificer.quests {
 			if(Main.saveVersionFromDisk >= 16) {
 				finalResult = (EnumResult)info.GetInt32("finalResult");
 			}
+			if(Main.saveVersionFromDisk >= 24) {
+				num = info.GetInt32("numKnownRequirements");
+				knownRequirements = new long[num];
+				for(int o = 0; o < num; o++) {
+					long temp = (long)info.GetValue("knReq_" + o, typeof(long));
+					knownRequirements[o] = temp;
+				}
+			}
+			else {
+				
+			}
 		}
 
 		private List<ChallengeLoadWrapper> fromDisk = new List<ChallengeLoadWrapper>();
@@ -931,20 +954,20 @@ namespace Assets.draco18s.artificer.quests {
 		public void FinishLoad() {
 			for(int o = 0; o < fromDisk.Count; o++) {
 				_obstacles[o] = fromDisk[o].challenge;
-				//Debug.Log("Ob Type:  " + _obstacles[o].type);
-				//Debug.Log("Req list: " + _obstacles[o].type.requirements);
-				//_obstacles[o].FinishLoad();
 			}
-			if(_obstacles.Length > 0) {
+			if(_obstacles.Length > 0 && Main.saveVersionFromDisk < 24) {
+				List<long> reqList = new List<long>();
+				//Debug.Log(Upgrades.AllRenownUps.Find(x => x.saveName == "QUEST_REQS"));
+				if(Upgrades.AllRenownUps.Find(x => x.saveName == "QUEST_REQS").getIsPurchased()) {
+					getBetterRequirements(ref reqList, _obstacles);
+				}
+				else {
+					getBasicRequirements(ref reqList, _obstacles);
+				}
 				knownRequirements = new long[6];
-				knownRequirements[0] = (long)_obstacles[0].getReq(0);
-				knownRequirements[1] = (long)_obstacles[0].getReq(1);
-				knownRequirements[2] = (long)_obstacles[0].getReq(2);
-				knownRequirements[3] = (long)_obstacles[_obstacles.Length - 1].getReq(0);
-				knownRequirements[4] = (long)_obstacles[_obstacles.Length - 1].getReq(1);
-				knownRequirements[5] = (long)_obstacles[_obstacles.Length - 1].getReq(2);
-				Array.Sort(knownRequirements);
-				Array.Reverse(knownRequirements);
+				for(int ki = 0; ki < 6 && ki < reqList.Count; ki++) {
+					knownRequirements[ki] = reqList[ki];
+				}
 			}
 		}
 

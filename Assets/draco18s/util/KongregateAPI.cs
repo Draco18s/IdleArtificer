@@ -20,13 +20,22 @@ public class KongregateAPI : MonoBehaviour {
 		DontDestroyOnLoad(gameObject);
 		//gameObject.name = "KongregateAPI";
 
-		Application.ExternalEval(
+#pragma warning disable CS0618 // Type or member is obsolete
+		/*Application.ExternalEval(
 		  @"console.log('initializing Kong API');
           if(typeof(kongregateUnitySupport) != 'undefined'){
 			console.log('success!');
 			kongregateUnitySupport.initAPI('Main Camera', 'OnKongregateAPILoaded');
 		  };"
+		);*/
+		Application.ExternalEval(
+		  @"console.log('initializing Kong API');
+          if(typeof(parent.kongregateUnitySupport) != 'undefined'){
+			console.log('success!');
+			parent.kongregateUnitySupport.initAPI('Main Camera', 'OnKongregateAPILoaded');
+		  };"
 		);
+#pragma warning restore CS0618 // Type or member is obsolete
 	}
 
 	public void OnKongregateAPILoaded(string userInfoString) {
@@ -34,7 +43,7 @@ public class KongregateAPI : MonoBehaviour {
 		isLoaded = true;
 		OnKongregateUserInfo(userInfoString);
 		submitStat("loaded", 1);
-		GuildManager.PremiumSetup(10, "", " Kreds");
+		//GuildManager.PremiumSetup(10, "", " Kreds");
 	}
 
 	public void OnKongregateUserInfo(string userInfoString) {
@@ -42,23 +51,35 @@ public class KongregateAPI : MonoBehaviour {
 		var userId = System.Convert.ToInt32(info[0]);
 		var username = info[1];
 		var gameAuthToken = info[2];
+#pragma warning disable CS0618 // Type or member is obsolete
 		Application.ExternalEval(
 		  @"console.log('Kongregate User Info: ' + username + ', userId: ' + userId);"
 		);
+#pragma warning restore CS0618 // Type or member is obsolete
 
-		Application.ExternalEval(@"
+#pragma warning disable CS0618 // Type or member is obsolete
+		/*Application.ExternalEval(@"
 			kongregate.services.addEventListener('login', function(){
 				var unityObject = kongregateUnitySupport.getUnityObject();
 				var services = kongregate.services;
 				var params=[services.getUserId(), services.getUsername(), services.getGameAuthToken()].join('|');
 				unityObject.SendMessage('Main Camera', 'OnKongregateUserInfo', params);
 			});"
+		);*/
+		Application.ExternalEval(@"
+			parent.kongregate.services.addEventListener('login', function(){
+				var unityObject = kongregateUnitySupport.getUnityObject();
+				var services = kongregate.services;
+				var params=[services.getUserId(), services.getUsername(), services.getGameAuthToken()].join('|');
+				unityObject.SendMessage('Main Camera', 'OnKongregateUserInfo', params);
+			});"
 		);
+#pragma warning restore CS0618 // Type or member is obsolete
 		getPurchases();
 	}
 
 	public static void doPurchase(string itemName) {
-		Application.ExternalEval(@"
+		/*Application.ExternalEval(@"
 		  kongregate.mtx.purchaseItems(['" + itemName + @"'], function(result) {
 			var unityObject = kongregateUnitySupport.getUnityObject();
 			if (result.success) {
@@ -67,7 +88,7 @@ public class KongregateAPI : MonoBehaviour {
 			  unityObject.SendMessage('Main Camera', 'OnPurchaseFailure', '" + itemName + @"');
 			}
 		  });
-		");
+		");*/
 	}
 
 	public void OnPurchaseSuccess(string str) {
@@ -79,9 +100,9 @@ public class KongregateAPI : MonoBehaviour {
 	}
 
 	public void OnPurchaseFailure(string str) {
-		Application.ExternalEval(
+		/*Application.ExternalEval(
 		  @"console.log('Purchased failed: " + str + "');"
-		);
+		);*/
 		GuildManager.showPurchaseFailure(str);
 	}
 
@@ -91,7 +112,7 @@ public class KongregateAPI : MonoBehaviour {
 
 	public static void getPurchases() {
 		PremiumUpgrades.AllPremiumUps.ForEach(x => x.revokeUpgrade());
-		Application.ExternalEval(@"
+		/*Application.ExternalEval(@"
 			console.log('getting premium purchases...');
 			kongregate.mtx.requestUserItemList(null, function(result) {
 				var unityObject = kongregateUnitySupport.getUnityObject();
@@ -106,7 +127,7 @@ public class KongregateAPI : MonoBehaviour {
 					console.log('failed!');
 				}
 			});
-		");
+		");*/
 	}
 
 	public static void submitStat(string stat, int value) {
@@ -114,6 +135,9 @@ public class KongregateAPI : MonoBehaviour {
 		if(value < 0) throw new System.Exception("Kong Statistics value for " + stat + " was less than 0!");
 #endif
 		if(value < 0) return;
-		Application.ExternalCall("kongregate.stats.submit", stat, value);
+#pragma warning disable CS0618 // Type or member is obsolete
+		//Application.ExternalCall("kongregate.stats.submit", stat, value);
+		Application.ExternalCall("parent.kongregate.stats.submit", stat, value);
+#pragma warning restore CS0618 // Type or member is obsolete
 	}
 }

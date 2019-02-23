@@ -16,9 +16,11 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			if(fails > 0) result = EnumResult.FAIL;
 			else result = EnumResult.MIXED;
 
-			if(theQuest.testStrength(questBonus)) {
+			int mod = questBonus + (theQuest.doesHeroHave(RequirementType.WOOD) ? 2 : 0);
+			if(theQuest.testStrength(mod)) {
 				result += 1;
 			}
+			mod = questBonus + (theQuest.doesHeroHave(AidType.HEAVY_SHIELD)|| theQuest.doesHeroHave(AidType.LIGHT_SHIELD) ? 2 : 0);
 			if(theQuest.testStrength(questBonus)) {
 				result += 1;
 			}

@@ -16,6 +16,19 @@ namespace Assets.draco18s.util {
 		private static extern void WindowAlert(string message);
 		private static readonly string saveFile = "{0}/savedata.dat";
 
+		public static void DeleteSave() {
+			string dataPath = string.Format(saveFile, Application.persistentDataPath);
+
+			try {
+				if(File.Exists(dataPath)) {
+					File.Delete(dataPath);
+				}
+			}
+			catch(Exception e) {
+				PlatformSafeMessage("Failed to delete: " + e.Message);
+			}
+		}
+
 		public static void Save(PlayerInfo gameDetails) {
 			Main.reportKongStats();
 			//PlatformSafeMessage("Saving is not supported on WebGL currently");

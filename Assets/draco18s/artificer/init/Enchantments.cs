@@ -9,8 +9,8 @@ using System.Text;
 namespace Assets.draco18s.artificer.init {
 	public class Enchantments {
 		//armor
-		public static Enchantment HEALING = new Enchantment("Healing", Items.ROYAL_JELLY, 100, ItemEquipType.ARMOR | ItemEquipType.RING, RequirementType.HEALING);
-		public static Enchantment MANA = new Enchantment("Mana", Items.CORDYCEPS, 100, ItemEquipType.RING | ItemEquipType.MISC, RequirementType.MANA);
+		public static Enchantment HEALING = new Enchantment("Healing", Items.ROYAL_JELLY, 50, ItemEquipType.ARMOR | ItemEquipType.RING, RequirementType.HEALING);
+		public static Enchantment MANA = new Enchantment("Mana", Items.CORDYCEPS, 50, ItemEquipType.RING | ItemEquipType.MISC, RequirementType.MANA);
 		public static Enchantment FIRE_RESISTANCE = new Enchantment("Fire Resistance", Items.DRAGON_SCALES, 100, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.FIRE_IMMUNE).setEffectiveness(0.25f).setStacksTo(7);
 		public static Enchantment COLD_RESISTANCE = new Enchantment("Cold Resistance", Items.ROOSTER_TEETH, 100, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.COLD_IMMUNE).setEffectiveness(0.25f).setStacksTo(7);
 		public static Enchantment POISON_RESISTANCE = new Enchantment("Poison Resistance", Items.VENOM, 100, ItemEquipType.ARMOR | ItemEquipType.CLOAK, RequirementType.POISON_IMMUNE).setEffectiveness(0.25f).setStacksTo(7);
@@ -33,9 +33,9 @@ namespace Assets.draco18s.artificer.init {
 		public static Enchantment COLD_DMG = new Enchantment("Frosted", Items.HOARFROST, 200, ItemEquipType.WEAPON | ItemEquipType.RANGED, RequirementType.COLD_DAMAGE);
 		public static Enchantment ACID_DMG = new Enchantment("Acidic", Items.SLIME_GOO, 200, ItemEquipType.WEAPON | ItemEquipType.RANGED, RequirementType.ACID_DAMAGE);
 
-		public static Enchantment VORPAL = new Enchantment("Vorpal", Items.OBSIDIAN_SHARD, 200, ItemEquipType.WEAPON, RequirementType.VORPAL);
-		public static Enchantment KEEN = new Enchantment("Keen", Items.TOPAZ, 200, ItemEquipType.WEAPON, 0);
-		public static Enchantment COUNTERSPELLING = new Enchantment("Counterspelling", Items.RED_MERCURY, 200, ItemEquipType.SHIELD | ItemEquipType.MISC, RequirementType.COUNTERSPELL);
+		public static Enchantment VORPAL = new Enchantment("Vorpal", Items.OBSIDIAN_SHARD, 400, ItemEquipType.WEAPON, RequirementType.VORPAL);
+		public static Enchantment KEEN = new Enchantment("Keen", Items.TOPAZ, 400, ItemEquipType.WEAPON, 0);
+		public static Enchantment COUNTERSPELLING = new Enchantment("Counterspelling", Items.RED_MERCURY, 400, ItemEquipType.SHIELD | ItemEquipType.MISC, RequirementType.COUNTERSPELL);
 		
 		//ranged
 		public static Enchantment PERFECT_AIM = new Enchantment("Perfect Aim", Items.GLASS_LENS, 200, ItemEquipType.RANGED, RequirementType.PERFECT_AIM);
@@ -49,9 +49,9 @@ namespace Assets.draco18s.artificer.init {
 		public static Enchantment INTELLECTUAL = new Enchantment("Intellectual", Industries.POT_INTELLIGENCE.industryItem, 30000, ItemEquipType.HELMET, RequirementType.INTELLIGENCE);
 
 		//ring
-		public static Enchantment HERBALISM = new Enchantment("Herbalism", Items.GLOWING_FUNGS, 200, ItemEquipType.RING, RequirementType.HERB);
-		public static Enchantment FEATHER_FALL = new Enchantment("Feather Fall", Items.GRYPHON_TECTRICES, 200, ItemEquipType.BOOTS | ItemEquipType.RING, RequirementType.FEATHER_FALL);
-		public static Enchantment FREEDOM = new Enchantment("Freedom", Items.MANOWAR, 200, ItemEquipType.RING, RequirementType.FREE_MOVEMENT);
+		public static Enchantment HERBALISM = new Enchantment("Herbalism", Items.GLOWING_FUNGS, 100, ItemEquipType.RING, RequirementType.HERB);
+		public static Enchantment FEATHER_FALL = new Enchantment("Feather Fall", Items.GRYPHON_TECTRICES, 50, ItemEquipType.BOOTS | ItemEquipType.RING, RequirementType.FEATHER_FALL);
+		public static Enchantment FREEDOM = new Enchantment("Freedom", Items.MANOWAR, 400, ItemEquipType.RING, RequirementType.FREE_MOVEMENT);
 		public static Enchantment SHADOWS = new Enchantment("Shadows", Items.MIDNIGHT_SUN, 200, ItemEquipType.RING, RequirementType.STEALTH);
 		public static Enchantment BRIGHT = new Enchantment("Bright", Items.STARDUST, 200, ItemEquipType.RING | ItemEquipType.MISC, RequirementType.LIGHT);
 

@@ -32,7 +32,7 @@ namespace Assets.draco18s.artificer.game {
 		//public BigInteger lifetimeMoney = 0;// = new BigInteger("1000000000");
 		public BigInteger renown = 0;
 		public BigInteger totalRenown = 0;
-		public int maxVendors = 5;
+		public int maxVendors = 3;
 		private int _currentVendors;
 		public int currentVendors {
 			get { return _currentVendors; }
@@ -60,6 +60,39 @@ namespace Assets.draco18s.artificer.game {
 			resetLevel = 1;
 			SetDefaultUpgrades();
 			currentGuildmaster = new Master();
+		}
+
+		public void HardReset() {
+			reset();
+			GuildManager.resetAllUpgrades();
+			StatisticsTracker.HardReset();
+			FieldInfo[] fields = typeof(Industries).GetFields();
+			foreach(FieldInfo field in fields) {
+				Industry ind = (Industry)field.GetValue(null);
+				ind.startingVendors = 0;
+				ind.apprentices = 0;
+				ind.SetRawVendors(0);
+			}
+			maxVendors = 3;
+			renown = totalRenown = 0;
+			money = 20;
+			maxApprentices = 0;
+			currentApprentices = 0;
+			journeymen = 0;
+			totalQuestsCompletedRenown = 0;
+			questsCompletedRenown = 0;
+			skillPoints = 0;
+			totalSkillPoints = 0;
+			researchTime = 0;
+			StatisticsTracker.lifetimeMoney.setValue(money);
+			builtItems = new List<Industry>();
+			resetLevel = 1;
+			upgrades.Clear();
+			SetDefaultUpgrades();
+			currentGuildmaster = new Master();
+			miscInventory.Clear();
+			unidentifiedRelics.Clear();
+			AchievementsManager.setupUI();
 		}
 
 		private void SetDefaultUpgrades() {
@@ -124,7 +157,7 @@ namespace Assets.draco18s.artificer.game {
 							if(!StatisticsTracker.unlockedEnchanting.isAchieved()) {
 								Enchantment ench = GameRegistry.GetEnchantmentByItem(s.item);
 								if(ench != null && s.stackSize >= ench.ingredientQuantity) {
-									Debug.Log("Unlocked enchanting with " + s.getDisplayName() + "," + s.stackSize);
+									//Debug.Log("Unlocked enchanting with " + s.getDisplayName() + "," + s.stackSize);
 									StatisticsTracker.unlockedEnchanting.setAchieved();
 									GuiManager.instance.enchantTab.GetComponent<UnityEngine.UI.Button>().interactable = true;
 								}
@@ -242,11 +275,6 @@ namespace Assets.draco18s.artificer.game {
 
 			//TODO: Lifetime money -> renown calc is WRONG
 			//Immediate reset after reseting will generate renown for doing NOTHING
-			
-#if UNITY_WEBGL
-
-#endif
-
 			BigInteger newRenown = BigInteger.CubeRoot(StatisticsTracker.lifetimeMoney.value);
 			BigInteger totRen = newRenown;
 			newRenown -= StatisticsTracker.lastResetRenownGain.value;
@@ -321,7 +349,7 @@ namespace Assets.draco18s.artificer.game {
 		private float GetRenownMultiplier() {
 			UpgradeValueWrapper income;
 			upgrades.TryGetValue(UpgradeType.RENOWN_INCOME, out income);
-			int v = Mathf.FloorToInt((float)Math.Log10(StatisticsTracker.relicsIdentified.value));
+			int v = Math.Max(Mathf.FloorToInt((float)Math.Log10(StatisticsTracker.relicsIdentified.value)),0);
 			return ((UpgradeFloatValue)income).value * currentGuildmaster.renownIncomeMultiplier() * (1 + 0.2f * v);
 		}
 
@@ -347,7 +375,7 @@ namespace Assets.draco18s.artificer.game {
 
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
-			info.AddValue("SaveVersion", 23);
+			info.AddValue("SaveVersion", 24);
 			info.AddValue("money", money.ToString());
 			info.AddValue("moneyFloor", moneyFloor.ToString());
 			//info.AddValue("lifetimeMoney", StatisticsTracker.lifetimeMoney.ToString());
@@ -589,9 +617,9 @@ namespace Assets.draco18s.artificer.game {
 		}
 
 		public void FinishLoad() {
-			if(StatisticsTracker.guildmastersElected.value == 0) {
-				renown = totalRenown = 100000;
-			}
+			//if(StatisticsTracker.guildmastersElected.value == 0) {
+				//renown = totalRenown = 100000;
+			//}
 			currentVendors = 0;
 			//renown = totalRenown = 100000; //for testing
 			//if(industriesFromDisk == null) return;
@@ -601,7 +629,9 @@ namespace Assets.draco18s.artificer.game {
 					ind = GameRegistry.GetIndustryByID(industriesFromDisk[o].name);
 				}
 				else {
+#pragma warning disable CS0612 // Type or member is obsolete
 					ind = GameRegistry.GetIndustryByID(industriesFromDisk[o].ID);
+#pragma warning restore CS0612 // Type or member is obsolete
 				}
 				ind.ReadFromCopy(industriesFromDisk[o].ind);
 				if(ind.level > 0) {

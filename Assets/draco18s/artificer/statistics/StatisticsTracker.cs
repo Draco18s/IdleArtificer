@@ -21,6 +21,9 @@ namespace Assets.draco18s.artificer.statistics {
 		public static readonly StatBint lastResetRenownGain = new StatBint("lastResetRenownGain").register().setHidden();
 		public static readonly StatBint lifetimeMoney = new StatBint("lifetimeMoney").register();
 		public static readonly StatBint lifetimeRenown = new StatBint("lifetimeRenown").register();
+		public static readonly StatBase totalTimePlayed = new StatTimeSpan("totalTimePlayed").register();
+		public static readonly StatBase timeCounter = new StatBase("timeCounter").register().setHidden();
+		public static readonly StatBase lastSavedTime = new StatBase("lastSavedTime").register().setHidden();
 		public static readonly StatBase lastDailyLogin = new StatBase("lastDailyLogin").register().setHidden();
 		public static readonly StatBase sequentialDaysPlayed = new StatLogin("sequentialDaysPlayed").register();
 		public static readonly StatBase vendorsPurchased = new StatHighscore("vendorsPurchased", EnumResetType.GUILDMASTER).register();
@@ -145,6 +148,18 @@ namespace Assets.draco18s.artificer.statistics {
 
 		public static IEnumerator<IStat> getStatsList() {
 			return allStatistics.GetEnumerator();
+		}
+
+		public static void HardReset() {
+			foreach(IStat stat in allStatistics) {
+				stat.resetValue();
+				if(stat is StatHighscore) {
+					((StatHighscore)stat).setBestValue(0);
+				}
+			}
+			foreach(StatAchievement s in allAchievements) {
+				s.setUnachieved();
+			}
 		}
 	}
 }

@@ -221,10 +221,14 @@ namespace Assets.draco18s.artificer.init {
 			}
 
 			public static ObstacleType getRandomMonster(Random rand) {
-				FieldInfo[] fields = fields = typeof(Monsters).GetFields();
-				int r = rand.Next(fields.Length);
-				if(r > 1) r = rand.Next(fields.Length); //less likely to roll thing other than bandits
-				if(r > 7) r = rand.Next(fields.Length); //less likely to roll anit-attribute monsters
+				FieldInfo[] fields = typeof(Monsters).GetFields();
+				int maxRoll = fields.Length;
+				if(StatisticsTracker.maxQuestDifficulty.value < 15) {
+					maxRoll -= 6;
+				}
+				int r = rand.Next(maxRoll);
+				if(r > 1 && StatisticsTracker.maxQuestDifficulty.value < 15) r = rand.Next(maxRoll); //less likely to roll thing other than bandits
+				if(r > 7 && StatisticsTracker.maxQuestDifficulty.value < 15) r = rand.Next(maxRoll); //less likely to roll anit-attribute monsters
 				FieldInfo field = fields[r];
 				return (ObstacleType)field.GetValue(null);
 			}

@@ -49,7 +49,7 @@ namespace Assets.draco18s.artificer.game {
 					currentDirectory += "RuntimeData/";
 					hasFoundMatch = true;
 					break;
-				case RuntimePlatform.OSXDashboardPlayer: //<path to the dashboard widget bundle>
+				//case RuntimePlatform.OSXDashboardPlayer: //<path to the dashboard widget bundle>
 				//case RuntimePlatform.WindowsWebPlayer: 
 				//case RuntimePlatform.OSXWebPlayer:
 				default:

@@ -26,7 +26,8 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			if(theQuest.testStrength(questBonus)) {
 				result += 1;
 			}
-
+			if(result > EnumResult.CRIT_SUCCESS)
+				result = EnumResult.CRIT_SUCCESS;
 			return result;
 		}
 
@@ -34,12 +35,17 @@ namespace Assets.draco18s.artificer.quests.challenge.goals {
 			switch(result) {
 				case EnumResult.CRIT_FAIL:
 					theQuest.hastenQuestEnding(240);
-					theQuest.repeatTask();
+					questBonus -= 1;
+					if(questBonus > 0)
+						theQuest.repeatTask();
 					break;
 				case EnumResult.FAIL:
 					theQuest.hastenQuestEnding(120);
 					theQuest.harmHero(10, DamageType.STARVE);
 					questBonus += 1;
+					if(questBonus <= 3) {
+						theQuest.addItemToInventory(new ItemStack(Industries.WOOD, 2));
+					}
 					theQuest.repeatTask();
 					break;
 				case EnumResult.MIXED:

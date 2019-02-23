@@ -27,7 +27,9 @@ namespace Assets.draco18s.artificer.quests.challenge {
 				}
 				result -= 1;
 			}
-
+			if(result < EnumResult.SUCCESS && theQuest.doesHeroHave(RequirementType.WOOD)) {
+				result += 1;
+			}
 			return result;
 		}
 

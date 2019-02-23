@@ -241,11 +241,15 @@ namespace Assets.draco18s.artificer.items {
 			else {
 				int i = info.GetInt32("item_id");
 				if(b) {
+#pragma warning disable CS0612 // Type or member is obsolete
 					industry = GameRegistry.GetIndustryByID(i);
+#pragma warning restore CS0612 // Type or member is obsolete
 					item = industry.industryItem;
 				}
 				else {
+#pragma warning disable CS0612 // Type or member is obsolete
 					item = GameRegistry.GetItemByID(i);
+#pragma warning restore CS0612 // Type or member is obsolete
 				}
 			}
 			stackSize = info.GetInt32("stacksize");

@@ -21,7 +21,7 @@ namespace Assets.draco18s.artificer.init {
 
 		private static List<Skill> allSkills = new List<Skill>();
 
-		public static SkillInteger GuildmasterRating = (SkillInteger)new SkillInteger("GuildmasterRating", 5, 250, 5).register();
+		public static SkillInteger GuildmasterRating = (SkillInteger)new SkillInteger("GuildmasterRating", 10, 100, 2.5).register();
 		public static Skill Income = new Skill("Income", 0.1, 1, 1.5).register();
 		public static Skill VendorEffectiveness = new Skill("VendorEffectiveness", 0.25, 5, 1.5).register();
 		public static Skill ResearchRate = new Skill("ResearchRate", 0.025, 5, 1.05).register();

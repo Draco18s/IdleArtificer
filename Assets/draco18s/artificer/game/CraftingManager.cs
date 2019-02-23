@@ -331,6 +331,9 @@ namespace Assets.draco18s.artificer.game {
 							StatisticsTracker.maxQuestDifficulty.addValue(3);
 							StatisticsTracker.minQuestDifficulty.addValue(1);
 						}
+						if(item == Industries.POT_LG_REST) {
+							StatisticsTracker.maxQuestDifficulty.addValue(2);
+						}
 						#endregion
 					}
 					Transform t;

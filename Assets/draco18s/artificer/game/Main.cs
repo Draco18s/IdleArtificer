@@ -158,6 +158,8 @@ namespace Assets.draco18s.artificer.game {
 			GuiManager.instance.buyJourneymenArea.transform.Find("BuyOne").GetComponent<Button>().onClick.AddListener(delegate { GuildManager.BuyJourneyman(); });
 			
 			GuiManager.instance.topPanel.transform.Find("SaveBtn").GetComponent<Button>().onClick.AddListener(delegate {
+				long nl = long.Parse(DateTime.Now.ToString("yyMMddHHmm"));
+				StatisticsTracker.lastSavedTime.setValue((int)(nl / 5));
 				if(Application.platform == RuntimePlatform.WebGLPlayer) {
 					DataAccess.Save(player);
 				}
@@ -167,6 +169,48 @@ namespace Assets.draco18s.artificer.game {
 				autosaveTimer = 0;
 				GuiManager.ShowNotification(new NotificationItem("Game saved!", "", GuiManager.instance.checkOn));
 			});
+
+			GuiManager.instance.achievementsHeader.transform.Find("ResetBtn").GetComponent<Button>().onClick.AddListener(delegate {
+				TutorialManager.Reset();
+			});
+			GuiManager.instance.achievementsHeader.transform.Find("HardResetBtn").GetComponent<Button>().onClick.AddListener(delegate {
+				GuiManager.instance.achievementsArea.transform.Find("ConfirmReset").gameObject.SetActive(true);
+			});
+			GuiManager.instance.achievementsArea.transform.Find("ConfirmReset").GetChild(0).Find("CloseBtn").GetComponent<Button>().onClick.AddListener(delegate {
+				GuiManager.instance.achievementsArea.transform.Find("ConfirmReset").gameObject.SetActive(false);
+			});
+			GuiManager.instance.achievementsArea.transform.Find("ConfirmReset").GetChild(0).Find("ConfirmBtn").GetComponent<Button>().onClick.AddListener(delegate {
+				if(Application.platform == RuntimePlatform.WebGLPlayer) {
+					DataAccess.DeleteSave();
+				}
+				else {
+					string path2 = RuntimeDataConfig.currentDirectory + "Save/savedata.dat";
+					string path3 = RuntimeDataConfig.currentDirectory + "Save/savedata-temp.dat";
+					if(File.Exists(path3)) {
+						File.Delete(path3);
+					}
+					if(File.Exists(path2)) {
+						File.Delete(path2);
+					}
+				}
+				player.HardReset();
+				QuestManager.availableQuests.Clear();
+				QuestManager.activeQuests.Clear();
+				QuestManager.availableRelics.Clear();
+				NewSaveThings();
+				if(Application.platform == RuntimePlatform.WebGLPlayer) {
+					DataAccess.Save(player);
+				}
+				else {
+					writeDataToSave();
+				}
+				autosaveTimer = 0;
+				GuiManager.instance.achievementsArea.transform.Find("ConfirmReset").gameObject.SetActive(false);
+			});
+
+			/*relicInfo = trans.Find("RelicInfoOpen").GetChild(0);
+			relicInfo.Find("CloseBtn").GetComponent<Button>().onClick.AddListener(delegate { CloseInfo(); });*/
+
 #pragma warning disable 0219
 			//make sure these static class references have been created
 			ObstacleType ob = ChallengeTypes.General.FESTIVAL;
@@ -201,42 +245,7 @@ namespace Assets.draco18s.artificer.game {
 			if(!saveExists) {
 				Debug.Log("No save data, generating quests");
 				//QuestManager.tickAllQuests(3600);
-
-				ItemStack newRelic = new ItemStack(Industries.IRON_SWORD, 1);
-				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
-				newRelic = new ItemStack(Industries.IRON_RING, 1);
-				int loopcount = 0;
-				bool ret = true;
-				System.Random rand = new System.Random();
-				do {
-					loopcount++;
-					Item item = Items.getRandom(rand);
-					Enchantment ench = GameRegistry.GetEnchantmentByItem(item);
-					if(ench != null)
-						Debug.Log(ench.name);
-					else if(item != Items.FOURFOIL) {
-						//Debug.Log("Null enchant! " + item.name);
-						throw new Exception("Null enchantment for " + item.name);
-					}
-					if(ench != null && (newRelic.item.equipType & ench.enchantSlotRestriction) > 0) {
-						newRelic.applyEnchantment(ench);
-						ret = false;
-					}
-				} while(ret && loopcount < 30);
-				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
-				newRelic = new ItemStack(Industries.IRON_HELMET, 1);
-				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
-				newRelic = new ItemStack(Industries.IRON_BOOTS, 1);
-				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
-				newRelic = new ItemStack(Industries.IMPROVED_CLOAK, 1);
-				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
-				newRelic = new ItemStack(Items.SpecialItems.POWER_STONE, 1);
-				QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
-
-				GuiManager.instance.enchantTab.GetComponent<Button>().interactable = false;
-				GuiManager.instance.guildTab.GetComponent<Button>().interactable = false;
-				GuiManager.instance.questTab.GetComponent<Button>().interactable = false;
-				GuiManager.instance.researchTab.GetComponent<Button>().interactable = false;
+				NewSaveThings();
 			}
 			else {
 				//fixes screwups with the cursed stone
@@ -267,6 +276,16 @@ namespace Assets.draco18s.artificer.game {
 					else
 						QuestManager.availableRelics.Add(good);
 				}
+				
+				//long nl = long.Parse(DateTime.Now.ToString("yyMMddHHmm"));
+				/*long ll = StatisticsTracker.lastSavedTime.value * 5;
+				DateTime lastSave = DateTime.ParseExact(ll.ToString(), "yyMMddHHmm", CultureInfo.InvariantCulture);
+				TimeSpan offlineTime = DateTime.Now - lastSave;
+				if(offlineTime > (DateTime.Now.AddMinutes(5) - DateTime.Now)) {
+					double f = offlineTime.TotalSeconds;
+					StartCoroutine(ProgressOfflineTime(f));
+				}*/
+				//StatisticsTracker.lastSavedTime.setValue((int)(nl / 5));
 			}
 
 			IEnumerator<StatAchievement> list = StatisticsTracker.getAchievementsList();
@@ -282,6 +301,58 @@ namespace Assets.draco18s.artificer.game {
 			gameObject.AddComponent<SteamManager>();
 			GuildManager.update();
 			checkDailyLogin();
+		}
+
+		private IEnumerator ProgressOfflineTime(double f) {
+			while(f > 0) {
+				float n = (float)(f > 60 ? 60 : f);
+				UpdateBy(n);
+				f -= n;
+				yield return new WaitForSeconds(1);
+			}
+			yield return new WaitForSeconds(1);
+		}
+
+		private void NewSaveThings() {
+			ItemStack newRelic = new ItemStack(Industries.IRON_SWORD, 1);
+			QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+			newRelic = new ItemStack(Industries.IRON_RING, 1);
+			int loopcount = 0;
+			bool ret = true;
+			System.Random rand = new System.Random();
+			do {
+				loopcount++;
+				Item item = Items.getRandom(rand);
+				if(item == Items.FOURFOIL)
+					continue;
+				Enchantment ench = GameRegistry.GetEnchantmentByItem(item);
+				//if(ench != null)
+					//Debug.Log(ench.name);
+				//else
+				//if(item != Items.FOURFOIL) {
+					//Debug.Log("Null enchant! " + item.name);
+					//throw new Exception("Null enchantment for " + item.name);
+				//}
+				if(ench != null && (newRelic.item.equipType & ench.enchantSlotRestriction) > 0) {
+					newRelic.applyEnchantment(ench);
+					ret = false;
+				}
+			} while(ret && loopcount < 30);
+			QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+			newRelic = new ItemStack(Industries.IRON_HELMET, 1);
+			QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+			newRelic = new ItemStack(Industries.IRON_BOOTS, 1);
+			QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+			newRelic = new ItemStack(Industries.IMPROVED_CLOAK, 1);
+			QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+			newRelic = new ItemStack(Items.SpecialItems.POWER_STONE, 1);
+			QuestManager.availableRelics.Add(QuestManager.makeRelic(newRelic, new FirstRelics(), 1, "Unknown"));
+			GuiManager.instance.enchantTab.GetComponent<Button>().interactable = false;
+			GuiManager.instance.guildTab.GetComponent<Button>().interactable = false;
+			GuiManager.instance.questTab.GetComponent<Button>().interactable = false;
+			GuiManager.instance.researchTab.GetComponent<Button>().interactable = false;
+			long nl = long.Parse(DateTime.Now.ToString("yyMMddHHmm"));
+			StatisticsTracker.lastSavedTime.setValue((int)(nl / 5));
 		}
 
 		private void checkDailyLogin() {
@@ -332,13 +403,14 @@ namespace Assets.draco18s.artificer.game {
 		public static bool readDataFromSave() {
 			//GuiManager.ShowNotification(new NotificationItem("Loading...", "", GuiManager.instance.checkOn));
 			string path2 = RuntimeDataConfig.currentDirectory + "Save/savedata.dat"; //"E:\\Users\\Major\\Desktop\\savedata.dat";
-			System.Object readFromDisk;
+			//System.Object readFromDisk;
 
 			if(File.Exists(path2)) {
 				FileStream fs = new FileStream(path2, FileMode.OpenOrCreate);
 				BinaryFormatter formatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.File));
 				try {
-					readFromDisk = formatter.Deserialize(fs);
+					formatter.Deserialize(fs);
+					//readFromDisk = formatter.Deserialize(fs);
 					//instance.player = (PlayerInfo)readFromDisk;
 					//fs.Close();
 					//fs = new FileStream(path2, FileMode.OpenOrCreate);
@@ -420,6 +492,15 @@ namespace Assets.draco18s.artificer.game {
 		void Update() {
 			float deltaTime = Time.deltaTime * GetSpeedMultiplier();
 			autosaveTimer += Time.deltaTime;
+			StatisticsTracker.timeCounter.addValue(Time.deltaTime);
+			if(StatisticsTracker.timeCounter.floatValue >= 300) {
+				StatisticsTracker.timeCounter.addValue(-300f);
+				StatisticsTracker.totalTimePlayed.addValue(1);
+			}
+			UpdateBy(deltaTime);
+		}
+
+		void UpdateBy(float deltaTime) {
 			autoClickTime += deltaTime * Main.instance.player.GetApprenticeClickSpeedMultiplier();
 			TimeSinceLastRequest += deltaTime;
 			bool doAutoClick = false;
@@ -487,7 +568,7 @@ namespace Assets.draco18s.artificer.game {
 				}
 				//if(i.guiObj != null) {
 				/**/
-				Image img = i.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Progress").GetComponent<Image>();
+			Image img = i.craftingGridGO.transform.GetChild(0).GetChild(0).Find("Progress").GetComponent<Image>();
 				img.material.SetFloat("_Cutoff", ((i.getTimeRemaining() >= 0 ? i.getTimeRemaining() : 10) / 10f));
 				img.material.SetColor("_Color", i.productType.color);
 				//}
@@ -586,6 +667,8 @@ namespace Assets.draco18s.artificer.game {
 			if(autosaveTimer >= 30) {
 				autosaveTimer -= 30;
 				checkDailyLogin();
+				long nl = long.Parse(DateTime.Now.ToString("yyMMddHHmm"));
+				StatisticsTracker.lastSavedTime.setValue((int)(nl/5));
 				if(Application.platform == RuntimePlatform.WebGLPlayer) {
 					DataAccess.Save(player);
 				}
